@@ -7,7 +7,9 @@
   "minimumCoreVersion": "0.6.0",
   "compatibleCoreVersion": "0.6.4",
   "esmodules": [
-    "./js/simple-fog.js"
+    "js/simpleFog.js",
+    "js/ui.js",
+    "classes/SimpleFogLayer.js"
   ],
   "url": "https://github.com/VanceCole/simple-fog",
   "manifest": "https://raw.githubusercontent.com/VanceCole/simple-fog/master/module.json",
