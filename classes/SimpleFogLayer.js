@@ -58,25 +58,32 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.brush.x = 100;
         this.brush.y = 100;
 
+        this.on('pointerdown', this.pointerDown);
+        this.on('pointerup', this.pointerUp);
+        this.on('pointermove', this.pointerMove);
         this.dragging = false;
+        this.brushing = false;
     }
 
     pointerMove = function(event) {
-        if (this.dragging) {
+        if (this.brushing) {
             this.brush.position.copyFrom(event.data.getLocalPosition(canvas.app.stage));
             this.compositeEvent(this.brush);
         }
     }
     
     pointerDown = function(event) {
+        // Only react on left mouse button
         if (event.data.button === 0) {
-            this.dragging = true;
-            this.pointerMove(event);
+            if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "brush") {
+                this.brushing = true;
+                this.pointerMove(event);
+            }
         }
     }
     
     pointerUp = function(event) {
-        this.dragging = false;
+        this.brushing = false;
     }
 
     compositeEvent = function(shape) {
