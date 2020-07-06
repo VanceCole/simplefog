@@ -24,7 +24,7 @@ Hooks.on("updateScene", (scene, data, options) => {
     if (hasProperty(data, "flags.simplefog.visible")) {
         canvas.simplefog.visible = data.flags.simplefog.visible;
     }
-    if(hasProperty(data, "flags.simplefog.history")) {
-        console.log('Reacting to simple fog history update');
+    if (hasProperty(data, "flags.simplefog.history")) {
+        canvas.simplefog.renderStack(data.flags.simplefog.history);
     }
 });

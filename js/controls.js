@@ -29,7 +29,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
         {
           name: "shape",
           title: "Shape Tool",
-          icon: "far fa-star",
+          icon: "fas fa-draw-polygon",
         },
         {
           name: "box",
@@ -59,7 +59,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
               title: "Reset Simple Fog",
               content: "Are you sure? Fog of war will be reset.",
               yes: () => {
-                console.log("Placeholder for clearing fog");
+                canvas.simplefog.resetFog();
               },
               defaultYes: true,
             });

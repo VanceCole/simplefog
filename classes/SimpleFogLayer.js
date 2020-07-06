@@ -1,6 +1,7 @@
 export class SimpleFogLayer extends PlaceablesLayer {
     constructor() {
         super();
+        this.historyBuffer = [];
     }
   
     static get layerOptions() {
@@ -43,36 +44,45 @@ export class SimpleFogLayer extends PlaceablesLayer {
         // Make the mask sprite follow master canvas sizing
         canvas.stage.addChild(maskSprite);
 
-        // Composite the initial fill
-        const fill = new PIXI.Graphics();
-        fill.beginFill(0xCCCCCC);
-        fill.drawRect(0,0, d.width, d.height);
-        fill.endFill();
-        canvas.simplefog.composite(fill);
+        // Composite the initial fill and render the history stack if it exists
+        this.fill();
 
         // Create circle texture for brush drawing
         this.brush = new PIXI.Graphics();
         this.brush.beginFill(0x000000);
         this.brush.drawCircle(0, 0, 50);
         this.brush.endFill();
+        this.brush.curSize = 50;
+        this.brush.curAlpha = 0x000000;
         this.brush.x = 100;
         this.brush.y = 100;
 
+        // Register mouse event listerenrs
+        this.removeAllListeners();
         this.on('pointerdown', this.pointerDown);
         this.on('pointerup', this.pointerUp);
         this.on('pointermove', this.pointerMove);
+
+        // Set dragging flags
         this.dragging = false;
         this.brushing = false;
+
+        this.renderStack();
     }
 
-    pointerMove = function(event) {
-        if (this.brushing) {
-            this.brush.position.copyFrom(event.data.getLocalPosition(canvas.app.stage));
-            this.compositeEvent(this.brush);
-        }
+    // Mouse event listener handlers
+    pointerMove(event) {
+        let p = event.data.getLocalPosition(canvas.app.stage);
+        if (this.brushing) this.renderBrush({
+            type: 'brush',
+            x: p.x,
+            y: p.y,
+            size: 0,
+            alpha: 0x000000
+        });
     }
     
-    pointerDown = function(event) {
+    pointerDown(event) {
         // Only react on left mouse button
         if (event.data.button === 0) {
             if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "brush") {
@@ -82,26 +92,74 @@ export class SimpleFogLayer extends PlaceablesLayer {
         }
     }
     
-    pointerUp = function(event) {
-        this.brushing = false;
-    }
-
-    compositeEvent = function(shape) {
-        this.composite(shape);
-        //canvas.scene.setFlag('simplefog', 'mask', simplefog.mask);
+    pointerUp(event) {
+        if (event.data.button === 0) {
+            this.brushing = false;
+            this.commitHistory();
+        }
     }
     
-    // Composites a given shape to the mask and adds history to stack
-    composite = function(shape) {
+    // Handler for drawing brush type data to mask
+    renderBrush(data, save = true) {
+        this.brush.position.x = data.x;
+        this.brush.position.y = data.y;
+        if (this.brush.curSize != data.size) {
+            // change size
+        }
+        if (this.brush.curAlpha != data.alpha) {
+            // change alpha
+        }
+
+        this.composite(this.brush)
+        if (save) this.historyBuffer.push(data);
+    }
+
+    // Push buffered history stack to scane flag and clear buffer
+    async commitHistory() {
+        let history = canvas.scene.getFlag('simplefog', 'history');
+        if(!history) history = [];
+        history.push(this.historyBuffer);
+        await canvas.scene.unsetFlag('simplefog', 'history');
+        await canvas.scene.setFlag('simplefog','history', history);
+        console.log(`Pushed ${this.historyBuffer.length} simpleFog updates.`);
+        this.historyBuffer = [];
+    }
+
+    // Composites a given shape to the mask
+    composite(shape) {
         canvas.app.renderer.render(shape, this.simplefogmask, false, null, false);
     }
 
     // Renders the entire stack of composite ops
-    renderStack = function() {
-
+    renderStack(history = canvas.scene.getFlag('simplefog', 'history')) {
+        if(history === undefined) return;
+        for(let i = 0; i < history.length; i++){
+            for(let j = 0; j < history[i].length; j++) {
+                if (history[i][j].type == "brush") this.renderBrush(history[i][j], false);
+            }
+        }
+        
     }
 
-    toggle = function() {
+    fill(color = 0xCCCCCC) {
+        const fill = new PIXI.Graphics();
+        fill.beginFill(color);
+        fill.drawRect(0,0, canvas.dimensions.width, canvas.dimensions.height);
+        fill.endFill();
+        canvas.simplefog.composite(fill);
+    }
+
+    resetFog() {
+        const fill = new PIXI.Graphics();
+        fill.beginFill(0xCCCCCC);
+        fill.drawRect(0,0, canvas.dimensions.width, canvas.dimensions.height);
+        fill.endFill();
+        canvas.simplefog.composite(fill);
+        canvas.scene.unsetFlag('simplefog', 'history');
+        canvas.scene.setFlag('simplefog', 'history', []);
+    }
+
+    toggle() {
         if (canvas.scene.getFlag('simplefog','visible')) {
             canvas.simplefog.visible = false;
             canvas.scene.setFlag('simplefog','visible', false)
