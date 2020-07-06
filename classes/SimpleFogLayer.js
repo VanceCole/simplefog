@@ -1,3 +1,8 @@
+const gmAlphaDefault = 0.5;
+const gmTintDefault = 0x000000;
+const playerAlphaDefault = 1;
+const playerTintDefault = 0x000000;
+
 export class SimpleFogLayer extends PlaceablesLayer {
     constructor() {
         super();
@@ -13,26 +18,17 @@ export class SimpleFogLayer extends PlaceablesLayer {
     }
     
     canvasInit() {
-        const v = canvas.scene.getFlag('simplefog', 'visible');
-        if (v) {
-            canvas.simplefog.visible = true;
-        } else if (v == false) {
-            canvas.simplefog.visible = false;
-        } else {
-            canvas.simplefog.visible = false;
-            canvas.scene.setFlag('simplefog', 'visible', false);
-        }
- 
+        this.initVars();
+
         // Fog is the base fog object
         //canvas.simplefog = canvas.stage.addChildAt(new SimpleFogLayer(canvas), 7);
         this.fog = new PIXI.Sprite(PIXI.Texture.WHITE);
         const d = canvas.dimensions;
         this.fog.width = d.width;
         this.fog.height = d.height;
-        if(game.user.isGM) this.fog.tint = 0x0000ff;
-        if(!game.user.isGM) this.fog.tint = 0x000000;
         this.fog.x = 0;
         this.fog.y = 0;
+        this.setTint(this.getTint());
         canvas.simplefog.addChild(this.fog);
 
         // Create the mask
@@ -42,11 +38,11 @@ export class SimpleFogLayer extends PlaceablesLayer {
         // Set fog mask to use the mask sprite
         this.fog.mask = maskSprite;
 
-        // Make the mask sprite follow master canvas sizing
+        // Make the mask sprite follow canvas sizing
         canvas.stage.addChild(maskSprite);
 
-        // Composite the initial fill and render the history stack if it exists
-        this.fill();
+        // Composite the initial fill
+        this.setAlpha(this.getAlpha());
 
         // Create circle texture for brush drawing
         this.brush = new PIXI.Graphics();
@@ -68,6 +64,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.dragging = false;
         this.brushing = false;
 
+        // If a history stack exists for this scene, render it
         this.renderStack();
     }
 
@@ -106,19 +103,10 @@ export class SimpleFogLayer extends PlaceablesLayer {
         if (save) this.historyBuffer.push(data);
     }
 
-    // Fills fog with a given color
-    fill(color = 0x888888) {
-        if(!game.user.isGM) color = 0xFFFFFF;
-        const fill = new PIXI.Graphics();
-        fill.beginFill(color);
-        fill.drawRect(0,0, canvas.dimensions.width, canvas.dimensions.height);
-        fill.endFill();
-        canvas.simplefog.composite(fill);
-    }
 
     // Resets all fog, if save is true, flush history also
     resetFog(save = true) {
-        this.fill();
+        this.setAlpha(this.getAlpha());
         if(save) {
             canvas.scene.unsetFlag('simplefog', 'history');
             canvas.scene.setFlag('simplefog', 'history', { events: [], pointer: 0 });
@@ -149,6 +137,46 @@ export class SimpleFogLayer extends PlaceablesLayer {
         await canvas.scene.setFlag('simplefog','history', history);
         console.log(`Pushed ${this.historyBuffer.length} simpleFog updates.`);
         this.historyBuffer = [];
+    }
+
+    // Returns the configured alpha for the current user
+    getTint() {
+        let tint;
+        if (game.user.isGM) tint = canvas.scene.getFlag('simplefog', 'gmTint');
+        else tint = canvas.scene.getFlag('simplefog', 'playerTint');
+        if (!tint) {
+            if (game.user.isGM) tint = this.gmTintDefault;
+            else tint = this.playerTintDefault;
+        }
+        return tint;
+    }
+
+    // Tints fog with given tint as hex color
+    setTint(tint, save = true) {
+        console.log(`Setting tint to ${tint}`);
+        this.fog.tint = tint;
+    }
+
+    // Returns the configured alpha for the current user
+    getAlpha() {
+        let alpha;
+        if (game.user.isGM) alpha = canvas.scene.getFlag('simplefog', 'gmAlpha');
+        else alpha = canvas.scene.getFlag('simplefog', 'playerAlpha');
+        if (!alpha) {
+            if (game.user.isGM) alpha = this.gmAlphaDefault;
+            else alpha = this.playerAlphaDefault;
+        }
+        return alpha;
+    }
+
+    // Sets alpha for the fog layer
+    setAlpha(alpha, save = true) {
+        console.log(`Setting alpha to ${alpha}`);
+        const fill = new PIXI.Graphics();
+        fill.beginFill(alpha);
+        fill.drawRect(0,0, canvas.dimensions.width, canvas.dimensions.height);
+        fill.endFill();
+        canvas.simplefog.composite(fill);
     }
 
     // Mouse event listener handlers
@@ -186,6 +214,22 @@ export class SimpleFogLayer extends PlaceablesLayer {
     deactivate() {
         super.deactivate();
         canvas.simplefog.interactive = false;
+    }
+
+    async initVars() {
+        const v = canvas.scene.getFlag('simplefog', 'visible');
+        if (v) {
+            canvas.simplefog.visible = true;
+        } else if (v == false) {
+            canvas.simplefog.visible = false;
+        } else {
+            canvas.simplefog.visible = false;
+            canvas.scene.setFlag('simplefog', 'visible', false);
+        }
+        if (!canvas.scene.getFlag('simplefog', 'gmAlpha')) await canvas.scene.setFlag('simplefog', 'gmAlpha', gmAlphaDefault);
+        if (!canvas.scene.getFlag('simplefog', 'gmTint')) await canvas.scene.setFlag('simplefog', 'gmTint', gmTintDefault);
+        if (!canvas.scene.getFlag('simplefog', 'playerAlpha')) await canvas.scene.setFlag('simplefog', 'playerAlpha', playerAlphaDefault);
+        if (!canvas.scene.getFlag('simplefog', 'playerTint')) await canvas.scene.setFlag('simplefog', 'playerTint', playerTintDefault);
     }
   
     async draw() {

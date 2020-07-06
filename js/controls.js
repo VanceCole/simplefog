@@ -1,3 +1,4 @@
+import { SimplefogConfig } from "./config.js";
 
 Hooks.on("getSceneControlButtons", (controls) => {
   if (game.user.isGM) {
@@ -18,13 +19,12 @@ Hooks.on("getSceneControlButtons", (controls) => {
         {
           name: "brush",
           title: "Brush Tool",
-          icon: "fas fa-paint-brush",
-          onClick: (e) => {
-            // Todo: this should be disabled when switching tools
-            canvas.simplefog.on('pointerdown', canvas.simplefog.pointerDown);
-            canvas.simplefog.on('pointerup', canvas.simplefog.pointerUp);
-            canvas.simplefog.on('pointermove', canvas.simplefog.pointerMove);
-          },
+          icon: "fas fa-paint-brush"
+        },
+        {
+          name: "grid",
+          title: "Grid Tool",
+          icon: "fas fa-border-none",
         },
         {
           name: "shape",
@@ -42,13 +42,13 @@ Hooks.on("getSceneControlButtons", (controls) => {
           icon: "far fa-circle",
         },
         {
-          name: "settings",
-          title: "Settings",
-          icon: "fa fa-cog",
+          name: "colorize",
+          title: "CONTROLS.Colorize",
+          icon: "fas fa-cog",
           onClick: () => {
-            console.log('Settings');
+            new SimplefogConfig().render(true);
           },
-          button: true
+          button: true,
         },
         {
           name: "clearfog",
