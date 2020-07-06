@@ -13,7 +13,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
           title: "Enable/Disable Simple Fog",
           icon: "fas fa-eye",
           onClick: canvas.simplefog.toggle,
-          active: canvas.scene.getFlag('simplefog','visible'),
+          active: canvas.simplefog.visible,
           toggle: true
         },
         {

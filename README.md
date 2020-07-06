@@ -7,9 +7,12 @@ Lets you draw fog of war manually
 -- Shapes
 -- Undo
 -- Image based fog import
--- Hide token cursors(?)
+-- Hide token cursors under fog(?)
 -- Grid snap brush
--- Core fog sync option(?)
+-- Core fog sync option(?) (Clamp lighting mask?)
 -- Optimization
 -- Smoothing
 -- Handle canvas resize
+-- Allow custom default tint/opacity
+-- square brushes
+-- 

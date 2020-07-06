@@ -1,7 +1,7 @@
-const gmAlphaDefault = 0.5;
-const gmTintDefault = 0x000000;
-const playerAlphaDefault = 1;
-const playerTintDefault = 0x000000;
+const gmAlphaDefault = '0x7FFFFF';
+const gmTintDefault = '0x000000';
+const playerAlphaDefault = '0xFFFFFF';
+const playerTintDefault = '0x000000';
 
 export class SimpleFogLayer extends PlaceablesLayer {
     constructor() {
@@ -116,10 +116,10 @@ export class SimpleFogLayer extends PlaceablesLayer {
     // Toggle fog visibility
     toggle() {
         if (canvas.scene.getFlag('simplefog','visible')) {
-            this.visible = false;
+            canvas.simplefog.visible = false;
             canvas.scene.setFlag('simplefog','visible', false)
         } else {
-            this.visible = true;
+            canvas.simplefog.visible = true;
             canvas.scene.setFlag('simplefog','visible', true)
         }
     }
@@ -153,7 +153,6 @@ export class SimpleFogLayer extends PlaceablesLayer {
 
     // Tints fog with given tint as hex color
     setTint(tint) {
-        console.log(`Setting tint to ${tint}`);
         this.fog.tint = tint;
     }
 
@@ -171,7 +170,6 @@ export class SimpleFogLayer extends PlaceablesLayer {
 
     // Sets alpha for the fog layer
     setAlpha(alpha) {
-        console.log(`Setting alpha to ${alpha}`);
         const fill = new PIXI.Graphics();
         fill.beginFill(alpha);
         fill.drawRect(0,0, canvas.dimensions.width, canvas.dimensions.height);
@@ -230,6 +228,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
         if (!canvas.scene.getFlag('simplefog', 'gmTint')) await canvas.scene.setFlag('simplefog', 'gmTint', gmTintDefault);
         if (!canvas.scene.getFlag('simplefog', 'playerAlpha')) await canvas.scene.setFlag('simplefog', 'playerAlpha', playerAlphaDefault);
         if (!canvas.scene.getFlag('simplefog', 'playerTint')) await canvas.scene.setFlag('simplefog', 'playerTint', playerTintDefault);
+
     }
   
     async draw() {
