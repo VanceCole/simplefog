@@ -21,7 +21,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.initVars();
 
         // Fog is the base fog object
-        //canvas.simplefog = canvas.stage.addChildAt(new SimpleFogLayer(canvas), 7);
+        //this = canvas.stage.addChildAt(new SimpleFogLayer(canvas), 7);
         this.fog = new PIXI.Sprite(PIXI.Texture.WHITE);
         const d = canvas.dimensions;
         this.fog.width = d.width;
@@ -29,7 +29,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.fog.x = 0;
         this.fog.y = 0;
         this.setTint(this.getTint());
-        canvas.simplefog.addChild(this.fog);
+        this.addChild(this.fog);
 
         // Create the mask
         this.simplefogmask = PIXI.RenderTexture.create({ width: d.width, height: d.height});
@@ -116,10 +116,10 @@ export class SimpleFogLayer extends PlaceablesLayer {
     // Toggle fog visibility
     toggle() {
         if (canvas.scene.getFlag('simplefog','visible')) {
-            canvas.simplefog.visible = false;
+            this.visible = false;
             canvas.scene.setFlag('simplefog','visible', false)
         } else {
-            canvas.simplefog.visible = true;
+            this.visible = true;
             canvas.scene.setFlag('simplefog','visible', true)
         }
     }
@@ -152,7 +152,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
     }
 
     // Tints fog with given tint as hex color
-    setTint(tint, save = true) {
+    setTint(tint) {
         console.log(`Setting tint to ${tint}`);
         this.fog.tint = tint;
     }
@@ -170,13 +170,13 @@ export class SimpleFogLayer extends PlaceablesLayer {
     }
 
     // Sets alpha for the fog layer
-    setAlpha(alpha, save = true) {
+    setAlpha(alpha) {
         console.log(`Setting alpha to ${alpha}`);
         const fill = new PIXI.Graphics();
         fill.beginFill(alpha);
         fill.drawRect(0,0, canvas.dimensions.width, canvas.dimensions.height);
         fill.endFill();
-        canvas.simplefog.composite(fill);
+        this.composite(fill);
     }
 
     // Mouse event listener handlers
@@ -208,22 +208,22 @@ export class SimpleFogLayer extends PlaceablesLayer {
 
     activate() {
         super.activate();
-        canvas.simplefog.interactive = true;
+        this.interactive = true;
     }
   
     deactivate() {
         super.deactivate();
-        canvas.simplefog.interactive = false;
+        this.interactive = false;
     }
 
     async initVars() {
         const v = canvas.scene.getFlag('simplefog', 'visible');
         if (v) {
-            canvas.simplefog.visible = true;
+            this.visible = true;
         } else if (v == false) {
-            canvas.simplefog.visible = false;
+            this.visible = false;
         } else {
-            canvas.simplefog.visible = false;
+            this.visible = false;
             canvas.scene.setFlag('simplefog', 'visible', false);
         }
         if (!canvas.scene.getFlag('simplefog', 'gmAlpha')) await canvas.scene.setFlag('simplefog', 'gmAlpha', gmAlphaDefault);

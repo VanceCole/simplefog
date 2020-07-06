@@ -32,8 +32,14 @@ Hooks.on("updateScene", (scene, data, options) => {
     }
 
     // React to alpha/tint changes
-    if (!game.user.isGM && hasProperty(data, "flags.simplefog.playerAlpha")) canvas.simplefog.setAlpha(data.flags.simplefog.playerAlpha);
-    if (game.user.isGM && hasProperty(data, "flags.simplefog.gmAlpha")) canvas.simplefog.setAlpha(data.flags.simplefog.gmAlpha);
+    if (!game.user.isGM && hasProperty(data, "flags.simplefog.playerAlpha")) {
+        canvas.simplefog.setAlpha(data.flags.simplefog.playerAlpha);
+        canvas.simplefog.renderStack();
+    }
+    if (game.user.isGM && hasProperty(data, "flags.simplefog.gmAlpha")) {
+        canvas.simplefog.setAlpha(data.flags.simplefog.gmAlpha);
+        canvas.simplefog.renderStack();
+    }
     if (!game.user.isGM && hasProperty(data, "flags.simplefog.playerTint")) canvas.simplefog.setTint(data.flags.simplefog.playerTint);
     if (game.user.isGM && hasProperty(data, "flags.simplefog.gmTint")) canvas.simplefog.setTint(data.flags.simplefog.gmTint);
 });
