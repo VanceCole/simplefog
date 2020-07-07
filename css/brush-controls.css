@@ -1,0 +1,11 @@
+#simplefog-brush-controls {
+    position: absolute;
+    top: 75px;
+    left: 110px;
+    text-align: center;
+}
+
+#simplefog-brush-controls h3 {
+    color: #FFF;
+	text-shadow: 1px 1px 0 #000;
+}

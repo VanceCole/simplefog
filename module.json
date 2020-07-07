@@ -11,6 +11,9 @@
     "js/controls.js",
     "classes/SimpleFogLayer.js"
   ],
+  "styles": [
+    "css/brush-controls.css"
+  ],
   "url": "https://github.com/VanceCole/simple-fog",
   "manifest": "https://raw.githubusercontent.com/VanceCole/simple-fog/master/module.json",
   "download": "https://github.com/VanceCole/simple-fog/releases/download/0.0.1/simple-fog.zip",

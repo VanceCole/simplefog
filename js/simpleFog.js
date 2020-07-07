@@ -20,6 +20,9 @@ Hooks.on("canvasInit", (canvas) => {
 Hooks.on("canvasReady", (_) => {
 });
 
+/**
+ * React to changes to current scene
+ */
 Hooks.on("updateScene", (scene, data, options) => {
     // React to visibility change
     if (hasProperty(data, "flags.simplefog.visible")) {

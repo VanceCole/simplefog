@@ -1,4 +1,5 @@
-import { SimplefogConfig } from "./config.js";
+import { SimplefogConfig } from "../classes/SimpleFogConfig.js";
+import { SimplefogBrushControls } from "../classes/SimpleFogBrushControls.js";
 
 Hooks.on("getSceneControlButtons", (controls) => {
   if (game.user.isGM) {
@@ -74,8 +75,11 @@ Hooks.on("getSceneControlButtons", (controls) => {
       ],
       activeTool: 'brush'
     });
+  }
+});
 
-
-    
+Hooks.on("renderSceneControls", (controls, domObj, scene) => {
+  if(controls.activeControl == 'simplefog') {
+    new SimplefogBrushControls().render(true);
   }
 });

@@ -3,16 +3,20 @@ Lets you draw fog of war manually
 
 # todo
 -- Brush sizes
--- Color & Opacity
+-- ~~Handle canvas resize~~
+-- ~~Fog Color & Opacity~~
 -- Shapes
 -- Undo
 -- Image based fog import
 -- Hide token cursors under fog(?)
 -- Grid snap brush
--- Core fog sync option(?) (Clamp lighting mask?)
 -- Optimization
--- Smoothing
--- Handle canvas resize
+-- Brush Smoothing
 -- Allow custom default tint/opacity
 -- square brushes
--- 
+-- Core fog sync option(?) (Clamp lighting mask?)
+-- Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay
+
+# bugs
+-- bug when activating scene with no player token
+-- use alpha instead of filling mask for mask opacity control
