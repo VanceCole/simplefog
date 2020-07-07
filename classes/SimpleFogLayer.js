@@ -17,54 +17,29 @@ export class SimpleFogLayer extends PlaceablesLayer {
         });
     }
     
-    canvasInit() {
-        this.initVars();
+    async canvasInit() {
+        await this.initCanvasVars();
 
-        // Fog is the base fog object
-        //this = canvas.stage.addChildAt(new SimpleFogLayer(canvas), 7);
-        this.fog = new PIXI.Sprite(PIXI.Texture.WHITE);
-        const d = canvas.dimensions;
-        this.fog.width = d.width;
-        this.fog.height = d.height;
-        this.fog.x = 0;
-        this.fog.y = 0;
+        // Create the fog element
+        this.fog = this.getCanvasSprite();
         this.setTint(this.getTint());
         this.addChild(this.fog);
 
-        // Create the mask
-        this.simplefogmask = PIXI.RenderTexture.create({ width: d.width, height: d.height});
+        // Create the mask elements for the fog
+        this.simplefogmask = PIXI.RenderTexture.create({ width: canvas.dimensions.width, height: canvas.dimensions.height});
         const maskSprite = new PIXI.Sprite(this.simplefogmask);
-
-        // Set fog mask to use the mask sprite
         this.fog.mask = maskSprite;
-
-        // Make the mask sprite follow canvas sizing
-        canvas.stage.addChild(maskSprite);
-
-        // Composite the initial fill
+        this.addChild(maskSprite);
         this.setAlpha(this.getAlpha());
 
-        // Create circle texture for brush drawing
-        this.brush = new PIXI.Graphics();
-        this.brush.beginFill(0x000000);
-        this.brush.drawCircle(0, 0, 50);
-        this.brush.endFill();
-        this.brush.curSize = 50;
-        this.brush.curAlpha = 0x000000;
-        this.brush.x = 100;
-        this.brush.y = 100;
+        // Create drawing shapes
+        this.circle = this.circleBrush();
+        this.brush = this.circle;
 
         // Register mouse event listerenrs
-        this.removeAllListeners();
-        this.on('pointerdown', this.pointerDown);
-        this.on('pointerup', this.pointerUp);
-        this.on('pointermove', this.pointerMove);
+        this.registerMouseListeners();
 
-        // Set dragging flags
-        this.dragging = false;
-        this.brushing = false;
-
-        // If a history stack exists for this scene, render it
+        // Render initial history stack
         this.renderStack();
     }
 
@@ -73,7 +48,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
         canvas.app.renderer.render(shape, this.simplefogmask, false, null, false);
     }
 
-    // Renders the entire stack of composite ops
+    // Renders a stack of composite ops
     renderStack(history = canvas.scene.getFlag('simplefog', 'history')) {
         // If history is blank, do nothing
         if(history === undefined) return;
@@ -86,6 +61,19 @@ export class SimpleFogLayer extends PlaceablesLayer {
             }
         }
         
+    }
+
+    circleBrush() {
+        // Create circle texture for brush drawing
+        let brush = new PIXI.Graphics();
+        brush.beginFill(0x000000);
+        brush.drawCircle(0, 0, 50);
+        brush.endFill();
+        brush.curSize = 50;
+        brush.curAlpha = 0x000000;
+        brush.x = 100;
+        brush.y = 100;
+        return brush;
     }
 
     // Handler for drawing brush type data to mask
@@ -137,6 +125,16 @@ export class SimpleFogLayer extends PlaceablesLayer {
         await canvas.scene.setFlag('simplefog','history', history);
         console.log(`Pushed ${this.historyBuffer.length} simpleFog updates.`);
         this.historyBuffer = [];
+    }
+
+    getCanvasSprite() {
+        let sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+        const d = canvas.dimensions;
+        sprite.width = d.width;
+        sprite.height = d.height;
+        sprite.x = 0;
+        sprite.y = 0;
+        return sprite;
     }
 
     // Returns the configured alpha for the current user
@@ -214,7 +212,16 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.interactive = false;
     }
 
-    async initVars() {
+    registerMouseListeners() {
+        this.removeAllListeners();
+        this.on('pointerdown', this.pointerDown);
+        this.on('pointerup', this.pointerUp);
+        this.on('pointermove', this.pointerMove);
+        this.dragging = false;
+        this.brushing = false;
+    }
+
+    async initCanvasVars() {
         const v = canvas.scene.getFlag('simplefog', 'visible');
         if (v) {
             this.visible = true;

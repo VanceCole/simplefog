@@ -42,6 +42,11 @@ Hooks.on("getSceneControlButtons", (controls) => {
           icon: "far fa-circle",
         },
         {
+          name: "image",
+          title: "Image Tool",
+          icon: "far fa-image",
+        },
+        {
           name: "colorize",
           title: "CONTROLS.Colorize",
           icon: "fas fa-cog",
