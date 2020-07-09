@@ -5,12 +5,13 @@ const playerTintDefault = '0x000000';
 const transitionDefault = true;
 const transitionSpeedDefault = 800;
 
-
 export class SimpleFogLayer extends PlaceablesLayer {
     constructor() {
         super();
         this.historyBuffer = [];
         this.pointer = 0;
+        this.debug = true;
+        this.log(`Canvas layer initialized`);
     }
   
     static get layerOptions() {
@@ -55,7 +56,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
 
     // Renders a stack of composite ops
     renderStack(history = canvas.scene.getFlag('simplefog', 'history'), pointer = this.pointer) {
-        console.log(`Rendering from pointer position: ${pointer}`);
+        this.log(`Rendering from: ${pointer}`);
         // If history is blank, do nothing
         if(history === undefined) return;
         // If history is zero, reset scene fog
@@ -68,7 +69,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
         }
         // Update pointer
         this.pointer = history.events.length;
-        console.log(`New pointer: ${this.pointer}`);
+        this.log(`New pointer: ${this.pointer}`);
         
     }
 
@@ -133,7 +134,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
         history.events.pointer = history.events.length;
         await canvas.scene.unsetFlag('simplefog', 'history');
         await canvas.scene.setFlag('simplefog','history', history);
-        console.log(`Pushed ${this.historyBuffer.length} simpleFog updates.`);
+        this.log(`Pushed ${this.historyBuffer.length} updates.`);
         this.historyBuffer = [];
     }
 
@@ -271,6 +272,10 @@ export class SimpleFogLayer extends PlaceablesLayer {
         if (canvas.scene.getFlag('simplefog', 'transition') == undefined) await canvas.scene.setFlag('simplefog', 'transition', transitionDefault);
         if (!canvas.scene.getFlag('simplefog', 'transitionSpeed')) await canvas.scene.setFlag('simplefog', 'transitionSpeed', transitionSpeedDefault);
 
+    }
+
+    log(string) {
+        console.log(`SimpleFog | ${string}`);
     }
   
     async draw() {
