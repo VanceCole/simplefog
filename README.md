@@ -13,7 +13,7 @@ Lets you draw fog of war manually
 - Hide token cursors under fog(?)
 - Grid snap brush
 - ~~Optimization~~
-- Brush Smoothing
+- Brush Smoothing / Interpolation
 - Allow custom default tint/opacity
 - square brushes?
 - Core fog sync option(?) (Clamp lighting mask?)
@@ -23,4 +23,3 @@ Lets you draw fog of war manually
 
 # bugs
 - bug when activating scene with no player token
-- use alpha instead of filling mask for mask opacity control

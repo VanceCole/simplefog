@@ -269,10 +269,10 @@ export class SimpleFogLayer extends PlaceablesLayer {
                 this.op = 'brushing';
                 this.pointerMove(event);
             }
-            if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "grid") {
+            else if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "grid") {
 
             }
-            if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "box") {
+            else if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "box") {
                 this.log(`Box brush`);
                 this.dragStart.x = p.x;
                 this.dragStart.y = p.y;
@@ -281,10 +281,10 @@ export class SimpleFogLayer extends PlaceablesLayer {
                 this.boxPreview.x = p.x;
                 this.boxPreview.y = p.y;
             }
-            if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "circle") {
+            else if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "circle") {
 
             }
-            if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "poly") {
+            else if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "poly") {
 
             }
         }
