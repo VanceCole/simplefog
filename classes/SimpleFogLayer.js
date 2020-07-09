@@ -1,7 +1,9 @@
-const gmAlphaDefault = '0x7FFFFF';
+const gmAlphaDefault = 0.6;
 const gmTintDefault = '0x000000';
-const playerAlphaDefault = '0xFFFFFF';
+const playerAlphaDefault = 1;
 const playerTintDefault = '0x000000';
+const transitionDefault = true;
+const transitionSpeedDefault = 2000;
 
 export class SimpleFogLayer extends PlaceablesLayer {
     constructor() {
@@ -30,7 +32,8 @@ export class SimpleFogLayer extends PlaceablesLayer {
         const maskSprite = new PIXI.Sprite(this.simplefogmask);
         this.fog.mask = maskSprite;
         this.addChild(maskSprite);
-        this.setAlpha(this.getAlpha());
+        this.setFill();
+        this.setAlpha(this.getAlpha(), true);
 
         // Create drawing shapes
         this.circle = this.circleBrush();
@@ -167,9 +170,29 @@ export class SimpleFogLayer extends PlaceablesLayer {
     }
 
     // Sets alpha for the fog layer
-    setAlpha(alpha) {
+    async setAlpha(alpha, skip = false) {
+        if (skip || !canvas.scene.getFlag('simplefog', 'transition')) this.fog.alpha = alpha;
+        else {
+            const start = this.fog.alpha;
+            const dist = start - alpha;
+            const fps = 60;
+            const speed = canvas.scene.getFlag('simplefog', 'transitionSpeed');
+            const frame = 1000 / fps;
+            const rate = dist / (fps * speed / 1000);
+            let f = fps * speed / 1000;
+            while(f > 0) {
+                await new Promise(resolve => setTimeout(resolve, frame));
+                this.fog.alpha = this.fog.alpha - rate;
+                f--;
+            }
+            this.fog.alpha = alpha;
+        }
+    }
+
+    // Fills the fog with a solid color
+    setFill(color = 0xFFFFFF) {
         const fill = new PIXI.Graphics();
-        fill.beginFill(alpha);
+        fill.beginFill(color);
         fill.drawRect(0,0, canvas.dimensions.width, canvas.dimensions.height);
         fill.endFill();
         this.composite(fill);
@@ -231,10 +254,14 @@ export class SimpleFogLayer extends PlaceablesLayer {
             this.visible = false;
             canvas.scene.setFlag('simplefog', 'visible', false);
         }
+
+        // Set default flags if not exist already
         if (!canvas.scene.getFlag('simplefog', 'gmAlpha')) await canvas.scene.setFlag('simplefog', 'gmAlpha', gmAlphaDefault);
         if (!canvas.scene.getFlag('simplefog', 'gmTint')) await canvas.scene.setFlag('simplefog', 'gmTint', gmTintDefault);
         if (!canvas.scene.getFlag('simplefog', 'playerAlpha')) await canvas.scene.setFlag('simplefog', 'playerAlpha', playerAlphaDefault);
         if (!canvas.scene.getFlag('simplefog', 'playerTint')) await canvas.scene.setFlag('simplefog', 'playerTint', playerTintDefault);
+        if (canvas.scene.getFlag('simplefog', 'transition') == undefined) await canvas.scene.setFlag('simplefog', 'transition', transitionDefault);
+        if (!canvas.scene.getFlag('simplefog', 'transitionSpeed')) await canvas.scene.setFlag('simplefog', 'transitionSpeed', transitionSpeedDefault);
 
     }
   

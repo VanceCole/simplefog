@@ -23,10 +23,12 @@ export class SimplefogConfig extends FormApplication {
   getData() {
     // Return data to the template
     return {
-        gmAlpha: base16ToPercent(canvas.scene.getFlag('simplefog', 'gmAlpha')),
+        gmAlpha: canvas.scene.getFlag('simplefog', 'gmAlpha') * 100,
         gmTint: hexToWeb(canvas.scene.getFlag('simplefog', 'gmTint')),
-        playerAlpha: base16ToPercent(canvas.scene.getFlag('simplefog', 'playerAlpha')),
+        playerAlpha: canvas.scene.getFlag('simplefog', 'playerAlpha') * 100,
         playerTint: hexToWeb(canvas.scene.getFlag('simplefog', 'playerTint')),
+        transition: canvas.scene.getFlag('simplefog', 'transition'),
+        transitionSpeed: canvas.scene.getFlag('simplefog', 'transitionSpeed'),
     };
   }
 
@@ -46,10 +48,13 @@ export class SimplefogConfig extends FormApplication {
    * @private
    */
     _updateObject(event, formData) {
-        canvas.scene.setFlag('simplefog', 'gmAlpha', percentToBase16(formData.gmAlpha));
-        canvas.scene.setFlag('simplefog', 'playerAlpha', percentToBase16(formData.playerAlpha));
+        canvas.scene.setFlag('simplefog', 'gmAlpha', formData.gmAlpha / 100);
         canvas.scene.setFlag('simplefog', 'gmTint', webToHex(formData.gmTint));
+        canvas.scene.setFlag('simplefog', 'playerAlpha', formData.playerAlpha / 100);
         canvas.scene.setFlag('simplefog', 'playerTint', webToHex(formData.playerTint));
+        canvas.scene.setFlag('simplefog', 'transition', formData.transition);
+        canvas.scene.setFlag('simplefog', 'transitionSpeed', formData.transitionSpeed);
+        console.log(formData.transition);
     }
 }
 
