@@ -10,6 +10,10 @@ export class SimpleFogLayer extends PlaceablesLayer {
         super();
         this.historyBuffer = [];
         this.pointer = 0;
+        this.dragStart = {
+            x: 0,
+            y: 0
+        };
         this.debug = true;
         this.log(`Canvas layer initialized`);
     }
@@ -38,9 +42,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.setFill();
         this.setAlpha(this.getAlpha(), true);
 
-        // Create drawing shapes
-        this.circle = this.circleBrush();
-        this.brush = this.circle;
+        this.addChild(this.boxPreview);
 
         // Register mouse event listerenrs
         this.registerMouseListeners();
@@ -64,7 +66,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
         // Render all ops starting from pointer
         for(let i = pointer; i < history.events.length; i++){
             for(let j = 0; j < history.events[i].length; j++) {
-                if (history.events[i][j].type == "brush") this.renderBrush(history.events[i][j], false);
+                this.renderBrush(history.events[i][j], false);
             }
         }
         // Update pointer
@@ -73,31 +75,67 @@ export class SimpleFogLayer extends PlaceablesLayer {
         
     }
 
-    circleBrush() {
-        // Create circle texture for brush drawing
+    // Pixi graphic for round brush
+    circleBrush(preview = false) {
         let brush = new PIXI.Graphics();
         brush.beginFill(0x000000);
         brush.drawCircle(0, 0, 50);
         brush.endFill();
-        brush.curSize = 50;
-        brush.curAlpha = 0x000000;
-        brush.x = 100;
-        brush.y = 100;
+        if(preview) {
+            brush.lineStyle(1, 0xFF0000);
+            brush.visible = true;
+        }
+        return brush;
+    }
+
+    // Pixi graphic for box brush
+    boxBrush(preview = false) {
+        let brush = new PIXI.Graphics();
+        if(preview) {
+            brush.visible = false;
+            brush.beginFill(0x97bdc4);
+            brush.alpha = 0.4;
+        }
+        else brush.beginFill(0x000000);
+        brush.drawRect(0, 0, 100, 100);
+        brush.endFill();
+        return brush;
+    }
+
+    // Pixi graphic for rounded rectangle brush
+    roundedRectBrush(preview = false) {
+        let brush = new PIXI.Graphics();
+        brush.beginFill(0x000000);
+        brush.drawRoundedRect(0, 0, 100, 100, 10);
+        brush.endFill();
+        if(preview) {
+            brush.lineStyle(1, 0xFF0000);
+            brush.visible = false;
+        }
         return brush;
     }
 
     // Handler for drawing brush type data to mask
     renderBrush(data, save = true) {
-        this.brush.position.x = data.x;
-        this.brush.position.y = data.y;
-        if (this.brush.curSize != data.size) {
-            // change size
+        if(data.type == "circle") {
+            this.circle.position.x = data.x;
+            this.circle.position.y = data.y;
+            if (this.circle.curSize != data.size) {
+                // change size
+            }
+            if (this.circle.curAlpha != data.alpha) {
+                // change alpha
+            }
+            this.composite(this.circle)
         }
-        if (this.brush.curAlpha != data.alpha) {
-            // change alpha
+        if(data.type == "box") {
+            this.box.position.x = data.x;
+            this.box.position.y = data.y;
+            this.box.width = data.width;
+            this.box.height = data.height;
+            this.composite(this.box);
         }
 
-        this.composite(this.brush)
         if (save) this.historyBuffer.push(data);
     }
 
@@ -123,8 +161,9 @@ export class SimpleFogLayer extends PlaceablesLayer {
         }
     }
 
-    // Push buffered history stack to scane flag and clear buffer
+    // Push buffered history stack to scene flag and clear buffer
     async commitHistory() {
+        if(this.historyBuffer.length == 0) return;
         let history = canvas.scene.getFlag('simplefog', 'history');
         if(!history) history = {
             events: [],
@@ -209,26 +248,65 @@ export class SimpleFogLayer extends PlaceablesLayer {
     // Mouse event listener handlers
     pointerMove(event) {
         let p = event.data.getLocalPosition(canvas.app.stage);
-        if (this.brushing) this.renderBrush({
-            type: 'brush',
+        if (this.op == 'brushing') this.renderBrush({
+            type: 'circle',
             x: p.x,
             y: p.y,
             size: 0,
             alpha: 0x000000
         });
+        else if (this.op == 'boxing') {
+            // update preview box
+            this.boxPreview.width = p.x - this.dragStart.x;
+            this.boxPreview.height = p.y - this.dragStart.y;
+        }
     }
     pointerDown(event) {
         // Only react on left mouse button
         if (event.data.button === 0) {
+            let p = event.data.getLocalPosition(canvas.app.stage);
             if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "brush") {
-                this.brushing = true;
+                this.op = 'brushing';
                 this.pointerMove(event);
+            }
+            if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "grid") {
+
+            }
+            if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "box") {
+                this.log(`Box brush`);
+                this.dragStart.x = p.x;
+                this.dragStart.y = p.y;
+                this.op = 'boxing';
+                this.boxPreview.visible = true;
+                this.boxPreview.x = p.x;
+                this.boxPreview.y = p.y;
+            }
+            if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "circle") {
+
+            }
+            if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "poly") {
+
             }
         }
     }
     pointerUp(event) {
-        if (event.data.button === 0) {
-            this.brushing = false;
+        console.log(event);
+        if (event.data.button == 0) {
+            let p = event.data.getLocalPosition(canvas.app.stage);
+            if (this.op == 'boxing') {
+                this.renderBrush({
+                    type: 'box',
+                    x: this.dragStart.x,
+                    y: this.dragStart.y,
+                    width: p.x - this.dragStart.x,
+                    height: p.y - this.dragStart.y
+                });
+                this.boxPreview.visible = false;
+                this.boxPreview.width = 0;
+                this.boxPreview.height = 0;
+            }
+            // Reset operation
+            this.op = false;
             this.commitHistory();
         }
     }
@@ -263,7 +341,18 @@ export class SimpleFogLayer extends PlaceablesLayer {
             canvas.scene.setFlag('simplefog', 'visible', false);
         }
 
+        // Create drawing shapes
+        this.circle = this.circleBrush();
+        this.box = this.boxBrush();
+        this.roundedRect = this.roundedRectBrush();
+
+        this.circlePreview = this.circleBrush(true);
+        this.boxPreview = this.boxBrush(true);
+        this.roundedRectPreview = this.roundedRectBrush(true);
+
+        // Set the history pointer
         this.pointer = 0;
+
         // Set default flags if not exist already
         if (!canvas.scene.getFlag('simplefog', 'gmAlpha')) await canvas.scene.setFlag('simplefog', 'gmAlpha', gmAlphaDefault);
         if (!canvas.scene.getFlag('simplefog', 'gmTint')) await canvas.scene.setFlag('simplefog', 'gmTint', gmTintDefault);
