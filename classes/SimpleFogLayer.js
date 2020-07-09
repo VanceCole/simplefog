@@ -3,12 +3,14 @@ const gmTintDefault = '0x000000';
 const playerAlphaDefault = 1;
 const playerTintDefault = '0x000000';
 const transitionDefault = true;
-const transitionSpeedDefault = 2000;
+const transitionSpeedDefault = 800;
+
 
 export class SimpleFogLayer extends PlaceablesLayer {
     constructor() {
         super();
         this.historyBuffer = [];
+        this.pointer = 0;
     }
   
     static get layerOptions() {
@@ -52,17 +54,21 @@ export class SimpleFogLayer extends PlaceablesLayer {
     }
 
     // Renders a stack of composite ops
-    renderStack(history = canvas.scene.getFlag('simplefog', 'history')) {
+    renderStack(history = canvas.scene.getFlag('simplefog', 'history'), pointer = this.pointer) {
+        console.log(`Rendering from pointer position: ${pointer}`);
         // If history is blank, do nothing
         if(history === undefined) return;
         // If history is zero, reset scene fog
         if(history.events.length == 0) this.resetFog(false);
-        // Render all ops
-        for(let i = 0; i < history.events.length; i++){
+        // Render all ops starting from pointer
+        for(let i = pointer; i < history.events.length; i++){
             for(let j = 0; j < history.events[i].length; j++) {
                 if (history.events[i][j].type == "brush") this.renderBrush(history.events[i][j], false);
             }
         }
+        // Update pointer
+        this.pointer = history.events.length;
+        console.log(`New pointer: ${this.pointer}`);
         
     }
 
@@ -97,10 +103,11 @@ export class SimpleFogLayer extends PlaceablesLayer {
 
     // Resets all fog, if save is true, flush history also
     resetFog(save = true) {
-        this.setAlpha(this.getAlpha());
+        this.setFill()
         if(save) {
             canvas.scene.unsetFlag('simplefog', 'history');
             canvas.scene.setFlag('simplefog', 'history', { events: [], pointer: 0 });
+            this.pointer = 0;
         }
     }
 
@@ -190,9 +197,9 @@ export class SimpleFogLayer extends PlaceablesLayer {
     }
 
     // Fills the fog with a solid color
-    setFill(color = 0xFFFFFF) {
+    setFill() {
         const fill = new PIXI.Graphics();
-        fill.beginFill(color);
+        fill.beginFill(0xFFFFFF);
         fill.drawRect(0,0, canvas.dimensions.width, canvas.dimensions.height);
         fill.endFill();
         this.composite(fill);
@@ -255,6 +262,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
             canvas.scene.setFlag('simplefog', 'visible', false);
         }
 
+        this.pointer = 0;
         // Set default flags if not exist already
         if (!canvas.scene.getFlag('simplefog', 'gmAlpha')) await canvas.scene.setFlag('simplefog', 'gmAlpha', gmAlphaDefault);
         if (!canvas.scene.getFlag('simplefog', 'gmTint')) await canvas.scene.setFlag('simplefog', 'gmTint', gmTintDefault);
