@@ -7,7 +7,7 @@ Lets you draw fog of war manually
 - ~~Handle canvas resize~~
 - ~~Fog Color & Opacity~~
 - ~~Box Shape~~
-- Circle Shape
+- ~~Circle Shape~~
 - Poly Shape
 - Image based fog import
 - Undo

@@ -28,6 +28,10 @@ export class SimpleFogLayer extends PlaceablesLayer {
         });
     }
 
+    /* -------------------------------------------- */
+    /*  Init                                        */
+    /* -------------------------------------------- */
+
     /**
      * Called on canvas init, creates the canvas layers and various objects and registers listeners
      */
@@ -47,13 +51,69 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.setFill();
         this.setAlpha(this.getAlpha(), true);
 
-
         // Register mouse event listerenrs
         this.registerMouseListeners();
 
         // Render initial history stack
         this.renderStack();
     }
+
+    /**
+     * Set up vars and initialize default values if needed
+     */
+    async initCanvasVars() {
+        // Check if simplefog is flagged visible
+        const v = canvas.scene.getFlag('simplefog', 'visible');
+        if (v) {
+            this.visible = true;
+        } else if (v == false) {
+            this.visible = false;
+        } else {
+            this.visible = false;
+            canvas.scene.setFlag('simplefog', 'visible', false);
+        }
+
+        // Set the history pointer
+        this.pointer = 0;
+
+        // Preview brush objects
+        this.boxPreview = this.brush({
+            shape: "box",
+            x: 0,
+            y: 0,
+            fill: previewFill,
+            width: 100,
+            height: 100,
+            alpha: previewAlpha,
+            visible: false
+        });
+        this.ellipsePreview = this.brush({
+            shape: "ellipse",
+            x: 0,
+            y: 0,
+            fill: previewFill,
+            width: 100,
+            height: 100,
+            alpha: previewAlpha,
+            visible: false
+        });
+        this.addChild(this.boxPreview);
+        this.addChild(this.ellipsePreview);
+
+        // Set default flags if they dont exist already
+        if (!canvas.scene.getFlag('simplefog', 'gmAlpha')) await canvas.scene.setFlag('simplefog', 'gmAlpha', gmAlphaDefault);
+        if (!canvas.scene.getFlag('simplefog', 'gmTint')) await canvas.scene.setFlag('simplefog', 'gmTint', gmTintDefault);
+        if (!canvas.scene.getFlag('simplefog', 'playerAlpha')) await canvas.scene.setFlag('simplefog', 'playerAlpha', playerAlphaDefault);
+        if (!canvas.scene.getFlag('simplefog', 'playerTint')) await canvas.scene.setFlag('simplefog', 'playerTint', playerTintDefault);
+        if (canvas.scene.getFlag('simplefog', 'transition') == undefined) await canvas.scene.setFlag('simplefog', 'transition', transitionDefault);
+        if (!canvas.scene.getFlag('simplefog', 'transitionSpeed')) await canvas.scene.setFlag('simplefog', 'transitionSpeed', transitionSpeedDefault);
+        if (!game.user.getFlag('simplefog', 'brushOpacity')) await game.user.setFlag('simplefog', 'brushOpacity', 0x000000);
+        if (!game.user.getFlag('simplefog', 'brushSize')) await game.user.setFlag('simplefog', 'brushSize', 50);
+    }
+
+    /* -------------------------------------------- */
+    /*  History & Buffer                            */
+    /* -------------------------------------------- */
 
     /**
      * Renders the given shape to the simplefog mask
@@ -87,9 +147,46 @@ export class SimpleFogLayer extends PlaceablesLayer {
     }
 
     /**
+     * Resets the fog of the current scene
+     * @param save {Boolean} If true, also resets the simplefog history
+     */
+    resetFog(save = true) {
+        this.setFill()
+        if(save) {
+            canvas.scene.unsetFlag('simplefog', 'history');
+            canvas.scene.setFlag('simplefog', 'history', { events: [], pointer: 0 });
+            this.pointer = 0;
+        }
+    }
+
+    /**
+     * Add buffered history stack to scene flag and clear buffer
+     */
+    async commitHistory() {
+        if(this.historyBuffer.length == 0) return;
+        let history = canvas.scene.getFlag('simplefog', 'history');
+        if(!history) history = {
+            events: [],
+            pointer: 0,
+        };
+        history.events.push(this.historyBuffer);
+        history.events.pointer = history.events.length;
+        await canvas.scene.unsetFlag('simplefog', 'history');
+        await canvas.scene.setFlag('simplefog','history', history);
+        this.log(`Pushed ${this.historyBuffer.length} updates.`);
+        this.historyBuffer = [];
+    }
+
+    /* -------------------------------------------- */
+    /*  Shapes, sprites and PIXI objs               */
+    /* -------------------------------------------- */
+
+    /**
      * Creates a PIXI graphic using the given brush parameters
      * @param data {Object}       A collection of brush parameters
-     *  Example:
+     * 
+     * @example
+     * const myBrush = this.brush({
      *      shape: "ellipse",
      *      x: 0,
      *      y: 0,
@@ -98,6 +195,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
      *      height: 50,
      *      alpha: 1,
      *      visible: true
+     * });
      */
     brush(data) {
         let brush = new PIXI.Graphics();
@@ -125,50 +223,6 @@ export class SimpleFogLayer extends PlaceablesLayer {
     }
 
     /**
-     * Resets the fog of the current scene
-     * @param save {Boolean} If true, also resets the simplefog history
-     */
-    resetFog(save = true) {
-        this.setFill()
-        if(save) {
-            canvas.scene.unsetFlag('simplefog', 'history');
-            canvas.scene.setFlag('simplefog', 'history', { events: [], pointer: 0 });
-            this.pointer = 0;
-        }
-    }
-
-    /**
-     * Toggles visibility of fog layer
-     */
-    toggle() {
-        if (canvas.scene.getFlag('simplefog','visible')) {
-            canvas.simplefog.visible = false;
-            canvas.scene.setFlag('simplefog','visible', false)
-        } else {
-            canvas.simplefog.visible = true;
-            canvas.scene.setFlag('simplefog','visible', true)
-        }
-    }
-
-    /**
-     * Add buffered history stack to scene flag and clear buffer
-     */
-    async commitHistory() {
-        if(this.historyBuffer.length == 0) return;
-        let history = canvas.scene.getFlag('simplefog', 'history');
-        if(!history) history = {
-            events: [],
-            pointer: 0,
-        };
-        history.events.push(this.historyBuffer);
-        history.events.pointer = history.events.length;
-        await canvas.scene.unsetFlag('simplefog', 'history');
-        await canvas.scene.setFlag('simplefog','history', history);
-        this.log(`Pushed ${this.historyBuffer.length} updates.`);
-        this.historyBuffer = [];
-    }
-
-    /**
      * Returns a blank PIXI Sprite of canvas dimensions
      */
     getCanvasSprite() {
@@ -180,6 +234,10 @@ export class SimpleFogLayer extends PlaceablesLayer {
         sprite.y = 0;
         return sprite;
     }
+
+    /* -------------------------------------------- */
+    /*  Getters and setters for layer props         */
+    /* -------------------------------------------- */
 
     /**
      * Returns the current scene tint applicable to the current user
@@ -249,6 +307,35 @@ export class SimpleFogLayer extends PlaceablesLayer {
         fill.drawRect(0,0, canvas.dimensions.width, canvas.dimensions.height);
         fill.endFill();
         this.composite(fill);
+    }
+
+    /**
+     * Toggles visibility of fog layer
+     */
+    toggle() {
+        if (canvas.scene.getFlag('simplefog','visible')) {
+            canvas.simplefog.visible = false;
+            canvas.scene.setFlag('simplefog','visible', false)
+        } else {
+            canvas.simplefog.visible = true;
+            canvas.scene.setFlag('simplefog','visible', true)
+        }
+    }
+
+    /* -------------------------------------------- */
+    /*  Event Listeners and Handlers                */
+    /* -------------------------------------------- */
+
+    /**
+     * Adds the mouse listeners to the simplefog layer
+     */
+    registerMouseListeners() {
+        this.removeAllListeners();
+        this.on('pointerdown', this.pointerDown);
+        this.on('pointerup', this.pointerUp);
+        this.on('pointermove', this.pointerMove);
+        this.dragging = false;
+        this.brushing = false;
     }
 
     /**
@@ -382,71 +469,6 @@ export class SimpleFogLayer extends PlaceablesLayer {
     deactivate() {
         super.deactivate();
         this.interactive = false;
-    }
-
-    /**
-     * Adds the mouse listeners to the simplefog layer
-     */
-    registerMouseListeners() {
-        this.removeAllListeners();
-        this.on('pointerdown', this.pointerDown);
-        this.on('pointerup', this.pointerUp);
-        this.on('pointermove', this.pointerMove);
-        this.dragging = false;
-        this.brushing = false;
-    }
-
-    /**
-     * Set up vars and initialize default values if needed
-     */
-    async initCanvasVars() {
-        // Check if simplefog is flagged visible
-        const v = canvas.scene.getFlag('simplefog', 'visible');
-        if (v) {
-            this.visible = true;
-        } else if (v == false) {
-            this.visible = false;
-        } else {
-            this.visible = false;
-            canvas.scene.setFlag('simplefog', 'visible', false);
-        }
-
-        // Set the history pointer
-        this.pointer = 0;
-
-        // Preview brush objects
-        this.boxPreview = this.brush({
-            shape: "box",
-            x: 0,
-            y: 0,
-            fill: previewFill,
-            width: 100,
-            height: 100,
-            alpha: previewAlpha,
-            visible: false
-        });
-        this.ellipsePreview = this.brush({
-            shape: "ellipse",
-            x: 0,
-            y: 0,
-            fill: previewFill,
-            width: 100,
-            height: 100,
-            alpha: previewAlpha,
-            visible: false
-        });
-        this.addChild(this.boxPreview);
-        this.addChild(this.ellipsePreview);
-
-        // Set default flags if they dont exist already
-        if (!canvas.scene.getFlag('simplefog', 'gmAlpha')) await canvas.scene.setFlag('simplefog', 'gmAlpha', gmAlphaDefault);
-        if (!canvas.scene.getFlag('simplefog', 'gmTint')) await canvas.scene.setFlag('simplefog', 'gmTint', gmTintDefault);
-        if (!canvas.scene.getFlag('simplefog', 'playerAlpha')) await canvas.scene.setFlag('simplefog', 'playerAlpha', playerAlphaDefault);
-        if (!canvas.scene.getFlag('simplefog', 'playerTint')) await canvas.scene.setFlag('simplefog', 'playerTint', playerTintDefault);
-        if (canvas.scene.getFlag('simplefog', 'transition') == undefined) await canvas.scene.setFlag('simplefog', 'transition', transitionDefault);
-        if (!canvas.scene.getFlag('simplefog', 'transitionSpeed')) await canvas.scene.setFlag('simplefog', 'transitionSpeed', transitionSpeedDefault);
-        if (!game.user.getFlag('simplefog', 'brushOpacity')) await game.user.setFlag('simplefog', 'brushOpacity', 0x000000);
-        if (!game.user.getFlag('simplefog', 'brushSize')) await game.user.setFlag('simplefog', 'brushSize', 50);
     }
 
     /**
