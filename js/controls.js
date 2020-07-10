@@ -87,7 +87,6 @@ Hooks.on("getSceneControlButtons", (controls) => {
 Hooks.on("renderSceneControls", (controls, domObj, scene) => {
   if(controls.activeControl == 'simplefog') {
     if($('#simplefog-brush-controls').length) return;
-    console.log('oops');
     new SimplefogBrushControls().render(true);
   } else {
     let sf = $('#simplefog-brush-controls');

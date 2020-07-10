@@ -7,7 +7,7 @@ const transitionSpeedDefault = 800;
 const previewFill = 0x00ffff;
 const previewAlpha = 0.4;
 
-export class SimpleFogLayer extends CanvasLayer {
+export class SimpleFogLayer extends PlaceablesLayer {
     constructor() {
         super();
         this.historyBuffer = [];
@@ -20,6 +20,14 @@ export class SimpleFogLayer extends CanvasLayer {
         this.log(`Canvas layer initialized`);
     }
   
+    static get layerOptions() {
+        return mergeObject(super.layerOptions, {
+            canDragCreate: false,
+            objectClass: Note,
+            sheetClass: NoteConfig
+        });
+    }
+
     /* -------------------------------------------- */
     /*  Init                                        */
     /* -------------------------------------------- */
