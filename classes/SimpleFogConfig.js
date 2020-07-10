@@ -76,25 +76,3 @@ function hexToWeb (n) {
     return n;
 }
 
-/**
- * Converts a base16 color to an integer percentage
- * @param n {Hex}               Base 16 Color, f.x. 0x000000
- * @return {Number}             f.x 0
- */
-function base16ToPercent (n) {
-    n = parseInt(n) / parseInt(0xFFFFFF); // Convert to decimal
-    n = Math.ceil(n*100);
-    return n;
-}
-
-/**
- * Converts an integer percent (0-100) to a base16 color
- * @param n {Number}            0-100 numeric input      
- * @return {Hex}                Base 16 format color, f.x. 0xFFFFFF        
- */
-function percentToBase16(n) {
-    n = n / 100; // Convert to decimal
-    n = Math.floor(n * parseInt(0xFFFFFF));
-    n = '0x' + n.toString(16);
-    return n;
-}

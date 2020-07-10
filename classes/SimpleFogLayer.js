@@ -27,7 +27,10 @@ export class SimpleFogLayer extends PlaceablesLayer {
             sheetClass: NoteConfig
         });
     }
-    
+
+    /**
+     * Called on canvas init, creates the canvas layers and various objects and registers listeners
+     */
     async canvasInit() {
         await this.initCanvasVars();
 
@@ -52,12 +55,19 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.renderStack();
     }
 
-    // Composites a given shape to the mask
+    /**
+     * Renders the given shape to the simplefog mask
+     * @param data {Object}       A collection of brush parameters
+     */
     composite(shape) {
         canvas.app.renderer.render(shape, this.simplefogmask, false, null, false);
     }
 
-    // Renders a stack of composite ops
+    /**
+     * Renders the history stack to the mask
+     * @param history {Array}       A collection of history events
+     * @param pointer {Number}      The position in the history stack to begin rendering from
+     */
     renderStack(history = canvas.scene.getFlag('simplefog', 'history'), pointer = this.pointer) {
         this.log(`Rendering from: ${pointer}`);
         // If history is blank, do nothing
@@ -76,7 +86,19 @@ export class SimpleFogLayer extends PlaceablesLayer {
         
     }
 
-    // Creates a PIXI brush out of the given data
+    /**
+     * Creates a PIXI graphic using the given brush parameters
+     * @param data {Object}       A collection of brush parameters
+     *  Example:
+     *      shape: "ellipse",
+     *      x: 0,
+     *      y: 0,
+     *      fill: 0x000000,
+     *      width: 50,
+     *      height: 50,
+     *      alpha: 1,
+     *      visible: true
+     */
     brush(data) {
         let brush = new PIXI.Graphics();
         brush.beginFill(data.fill);
@@ -91,15 +113,21 @@ export class SimpleFogLayer extends PlaceablesLayer {
         return brush;
     }
 
-    // Handler for drawing brush type data to mask
+    /**
+     * Gets a brush using the given parameters, renders it to the mask and saves the event to history
+     * @param data {Object}       A collection of brush parameters
+     * @param save {Boolean}      If true, will add the operation to the history buffer
+     */
     renderBrush(data, save = true) {
         let brush = this.brush(data);
         this.composite(brush)
         if (save) this.historyBuffer.push(data);
     }
 
-
-    // Resets all fog, if save is true, flush history also
+    /**
+     * Resets the fog of the current scene
+     * @param save {Boolean} If true, also resets the simplefog history
+     */
     resetFog(save = true) {
         this.setFill()
         if(save) {
@@ -175,7 +203,11 @@ export class SimpleFogLayer extends PlaceablesLayer {
         return alpha;
     }
 
-    // Sets alpha for the fog layer
+    /**
+     * Sets the alpha for the simplefog layer.
+     * @param alpha {Number} 0-1 opacity representation
+     * @param skip {Boolean} Optional override to skip using animated transition       
+     */
     async setAlpha(alpha, skip = false) {
         if (skip || !canvas.scene.getFlag('simplefog', 'transition')) this.fog.alpha = alpha;
         else {
@@ -211,7 +243,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
             shape: "ellipse",
             x: p.x,
             y: p.y,
-            fill: 0x000000,
+            fill: game.user.getFlag('simplefog', 'brushOpacity'),
             width: 50,
             height: 50,
             alpha: 1,
@@ -262,7 +294,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
                     width: p.x - this.dragStart.x,
                     height: p.y - this.dragStart.y,
                     visible: true,
-                    fill: 0x000000,
+                    fill: game.user.getFlag('simplefog', 'brushOpacity'),
                     alpha: 1,
                 });
                 this.boxPreview.visible = false;
@@ -337,7 +369,8 @@ export class SimpleFogLayer extends PlaceablesLayer {
         if (!canvas.scene.getFlag('simplefog', 'playerTint')) await canvas.scene.setFlag('simplefog', 'playerTint', playerTintDefault);
         if (canvas.scene.getFlag('simplefog', 'transition') == undefined) await canvas.scene.setFlag('simplefog', 'transition', transitionDefault);
         if (!canvas.scene.getFlag('simplefog', 'transitionSpeed')) await canvas.scene.setFlag('simplefog', 'transitionSpeed', transitionSpeedDefault);
-
+        if (!game.user.getFlag('simplefog', 'brushOpacity')) await game.user.setFlag('simplefog', 'brushOpacity', 1);
+        if (!game.user.getFlag('simplefog', 'brushSize')) await game.user.setFlag('simplefog', 'brushSize', 50);
     }
 
     log(string) {
