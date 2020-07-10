@@ -7,7 +7,7 @@ const transitionSpeedDefault = 800;
 const previewFill = 0x00ffff;
 const previewAlpha = 0.4;
 
-export class SimpleFogLayer extends PlaceablesLayer {
+export class SimpleFogLayer extends CanvasLayer {
     constructor() {
         super();
         this.historyBuffer = [];
@@ -20,14 +20,6 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.log(`Canvas layer initialized`);
     }
   
-    static get layerOptions() {
-        return mergeObject(super.layerOptions, {
-            canDragCreate: false,
-            objectClass: Note,
-            sheetClass: NoteConfig
-        });
-    }
-
     /* -------------------------------------------- */
     /*  Init                                        */
     /* -------------------------------------------- */
@@ -145,20 +137,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.log(`New pointer: ${this.pointer}`);
         
     }
-
-    /**
-     * Resets the fog of the current scene
-     * @param save {Boolean} If true, also resets the simplefog history
-     */
-    resetFog(save = true) {
-        this.setFill()
-        if(save) {
-            canvas.scene.unsetFlag('simplefog', 'history');
-            canvas.scene.setFlag('simplefog', 'history', { events: [], pointer: 0 });
-            this.pointer = 0;
-        }
-    }
-
+    
     /**
      * Add buffered history stack to scene flag and clear buffer
      */
@@ -176,6 +155,20 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.log(`Pushed ${this.historyBuffer.length} updates.`);
         this.historyBuffer = [];
     }
+
+    /**
+     * Resets the fog of the current scene
+     * @param save {Boolean} If true, also resets the simplefog history
+     */
+    resetFog(save = true) {
+        this.setFill()
+        if(save) {
+            canvas.scene.unsetFlag('simplefog', 'history');
+            canvas.scene.setFlag('simplefog', 'history', { events: [], pointer: 0 });
+            this.pointer = 0;
+        }
+    }
+
 
     /* -------------------------------------------- */
     /*  Shapes, sprites and PIXI objs               */
@@ -370,6 +363,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
             this.ellipsePreview.height = (p.y - this.dragStart.y)*2;
         }
     }
+
     pointerDown(event) {
         // Only react on left mouse button
         if (event.data.button === 0) {
@@ -409,6 +403,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
             }
         }
     }
+
     pointerUp(event) {
         // Only react to left mouse button
         if (event.data.button == 0) {
