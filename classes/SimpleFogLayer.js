@@ -4,6 +4,8 @@ const playerAlphaDefault = 1;
 const playerTintDefault = '0x000000';
 const transitionDefault = true;
 const transitionSpeedDefault = 800;
+const previewFill = 0x97bdc4;
+const previewAlpha = 0.4;
 
 export class SimpleFogLayer extends PlaceablesLayer {
     constructor() {
@@ -42,7 +44,6 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.setFill();
         this.setAlpha(this.getAlpha(), true);
 
-        this.addChild(this.boxPreview);
 
         // Register mouse event listerenrs
         this.registerMouseListeners();
@@ -75,67 +76,25 @@ export class SimpleFogLayer extends PlaceablesLayer {
         
     }
 
-    // Pixi graphic for round brush
-    circleBrush(preview = false) {
+    // Creates a PIXI brush out of the given data
+    brush(data) {
         let brush = new PIXI.Graphics();
-        brush.beginFill(0x000000);
-        brush.drawCircle(0, 0, 50);
+        brush.beginFill(data.fill);
+        if(data.shape == "ellipse") brush.drawEllipse(0, 0, data.width, data.height);
+        else if(data.shape == "box") brush.drawRect(0, 0, data.width, data.height);
+        else if(data.shape == "roundedRect") brush.drawRoundedRect(0, 0, data.width, data.height, 10);
         brush.endFill();
-        if(preview) {
-            brush.lineStyle(1, 0xFF0000);
-            brush.visible = true;
-        }
-        return brush;
-    }
-
-    // Pixi graphic for box brush
-    boxBrush(preview = false) {
-        let brush = new PIXI.Graphics();
-        if(preview) {
-            brush.visible = false;
-            brush.beginFill(0x97bdc4);
-            brush.alpha = 0.4;
-        }
-        else brush.beginFill(0x000000);
-        brush.drawRect(0, 0, 100, 100);
-        brush.endFill();
-        return brush;
-    }
-
-    // Pixi graphic for rounded rectangle brush
-    roundedRectBrush(preview = false) {
-        let brush = new PIXI.Graphics();
-        brush.beginFill(0x000000);
-        brush.drawRoundedRect(0, 0, 100, 100, 10);
-        brush.endFill();
-        if(preview) {
-            brush.lineStyle(1, 0xFF0000);
-            brush.visible = false;
-        }
+        brush.alpha = data.alpha;
+        brush.visible = data.visible;
+        brush.x = data.x;
+        brush.y = data.y;
         return brush;
     }
 
     // Handler for drawing brush type data to mask
     renderBrush(data, save = true) {
-        if(data.type == "circle") {
-            this.circle.position.x = data.x;
-            this.circle.position.y = data.y;
-            if (this.circle.curSize != data.size) {
-                // change size
-            }
-            if (this.circle.curAlpha != data.alpha) {
-                // change alpha
-            }
-            this.composite(this.circle)
-        }
-        if(data.type == "box") {
-            this.box.position.x = data.x;
-            this.box.position.y = data.y;
-            this.box.width = data.width;
-            this.box.height = data.height;
-            this.composite(this.box);
-        }
-
+        let brush = this.brush(data);
+        this.composite(brush)
         if (save) this.historyBuffer.push(data);
     }
 
@@ -249,11 +208,14 @@ export class SimpleFogLayer extends PlaceablesLayer {
     pointerMove(event) {
         let p = event.data.getLocalPosition(canvas.app.stage);
         if (this.op == 'brushing') this.renderBrush({
-            type: 'circle',
+            shape: "ellipse",
             x: p.x,
             y: p.y,
-            size: 0,
-            alpha: 0x000000
+            fill: 0x000000,
+            width: 50,
+            height: 50,
+            alpha: 1,
+            visible: true
         });
         else if (this.op == 'boxing') {
             // update preview box
@@ -281,7 +243,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
                 this.boxPreview.x = p.x;
                 this.boxPreview.y = p.y;
             }
-            else if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "circle") {
+            else if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "ellipse") {
 
             }
             else if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "poly") {
@@ -290,16 +252,18 @@ export class SimpleFogLayer extends PlaceablesLayer {
         }
     }
     pointerUp(event) {
-        console.log(event);
         if (event.data.button == 0) {
             let p = event.data.getLocalPosition(canvas.app.stage);
             if (this.op == 'boxing') {
                 this.renderBrush({
-                    type: 'box',
+                    shape: 'box',
                     x: this.dragStart.x,
                     y: this.dragStart.y,
                     width: p.x - this.dragStart.x,
-                    height: p.y - this.dragStart.y
+                    height: p.y - this.dragStart.y,
+                    visible: true,
+                    fill: 0x000000,
+                    alpha: 1,
                 });
                 this.boxPreview.visible = false;
                 this.boxPreview.width = 0;
@@ -341,17 +305,30 @@ export class SimpleFogLayer extends PlaceablesLayer {
             canvas.scene.setFlag('simplefog', 'visible', false);
         }
 
-        // Create drawing shapes
-        this.circle = this.circleBrush();
-        this.box = this.boxBrush();
-        this.roundedRect = this.roundedRectBrush();
-
-        this.circlePreview = this.circleBrush(true);
-        this.boxPreview = this.boxBrush(true);
-        this.roundedRectPreview = this.roundedRectBrush(true);
-
         // Set the history pointer
         this.pointer = 0;
+
+        // Preview brush objects
+        this.boxPreview = this.brush({
+            shape: "box",
+            x: 0,
+            y: 0,
+            fill: previewFill,
+            width: 100,
+            height: 100,
+            alpha: previewAlpha,
+            visible: true});
+        this.ellipsePreview = this.brush({
+            shape: "ellipse",
+            x: 0,
+            y: 0,
+            fill: previewFill,
+            width: 0,
+            height: 0,
+            alpha: previewAlpha,
+            visible: true});
+        this.addChild(this.boxPreview);
+        this.addChild(this.ellipsePreview);
 
         // Set default flags if not exist already
         if (!canvas.scene.getFlag('simplefog', 'gmAlpha')) await canvas.scene.setFlag('simplefog', 'gmAlpha', gmAlphaDefault);

@@ -3,6 +3,7 @@ Lets you draw fog of war manually
 
 # todo
 - Brush sizes
+- Brush/tool + - & .5
 - ~~Handle canvas resize~~
 - ~~Fog Color & Opacity~~
 - ~~Box Shape~~
@@ -19,7 +20,10 @@ Lets you draw fog of war manually
 - Core fog sync option(?) (Clamp lighting mask?)
 - Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay
 - allow cancel of current drawing via right click while dragging ?
+- blur / sepia / monochrome filters?
+- mouse cursor tool indications
 - documentation
 
 # bugs
 - bug when activating scene with no player token
+- brush controls should disappear when switching back to other tools
