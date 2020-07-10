@@ -244,8 +244,8 @@ export class SimpleFogLayer extends PlaceablesLayer {
             x: p.x,
             y: p.y,
             fill: game.user.getFlag('simplefog', 'brushOpacity'),
-            width: 50,
-            height: 50,
+            width: game.user.getFlag('simplefog', 'brushSize'),
+            height: game.user.getFlag('simplefog', 'brushSize'),
             alpha: 1,
             visible: true
         });

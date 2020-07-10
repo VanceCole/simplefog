@@ -7,7 +7,6 @@ export class SimplefogBrushControls extends FormApplication {
             submitOnClose: true,
             popOut: false,
             editable: game.user.isGM,
-            width: 400,
             template: "modules/simplefog/templates/brush-controls.html",
             id: "filter-config",
             title: game.i18n.localize("Simplefog Options"),
