@@ -2,8 +2,8 @@
 Lets you draw fog of war manually
 
 # todo
-- Brush sizes
-- Brush/tool + - & .5
+- ~~Brush sizes~~
+- ~~Brush/tool + - & .5~~
 - ~~Handle canvas resize~~
 - ~~Fog Color & Opacity~~
 - ~~Box Shape~~
@@ -26,4 +26,3 @@ Lets you draw fog of war manually
 
 # bugs
 - bug when activating scene with no player token
-- brush controls should disappear when switching back to other tools

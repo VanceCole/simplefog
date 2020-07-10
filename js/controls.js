@@ -1,6 +1,9 @@
 import { SimplefogConfig } from "../classes/SimpleFogConfig.js";
 import { SimplefogBrushControls } from "../classes/SimpleFogBrushControls.js";
 
+/**
+ * Add control buttons
+ */
 Hooks.on("getSceneControlButtons", (controls) => {
   if (game.user.isGM) {
     controls.push({
@@ -38,8 +41,8 @@ Hooks.on("getSceneControlButtons", (controls) => {
           icon: "far fa-square",
         },
         {
-          name: "circle",
-          title: "Circle Tool",
+          name: "ellipse",
+          title: "Ellipse Tool",
           icon: "far fa-circle",
         },
         {
@@ -48,8 +51,8 @@ Hooks.on("getSceneControlButtons", (controls) => {
           icon: "far fa-image",
         },
         {
-          name: "colorize",
-          title: "CONTROLS.Colorize",
+          name: "sceneConfig",
+          title: "Scene Configuration",
           icon: "fas fa-cog",
           onClick: () => {
             new SimplefogConfig().render(true);
@@ -78,6 +81,9 @@ Hooks.on("getSceneControlButtons", (controls) => {
   }
 });
 
+/**
+ * Handles adding the custom brush controls pallet
+ */
 Hooks.on("renderSceneControls", (controls, domObj, scene) => {
   if(controls.activeControl == 'simplefog') {
     if($('#simplefog-brush-controls').length) return;
