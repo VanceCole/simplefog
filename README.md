@@ -10,7 +10,7 @@ Lets you draw fog of war manually
 - ~~Circle Shape~~
 - Poly Shape
 - Image based fog import
-- Undo
+- ~~Undo~~
 - Hide token cursors under fog(?)
 - Grid snap brush
 - ~~Optimization~~
@@ -23,6 +23,7 @@ Lets you draw fog of war manually
 - blur / sepia / monochrome filters?
 - mouse cursor tool indications
 - documentation
+- shift / ctrl shape tool modifiers
 
 # bugs
 - bug when activating scene with no player token
