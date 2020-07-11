@@ -397,6 +397,30 @@ export class SimpleFogLayer extends PlaceablesLayer {
             this.ellipsePreview.width = (p.x - this.dragStart.x)*2;
             this.ellipsePreview.height = (p.y - this.dragStart.y)*2;
         }
+        else if (this.op == 'grid') {
+            if (canvas.scene.data.gridType == 1) {
+                const grid = canvas.scene.data.grid;
+                const gridx = Math.floor(p.x / grid);
+                const gridy = Math.floor(p.y / grid);
+                const x = gridx * grid;
+                const y = gridy * grid;
+                if(!this.gridMatrix[gridx][gridy]) {
+                    this.gridMatrix[gridx][gridy] = 1;
+                    this.boxPreview.x = x;
+                    this.boxPreview.y = y;
+                    this.renderBrush({
+                        shape: 'box',
+                        x: x,
+                        y: y,
+                        width: grid,
+                        height: grid,
+                        visible: true,
+                        fill: game.user.getFlag('simplefog', 'brushOpacity'),
+                        alpha: 1,
+                    });
+                }
+            }
+        }
     }
 
     pointerDown(event) {
@@ -411,7 +435,14 @@ export class SimpleFogLayer extends PlaceablesLayer {
             }
             // Grid tool
             else if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "grid") {
-
+                this.op = 'grid';
+                const grid = canvas.scene.data.grid;
+                const width = canvas.dimensions.width;
+                const height = canvas.dimensions.height;
+                this.boxPreview.visible = true;
+                this.boxPreview.width = grid;
+                this.boxPreview.height = grid;
+                this.gridMatrix = new Array(Math.ceil(width / grid)).fill(0).map(() => new Array(Math.ceil(height / grid)).fill(0));
             }
             // Drag box tool
             else if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "box") {
@@ -476,6 +507,13 @@ export class SimpleFogLayer extends PlaceablesLayer {
                 this.ellipsePreview.visible = false;
                 this.ellipsePreview.width = 0;
                 this.ellipsePreview.height = 0;
+            }
+
+            // Grid tool
+            if (this.op == 'grid') {
+                this.boxPreview.visible = false;
+                this.boxPreview.width = 0;
+                this.boxPreview.height = 0;
             }
             // Reset operation
             this.op = false;
