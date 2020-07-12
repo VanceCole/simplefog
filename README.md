@@ -12,7 +12,8 @@ Lets you draw fog of war manually
 - Image based fog import
 - ~~Undo~~
 - Hide token cursors under fog(?)
-- Grid snap brush
+- ~~Grid snap brush~~
+- ~~Hex grid snap brush~~
 - ~~Optimization~~
 - Brush Smoothing / Interpolation
 - Allow custom default tint/opacity
@@ -27,3 +28,4 @@ Lets you draw fog of war manually
 
 # bugs
 - bug when activating scene with no player token
+- sometimes hex grid tool stops drawing certain hexes

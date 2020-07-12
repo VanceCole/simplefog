@@ -30,8 +30,12 @@ Hooks.on("updateScene", (scene, data, options) => {
     }
 
     // React to composite history change
+    if (hasProperty(data, "flags.simplefog.blur")) {
+        canvas.simplefog.setBlur(data.flags.simplefog.blur);
+    }
+
+    // React to composite history change
     if (hasProperty(data, "flags.simplefog.history")) {
-        console.log(data.flags.simplefog.history.pointer);
         canvas.simplefog.renderStack(data.flags.simplefog.history);
     }
 

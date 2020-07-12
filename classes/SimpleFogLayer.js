@@ -1,3 +1,5 @@
+import { Hex, Point, Layout, Orientation } from "../libs/hexagons.js";
+
 const gmAlphaDefault = 0.6;
 const gmTintDefault = '0x000000';
 const playerAlphaDefault = 1;
@@ -12,10 +14,13 @@ export class SimpleFogLayer extends PlaceablesLayer {
         super();
         this.historyBuffer = [];
         this.pointer = 0;
+        this.gridLayout;
         this.dragStart = {
             x: 0,
             y: 0
         };
+        window.offx = 0;
+        window.offy = 0;
         this.debug = true;
         this.log(`Canvas layer initialized`);
     }
@@ -42,6 +47,11 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.fog = this.getCanvasSprite();
         this.setTint(this.getTint());
         this.addChild(this.fog);
+
+        // Filters
+        const blur = new PIXI.filters.BlurFilter();
+        blur.blur = 0;
+        this.fog.filters = [ blur ];
 
         // Create the mask elements for the fog
         this.simplefogmask = PIXI.RenderTexture.create({ width: canvas.dimensions.width, height: canvas.dimensions.height});
@@ -136,7 +146,6 @@ export class SimpleFogLayer extends PlaceablesLayer {
         // If history is zero, reset scene fog
         if(history.events.length == 0) this.resetFog(false);
         if(stop === null) stop = history.pointer;
-        console.log(`Stop: ${stop}, Pointer: ${this.pointer}`);
         if(stop <= this.pointer) {
             this.resetFog(false);
             start = 0;
@@ -151,7 +160,6 @@ export class SimpleFogLayer extends PlaceablesLayer {
         }
         // Update pointer
         this.pointer = stop;
-        this.log(`New pointer: ${this.pointer}`);
         
     }
     
@@ -187,6 +195,10 @@ export class SimpleFogLayer extends PlaceablesLayer {
         }
     }
 
+    /**
+     * Steps the history buffer back X steps and redraws
+     * @param steps {Integer} Number of steps to undo, default 1
+     */
     async undo(steps = 1) {
         if (this.debug) this.log(`Undoing ${steps} steps.`);
         this.pointer = this.pointer - steps;
@@ -223,6 +235,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
         if(data.shape == "ellipse") brush.drawEllipse(0, 0, data.width, data.height);
         else if(data.shape == "box") brush.drawRect(0, 0, data.width, data.height);
         else if(data.shape == "roundedRect") brush.drawRoundedRect(0, 0, data.width, data.height, 10);
+        else if(data.shape == "polygon") brush.drawPolygon(data.vertices);
         brush.endFill();
         brush.alpha = data.alpha;
         brush.visible = data.visible;
@@ -319,6 +332,22 @@ export class SimpleFogLayer extends PlaceablesLayer {
     }
 
     /**
+     * Converts an object containing coordinate pair arrays into a single array of points for PIXI
+     * @param hex {Object}  An object containing a set of [x,y] pairs
+     */
+    hexObjsToArr(hex) {
+        let a = [];
+        hex.forEach(point => {
+            a.push(point.x);
+            a.push(point.y);
+        });
+        // Append first point to end of array to complete the shape
+        a.push(hex[0].x);
+        a.push(hex[0].y);
+        return a;
+    }
+
+    /**
      * Fills the simplefog mask layer with solid white
      */
     setFill() {
@@ -358,8 +387,12 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.brushing = false;
     }
 
+    /**
+     * Adds the keyboard listeners to the simplefog layer
+     */
     registerKeyboardListeners() {
         $(document).keydown(function(e) {
+            if (ui.controls.activeControl !== "simplefog") return;
             if (e.which === 90 && e.ctrlKey) {
                 canvas.simplefog.undo();
             }
@@ -398,12 +431,13 @@ export class SimpleFogLayer extends PlaceablesLayer {
             this.ellipsePreview.height = (p.y - this.dragStart.y)*2;
         }
         else if (this.op == 'grid') {
+            // Square grid
             if (canvas.scene.data.gridType == 1) {
-                const grid = canvas.scene.data.grid;
                 const gridx = Math.floor(p.x / grid);
                 const gridy = Math.floor(p.y / grid);
                 const x = gridx * grid;
                 const y = gridy * grid;
+                // Check if this grid was already drawn
                 if(!this.gridMatrix[gridx][gridy]) {
                     this.gridMatrix[gridx][gridy] = 1;
                     this.boxPreview.x = x;
@@ -420,7 +454,47 @@ export class SimpleFogLayer extends PlaceablesLayer {
                     });
                 }
             }
+
+            // Hexagonal grids
+            else if ([2,3,4,5].includes(canvas.scene.data.gridType)) {
+                let qr = this.gridLayout.pixelToHex(p);
+                const gridq = Math.ceil(qr.q - 0.5);
+                const gridr = Math.ceil(qr.r - 0.5);
+                // Check if this grid was already drawn
+                if(!this.doesArrayOfArraysContainArray(this.gridMatrix, [gridq, gridr])) {
+                    const vertices = this.gridLayout.polygonCorners({q: gridq, r: gridr});
+                    const arr = this.hexObjsToArr(vertices);
+                    this.renderBrush({
+                        shape: 'polygon',
+                        vertices: arr,
+                        x: 0,
+                        y: 0,
+                        visible: true,
+                        fill: game.user.getFlag('simplefog', 'brushOpacity'),
+                        alpha: 1,
+                    });
+                    this.gridMatrix.push([gridr, gridq]);
+                }
+            }
         }
+    }
+
+    /**
+     * Checks if an array of arrays contains an equivalent to the given array
+     * @param arrayOfArrays {Array} Haystack
+     * @param array {Array}         Needle       
+     */
+    doesArrayOfArraysContainArray(arrayOfArrays, array){
+        var aOA = arrayOfArrays.map(function(arr) {
+            return arr.slice();
+        });
+        var a = array.slice(0);
+        for(let i=0; i<aOA.length; i++){
+            if(aOA[i].sort().join(',') === a.sort().join(',')){
+            return true;
+            }
+        }
+        return false;
     }
 
     pointerDown(event) {
@@ -442,7 +516,26 @@ export class SimpleFogLayer extends PlaceablesLayer {
                 this.boxPreview.visible = true;
                 this.boxPreview.width = grid;
                 this.boxPreview.height = grid;
-                this.gridMatrix = new Array(Math.ceil(width / grid)).fill(0).map(() => new Array(Math.ceil(height / grid)).fill(0));
+                if(canvas.scene.data.gridType == 1) {
+                    this.gridMatrix = new Array(Math.ceil(width / grid)).fill(0).map(() => new Array(Math.ceil(height / grid)).fill(0));
+                }
+                else if(canvas.scene.data.gridType == 2) {
+                    this.gridMatrix = [];
+                    this.gridLayout = new Layout(Layout.pointy, {x:grid/2, y:grid/2}, {x: 0, y: grid / 2});
+                }
+                else if(canvas.scene.data.gridType == 3) {
+                    this.gridMatrix = [];
+                    this.gridLayout = new Layout(Layout.pointy, {x:grid/2, y:grid/2}, {x: Math.sqrt(3) * grid / 4, y: grid / 2});
+                }
+                else if(canvas.scene.data.gridType == 4) {
+                    this.gridMatrix = [];
+                    this.gridLayout = new Layout(Layout.flat, {x:grid/2, y:grid/2}, {x: grid / 2, y: 0});
+                }
+                else if(canvas.scene.data.gridType == 5) {
+                    this.gridMatrix = [];
+                    this.gridLayout = new Layout(Layout.flat, {x:grid/2, y:grid/2}, {x: grid / 2, y: Math.sqrt(3) * grid / 4});
+                }
+            
             }
             // Drag box tool
             else if (ui.controls.controls.find( n => n.name == "simplefog" ).activeTool == "box") {
