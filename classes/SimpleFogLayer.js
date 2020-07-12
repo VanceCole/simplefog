@@ -8,6 +8,9 @@ const transitionDefault = true;
 const transitionSpeedDefault = 800;
 const previewFill = 0x00ffff;
 const previewAlpha = 0.4;
+const defaultBlurRadius = 0;
+const defaultBlurQuality = 2;
+const defaultBrushSize = 50;
 
 export class SimpleFogLayer extends PlaceablesLayer {
     constructor() {
@@ -49,9 +52,13 @@ export class SimpleFogLayer extends PlaceablesLayer {
         this.addChild(this.fog);
 
         // Filters
-        const blur = new PIXI.filters.BlurFilter();
-        blur.blur = 0;
-        this.fog.filters = [ blur ];
+        this.blur = new PIXI.filters.BlurFilter();
+        //this.blur.autoFit = false;
+        this.blur.padding = 100;
+        this.blur.repeatEdgePixels = true;
+        this.fog.filters = [ this.blur ];
+        this.setBlurRadius(this.getBlurRadius());
+        this.setBlurQuality(this.getBlurQuality());
 
         // Create the mask elements for the fog
         this.simplefogmask = PIXI.RenderTexture.create({ width: canvas.dimensions.width, height: canvas.dimensions.height});
@@ -119,7 +126,9 @@ export class SimpleFogLayer extends PlaceablesLayer {
         if (canvas.scene.getFlag('simplefog', 'transition') == undefined) await canvas.scene.setFlag('simplefog', 'transition', transitionDefault);
         if (!canvas.scene.getFlag('simplefog', 'transitionSpeed')) await canvas.scene.setFlag('simplefog', 'transitionSpeed', transitionSpeedDefault);
         if (!game.user.getFlag('simplefog', 'brushOpacity')) await game.user.setFlag('simplefog', 'brushOpacity', 0x000000);
-        if (!game.user.getFlag('simplefog', 'brushSize')) await game.user.setFlag('simplefog', 'brushSize', 50);
+        if (!game.user.getFlag('simplefog', 'brushSize')) await game.user.setFlag('simplefog', 'brushSize', defaultBrushSize);
+        if (!game.user.getFlag('simplefog', 'blurRadius')) await game.user.setFlag('simplefog', 'blurRadius', defaultBlurRadius);
+        if (!game.user.getFlag('simplefog', 'blurQuality')) await game.user.setFlag('simplefog', 'blurQuality', defaultBlurQuality);
     }
 
     /* -------------------------------------------- */
@@ -291,6 +300,28 @@ export class SimpleFogLayer extends PlaceablesLayer {
      */
     setTint(tint) {
         this.fog.tint = tint;
+    }
+
+    getBlurRadius() {
+        let blur;
+        blur = canvas.scene.getFlag('simplefog', 'blurRadius');
+        if (!blur) blur = defaultBlurRadius; 
+        return blur;
+    }
+    
+    setBlurRadius(r) {
+        this.blur.blur = r;
+    }
+
+    getBlurQuality() {
+        let qual;
+        qual = canvas.scene.getFlag('simplefog', 'blurQuality');
+        if (!qual) qual = defaultBlurQuality; 
+        return qual;
+    }
+    
+    setBlurQuality(q) {
+        this.blur.quality = q;
     }
 
     /**

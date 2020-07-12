@@ -29,6 +29,8 @@ export class SimplefogConfig extends FormApplication {
         playerTint: hexToWeb(canvas.scene.getFlag('simplefog', 'playerTint')),
         transition: canvas.scene.getFlag('simplefog', 'transition'),
         transitionSpeed: canvas.scene.getFlag('simplefog', 'transitionSpeed'),
+        blurRadius: canvas.scene.getFlag('simplefog', 'blurRadius'),
+        blurQuality: canvas.scene.getFlag('simplefog', 'blurQuality'),
     };
   }
 
@@ -54,6 +56,8 @@ export class SimplefogConfig extends FormApplication {
         canvas.scene.setFlag('simplefog', 'playerTint', webToHex(formData.playerTint));
         canvas.scene.setFlag('simplefog', 'transition', formData.transition);
         canvas.scene.setFlag('simplefog', 'transitionSpeed', formData.transitionSpeed);
+        canvas.scene.setFlag('simplefog', 'blurRadius', formData.blurRadius);
+        canvas.scene.setFlag('simplefog', 'blurQuality', formData.blurQuality);
     }
 }
 

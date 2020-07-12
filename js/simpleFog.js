@@ -24,14 +24,19 @@ Hooks.on("canvasReady", (_) => {
  * React to changes to current scene
  */
 Hooks.on("updateScene", (scene, data, options) => {
+    if(!scene.data.active) return;
     // React to visibility change
     if (hasProperty(data, "flags.simplefog.visible")) {
         canvas.simplefog.visible = data.flags.simplefog.visible;
     }
 
     // React to composite history change
-    if (hasProperty(data, "flags.simplefog.blur")) {
-        canvas.simplefog.setBlur(data.flags.simplefog.blur);
+    if (hasProperty(data, "flags.simplefog.blurRadius")) {
+        canvas.simplefog.setBlurRadius(data.flags.simplefog.blurRadius);
+    }
+    // React to composite history change
+    if (hasProperty(data, "flags.simplefog.blurQuality")) {
+        canvas.simplefog.setBlurQuality(data.flags.simplefog.blurQuality);
     }
 
     // React to composite history change
