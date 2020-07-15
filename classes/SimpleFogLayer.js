@@ -54,16 +54,18 @@ export class SimpleFogLayer extends PlaceablesLayer {
         // Filters
         this.blur = new PIXI.filters.BlurFilter();
         //this.blur.autoFit = false;
-        this.blur.padding = 100;
+        this.blur.padding = 0;
         this.blur.repeatEdgePixels = true;
-        this.fog.filters = [ this.blur ];
         this.setBlurRadius(this.getBlurRadius());
         this.setBlurQuality(this.getBlurQuality());
 
         // Create the mask elements for the fog
         this.simplefogmask = PIXI.RenderTexture.create({ width: canvas.dimensions.width, height: canvas.dimensions.height});
         const maskSprite = new PIXI.Sprite(this.simplefogmask);
+
+
         this.fog.mask = maskSprite;
+        this.filters = [ this.blur ];
         this.addChild(maskSprite);
         this.setFill();
         this.setAlpha(this.getAlpha(), true);
@@ -462,6 +464,7 @@ export class SimpleFogLayer extends PlaceablesLayer {
             this.ellipsePreview.height = (p.y - this.dragStart.y)*2;
         }
         else if (this.op == 'grid') {
+            const grid = canvas.scene.data.grid;
             // Square grid
             if (canvas.scene.data.gridType == 1) {
                 const gridx = Math.floor(p.x / grid);
@@ -508,24 +511,6 @@ export class SimpleFogLayer extends PlaceablesLayer {
                 }
             }
         }
-    }
-
-    /**
-     * Checks if an array of arrays contains an equivalent to the given array
-     * @param arrayOfArrays {Array} Haystack
-     * @param array {Array}         Needle       
-     */
-    doesArrayOfArraysContainArray(arrayOfArrays, array){
-        var aOA = arrayOfArrays.map(function(arr) {
-            return arr.slice();
-        });
-        var a = array.slice(0);
-        for(let i=0; i<aOA.length; i++){
-            if(aOA[i].sort().join(',') === a.sort().join(',')){
-            return true;
-            }
-        }
-        return false;
     }
 
     pointerDown(event) {
@@ -645,6 +630,24 @@ export class SimpleFogLayer extends PlaceablesLayer {
             // Push the history buffer
             this.commitHistory();
         }
+    }
+
+    /**
+     * Checks if an array of arrays contains an equivalent to the given array
+     * @param arrayOfArrays {Array} Haystack
+     * @param array {Array}         Needle       
+     */
+    doesArrayOfArraysContainArray(arrayOfArrays, array){
+        var aOA = arrayOfArrays.map(function(arr) {
+            return arr.slice();
+        });
+        var a = array.slice(0);
+        for(let i=0; i<aOA.length; i++){
+            if(aOA[i].sort().join(',') === a.sort().join(',')){
+            return true;
+            }
+        }
+        return false;
     }
 
     /**

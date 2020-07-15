@@ -1,5 +1,5 @@
-import { SimplefogConfig } from "../classes/SimpleFogConfig.js";
-import { SimplefogBrushControls } from "../classes/SimpleFogBrushControls.js";
+import { SimplefogConfig } from "../classes/SimplefogConfig.js";
+import { SimplefogBrushControls } from "../classes/SimplefogBrushControls.js";
 
 /**
  * Add control buttons

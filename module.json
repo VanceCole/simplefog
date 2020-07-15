@@ -9,7 +9,7 @@
   "esmodules": [
     "js/simplefog.js",
     "js/controls.js",
-    "classes/SimpleFogLayer.js"
+    "classes/SimplefogLayer.js"
   ],
   "styles": [
     "css/brush-controls.css"

@@ -24,7 +24,8 @@ Hooks.on("canvasReady", (_) => {
  * React to changes to current scene
  */
 Hooks.on("updateScene", (scene, data, options) => {
-    if(!scene.data.active) return;
+    console.log(scene);
+    if(scene.data._view) return;
     // React to visibility change
     if (hasProperty(data, "flags.simplefog.visible")) {
         canvas.simplefog.visible = data.flags.simplefog.visible;
