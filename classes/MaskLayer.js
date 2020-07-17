@@ -61,8 +61,8 @@ export class MaskLayer extends PlaceablesLayer {
         this.filters = [ this.blur ];
 
         // Create the mask elements
-        this.simplefogmask = PIXI.RenderTexture.create({ width: canvas.dimensions.width, height: canvas.dimensions.height});
-        const maskSprite = new PIXI.Sprite(this.simplefogmask);
+        this.masktexture = PIXI.RenderTexture.create({ width: canvas.dimensions.width, height: canvas.dimensions.height});
+        const maskSprite = new PIXI.Sprite(this.masktexture);
         this.layer.mask = maskSprite;
         this.addChild(maskSprite);
         this.setFill();
@@ -83,34 +83,34 @@ export class MaskLayer extends PlaceablesLayer {
             if(scene.data._view) return;
             // React to visibility change
             if (hasProperty(data, `flags.${this.layername}.visible`)) {
-                canvas[this.layername].visible = data.flags.simplefog.visible;
+                canvas[this.layername].visible = data.flags[this.layername].visible;
             }
 
             // React to composite history change
             if (hasProperty(data, `flags.${this.layername}.blurRadius`)) {
-                canvas[this.layername].setBlurRadius(data.flags.simplefog.blurRadius);
+                canvas[this.layername].setBlurRadius(data.flags[this.layername].blurRadius);
             }
             // React to composite history change
             if (hasProperty(data, `flags.${this.layername}.blurQuality`)) {
-                canvas[this.layername].setBlurQuality(data.flags.simplefog.blurQuality);
+                canvas[this.layername].setBlurQuality(data.flags[this.layername].blurQuality);
             }
 
             // React to composite history change
             if (hasProperty(data, `flags.${this.layername}.history`)) {
-                canvas[this.layername].renderStack(data.flags.simplefog.history);
+                canvas[this.layername].renderStack(data.flags[this.layername].history);
             }
 
             // React to alpha/tint changes
             if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerAlpha`)) {
-                canvas[this.layername].setAlpha(data.flags.simplefog.playerAlpha);
+                canvas[this.layername].setAlpha(data.flags[this.layername].playerAlpha);
                 canvas[this.layername].renderStack();
             }
             if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmAlpha`)) {
-                canvas[this.layername].setAlpha(data.flags.simplefog.gmAlpha);
+                canvas[this.layername].setAlpha(data.flags[this.layername].gmAlpha);
                 canvas[this.layername].renderStack();
             }
-            if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerTint`)) canvas[this.layername].setTint(data.flags.simplefog.playerTint);
-            if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmTint`)) canvas[this.layername].setTint(data.flags.simplefog.gmTint);
+            if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerTint`)) canvas[this.layername].setTint(data.flags[this.layername].playerTint);
+            if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmTint`)) canvas[this.layername].setTint(data.flags[this.layername].gmTint);
         });
 
     }
@@ -119,7 +119,7 @@ export class MaskLayer extends PlaceablesLayer {
      * Set up vars and initialize default values if needed
      */
     async initCanvasVars() {
-        // Check if simplefog is flagged visible
+        // Check if masklayer is flagged visible
         const v = canvas.scene.getFlag(this.layername, 'visible');
         if (v) {
             this.visible = true;
@@ -175,11 +175,11 @@ export class MaskLayer extends PlaceablesLayer {
     /* -------------------------------------------- */
 
     /**
-     * Renders the given shape to the simplefog mask
+     * Renders the given shape to the layer mask
      * @param data {Object}       A collection of brush parameters
      */
     composite(shape) {
-        canvas.app.renderer.render(shape, this.simplefogmask, false, null, false);
+        canvas.app.renderer.render(shape, this.masktexture, false, null, false);
     }
 
     /**
@@ -232,7 +232,7 @@ export class MaskLayer extends PlaceablesLayer {
 
     /**
      * Resets the fog of the current scene
-     * @param save {Boolean} If true, also resets the simplefog history
+     * @param save {Boolean} If true, also resets the layer history
      */
     resetFog(save = true) {
         this.setFill()
@@ -335,7 +335,7 @@ export class MaskLayer extends PlaceablesLayer {
     }
 
     /**
-     * Sets the scene's tint value for the simplefog layer
+     * Sets the scene's tint value for the primary layer
      */
     setTint(tint) {
         this.layer.tint = tint;
@@ -378,7 +378,7 @@ export class MaskLayer extends PlaceablesLayer {
     }
 
     /**
-     * Sets the scene's alpha for the simplefog layer.
+     * Sets the scene's alpha for the primary layer.
      * @param alpha {Number} 0-1 opacity representation
      * @param skip {Boolean} Optional override to skip using animated transition       
      */
@@ -418,7 +418,7 @@ export class MaskLayer extends PlaceablesLayer {
     }
 
     /**
-     * Fills the simplefog mask layer with solid white
+     * Fills the mask layer with solid white
      */
     setFill() {
         const fill = new PIXI.Graphics();
@@ -429,7 +429,7 @@ export class MaskLayer extends PlaceablesLayer {
     }
 
     /**
-     * Toggles visibility of fog layer
+     * Toggles visibility of primary layer
      */
     toggle() {
         if (canvas.scene.getFlag(this.layername,'visible')) {
@@ -446,7 +446,7 @@ export class MaskLayer extends PlaceablesLayer {
     /* -------------------------------------------- */
 
     /**
-     * Adds the mouse listeners to the simplefog layer
+     * Adds the mouse listeners to the layer
      */
     registerMouseListeners() {
         this.removeAllListeners();
@@ -458,7 +458,7 @@ export class MaskLayer extends PlaceablesLayer {
     }
 
     /**
-     * Adds the keyboard listeners to the simplefog layer
+     * Adds the keyboard listeners to the layer
      */
     registerKeyboardListeners() {
         $(document).keydown(function(e) {
@@ -470,7 +470,7 @@ export class MaskLayer extends PlaceablesLayer {
     }
 
     /**
-     * Mouse handlers for simplefog canvas layer interactions
+     * Mouse handlers for canvas layer interactions
      */
     pointerMove(event) {
         let p = event.data.getLocalPosition(canvas.app.stage);
@@ -687,7 +687,7 @@ export class MaskLayer extends PlaceablesLayer {
     }
 
     /**
-     * Actions upon simplefog layer becoming active
+     * Actions upon layer becoming active
      */
     activate() {
         super.activate();
@@ -695,7 +695,7 @@ export class MaskLayer extends PlaceablesLayer {
     }
   
     /**
-     * Actions upon simplefog layer becoming inactive
+     * Actions upon layer becoming inactive
      */
     deactivate() {
         super.deactivate();
