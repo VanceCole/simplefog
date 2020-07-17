@@ -25,6 +25,8 @@ Lets you draw fog of war manually
 - mouse cursor tool indications
 - documentation
 - shift / ctrl shape tool modifiers
+- refactor mask layer to its own class to be reusable
+- blur filter should recalcuate pixel width to maintain consistency with zoom level
 
 # bugs
 - bug when activating scene with no player token
