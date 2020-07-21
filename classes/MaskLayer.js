@@ -562,7 +562,6 @@ export class MaskLayer extends PlaceablesLayer {
             // Brush tool
             if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "brush") {
                 this.op = 'brushing';
-                this.pointerMove(event);
             }
             // Grid tool
             else if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "grid") {
@@ -607,15 +606,16 @@ export class MaskLayer extends PlaceablesLayer {
                 this.op = 'ellipse';
                 this.dragStart.x = p.x;
                 this.dragStart.y = p.y;
-                this.ellipsePreview.visible = true;
                 this.ellipsePreview.x = p.x;
                 this.ellipsePreview.y = p.y;
+                this.ellipsePreview.visible = true;
 
             }
             // Poly shape tool
             else if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "poly") {
 
             }
+            this.pointerMove(event);
         }
     }
 
