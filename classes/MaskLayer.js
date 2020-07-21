@@ -48,8 +48,8 @@ export class MaskLayer extends PlaceablesLayer {
 
         // The layer is the primary sprite to be displayed
         this.layer = this.getCanvasSprite();
-        this.setTint(this.getTint());
         this.addChild(this.layer);
+        this.setTint(this.getTint());
 
         // Filters
         this.blur = new PIXI.filters.BlurFilter();
@@ -62,9 +62,8 @@ export class MaskLayer extends PlaceablesLayer {
 
         // Create the mask elements
         this.masktexture = PIXI.RenderTexture.create({ width: canvas.dimensions.width, height: canvas.dimensions.height});
-        const maskSprite = new PIXI.Sprite(this.masktexture);
-        this.layer.mask = maskSprite;
-        this.addChild(maskSprite);
+        this.layer.mask = new PIXI.Sprite(this.masktexture);
+        this.addChild(this.layer.mask);
         this.setFill();
         this.setAlpha(this.getAlpha(), true);
 
@@ -123,7 +122,7 @@ export class MaskLayer extends PlaceablesLayer {
         const v = canvas.scene.getFlag(this.layername, 'visible');
         if (v) {
             this.visible = true;
-        } else if (v == false) {
+        } else if (v === false) {
             this.visible = false;
         } else {
             this.visible = false;
@@ -162,7 +161,7 @@ export class MaskLayer extends PlaceablesLayer {
         if (!canvas.scene.getFlag(this.layername, 'gmTint')) await canvas.scene.setFlag(this.layername, 'gmTint', gmTintDefault);
         if (!canvas.scene.getFlag(this.layername, 'playerAlpha')) await canvas.scene.setFlag(this.layername, 'playerAlpha', playerAlphaDefault);
         if (!canvas.scene.getFlag(this.layername, 'playerTint')) await canvas.scene.setFlag(this.layername, 'playerTint', playerTintDefault);
-        if (canvas.scene.getFlag(this.layername, 'transition') == undefined) await canvas.scene.setFlag(this.layername, 'transition', transitionDefault);
+        if (canvas.scene.getFlag(this.layername, 'transition') === undefined) await canvas.scene.setFlag(this.layername, 'transition', transitionDefault);
         if (!canvas.scene.getFlag(this.layername, 'transitionSpeed')) await canvas.scene.setFlag(this.layername, 'transitionSpeed', transitionSpeedDefault);
         if (!game.user.getFlag(this.layername, 'brushOpacity')) await game.user.setFlag(this.layername, 'brushOpacity', 0x000000);
         if (!game.user.getFlag(this.layername, 'brushSize')) await game.user.setFlag(this.layername, 'brushSize', defaultBrushSize);
@@ -192,7 +191,7 @@ export class MaskLayer extends PlaceablesLayer {
         // If history is blank, do nothing
         if(history === undefined) return;
         // If history is zero, reset scene fog
-        if(history.events.length == 0) this.resetFog(false);
+        if(history.events.length === 0) this.resetFog(false);
         if(stop === null) stop = history.pointer;
         if(stop <= this.pointer) {
             this.resetFog(false);
@@ -215,7 +214,7 @@ export class MaskLayer extends PlaceablesLayer {
      * Add buffered history stack to scene flag and clear buffer
      */
     async commitHistory() {
-        if(this.historyBuffer.length == 0) return;
+        if(this.historyBuffer.length === 0) return;
         let history = canvas.scene.getFlag(this.layername, 'history');
         if(!history) history = {
             events: [],
@@ -248,6 +247,7 @@ export class MaskLayer extends PlaceablesLayer {
      * @param steps {Integer} Number of steps to undo, default 1
      */
     async undo(steps = 1) {
+        console.log('undo');
         if (this.debug) console.log(`Undoing ${steps} steps.`);
         this.pointer = this.pointer - steps;
         let history = canvas.scene.getFlag(this.layername, 'history');
@@ -280,10 +280,10 @@ export class MaskLayer extends PlaceablesLayer {
     brush(data) {
         let brush = new PIXI.Graphics();
         brush.beginFill(data.fill);
-        if(data.shape == "ellipse") brush.drawEllipse(0, 0, data.width, data.height);
-        else if(data.shape == "box") brush.drawRect(0, 0, data.width, data.height);
-        else if(data.shape == "roundedRect") brush.drawRoundedRect(0, 0, data.width, data.height, 10);
-        else if(data.shape == "polygon") brush.drawPolygon(data.vertices);
+        if(data.shape === "ellipse") brush.drawEllipse(0, 0, data.width, data.height);
+        else if(data.shape === "box") brush.drawRect(0, 0, data.width, data.height);
+        else if(data.shape === "roundedRect") brush.drawRoundedRect(0, 0, data.width, data.height, 10);
+        else if(data.shape === "polygon") brush.drawPolygon(data.vertices);
         brush.endFill();
         brush.alpha = data.alpha;
         brush.visible = data.visible;
@@ -461,8 +461,9 @@ export class MaskLayer extends PlaceablesLayer {
      * Adds the keyboard listeners to the layer
      */
     registerKeyboardListeners() {
-        $(document).keydown(function(e) {
+        $(document).keydown((e) => {
             if (ui.controls.activeControl !== this.layername) return;
+            console.log('undo1')
             if (e.which === 90 && e.ctrlKey) {
                 canvas[this.layername].undo();
             }
@@ -475,7 +476,7 @@ export class MaskLayer extends PlaceablesLayer {
     pointerMove(event) {
         let p = event.data.getLocalPosition(canvas.app.stage);
         // Brush tool
-        if (this.op == 'brushing') {
+        if (this.op === 'brushing') {
             // Send brush movement events to renderbrush to be drawn and added to history stack
             this.renderBrush({
                 shape: "ellipse",
@@ -489,21 +490,21 @@ export class MaskLayer extends PlaceablesLayer {
             });
         }
         // Drag box tool
-        else if (this.op == 'box') {
+        else if (this.op === 'box') {
             // Just update the preview shape
             this.boxPreview.width = p.x - this.dragStart.x;
             this.boxPreview.height = p.y - this.dragStart.y;
         }
         // Drag ellipse tool
-        else if (this.op == 'ellipse') {
+        else if (this.op === 'ellipse') {
             // Just update the preview shape
             this.ellipsePreview.width = (p.x - this.dragStart.x)*2;
             this.ellipsePreview.height = (p.y - this.dragStart.y)*2;
         }
-        else if (this.op == 'grid') {
+        else if (this.op === 'grid') {
             const grid = canvas.scene.data.grid;
             // Square grid
-            if (canvas.scene.data.gridType == 1) {
+            if (canvas.scene.data.gridType === 1) {
                 const gridx = Math.floor(p.x / grid);
                 const gridy = Math.floor(p.y / grid);
                 const x = gridx * grid;
@@ -548,6 +549,9 @@ export class MaskLayer extends PlaceablesLayer {
                 }
             }
         }
+        else if (this.op === 'poly') {
+
+        }
     }
 
     pointerDown(event) {
@@ -556,12 +560,12 @@ export class MaskLayer extends PlaceablesLayer {
             let p = event.data.getLocalPosition(canvas.app.stage);
 
             // Brush tool
-            if (ui.controls.controls.find( n => n.name == this.layername ).activeTool == "brush") {
+            if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "brush") {
                 this.op = 'brushing';
                 this.pointerMove(event);
             }
             // Grid tool
-            else if (ui.controls.controls.find( n => n.name == this.layername ).activeTool == "grid") {
+            else if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "grid") {
                 this.op = 'grid';
                 const grid = canvas.scene.data.grid;
                 const width = canvas.dimensions.width;
@@ -569,28 +573,28 @@ export class MaskLayer extends PlaceablesLayer {
                 this.boxPreview.visible = true;
                 this.boxPreview.width = grid;
                 this.boxPreview.height = grid;
-                if(canvas.scene.data.gridType == 1) {
+                if(canvas.scene.data.gridType === 1) {
                     this.gridMatrix = new Array(Math.ceil(width / grid)).fill(0).map(() => new Array(Math.ceil(height / grid)).fill(0));
                 }
-                else if(canvas.scene.data.gridType == 2) {
+                else if(canvas.scene.data.gridType === 2) {
                     this.gridMatrix = [];
                     this.gridLayout = new Layout(Layout.pointy, {x:grid/2, y:grid/2}, {x: 0, y: grid / 2});
                 }
-                else if(canvas.scene.data.gridType == 3) {
+                else if(canvas.scene.data.gridType === 3) {
                     this.gridMatrix = [];
                     this.gridLayout = new Layout(Layout.pointy, {x:grid/2, y:grid/2}, {x: Math.sqrt(3) * grid / 4, y: grid / 2});
                 }
-                else if(canvas.scene.data.gridType == 4) {
+                else if(canvas.scene.data.gridType === 4) {
                     this.gridMatrix = [];
                     this.gridLayout = new Layout(Layout.flat, {x:grid/2, y:grid/2}, {x: grid / 2, y: 0});
                 }
-                else if(canvas.scene.data.gridType == 5) {
+                else if(canvas.scene.data.gridType === 5) {
                     this.gridMatrix = [];
                     this.gridLayout = new Layout(Layout.flat, {x:grid/2, y:grid/2}, {x: grid / 2, y: Math.sqrt(3) * grid / 4});
                 }
             }
             // Drag box tool
-            else if (ui.controls.controls.find( n => n.name == this.layername ).activeTool == "box") {
+            else if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "box") {
                 this.op = 'box';
                 this.dragStart.x = p.x;
                 this.dragStart.y = p.y;
@@ -599,7 +603,7 @@ export class MaskLayer extends PlaceablesLayer {
                 this.boxPreview.y = p.y;
             }
             // Drag ellipse tool
-            else if (ui.controls.controls.find( n => n.name == this.layername ).activeTool == "ellipse") {
+            else if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "ellipse") {
                 this.op = 'ellipse';
                 this.dragStart.x = p.x;
                 this.dragStart.y = p.y;
@@ -609,7 +613,7 @@ export class MaskLayer extends PlaceablesLayer {
 
             }
             // Poly shape tool
-            else if (ui.controls.controls.find( n => n.name == this.layername ).activeTool == "poly") {
+            else if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "poly") {
 
             }
         }
@@ -617,11 +621,11 @@ export class MaskLayer extends PlaceablesLayer {
 
     pointerUp(event) {
         // Only react to left mouse button
-        if (event.data.button == 0) {
+        if (event.data.button === 0) {
             let p = event.data.getLocalPosition(canvas.app.stage);
             
             // Drag box tool
-            if (this.op == 'box') {
+            if (this.op === 'box') {
                 this.renderBrush({
                     shape: 'box',
                     x: this.dragStart.x,
@@ -638,7 +642,7 @@ export class MaskLayer extends PlaceablesLayer {
             }
 
             // Drag ellipse tool
-            else if (this.op == 'ellipse') {
+            else if (this.op === 'ellipse') {
                 this.renderBrush({
                     shape: 'ellipse',
                     x: this.dragStart.x,
@@ -655,7 +659,7 @@ export class MaskLayer extends PlaceablesLayer {
             }
 
             // Grid tool
-            if (this.op == 'grid') {
+            if (this.op === 'grid') {
                 this.boxPreview.visible = false;
                 this.boxPreview.width = 0;
                 this.boxPreview.height = 0;
@@ -686,6 +690,12 @@ export class MaskLayer extends PlaceablesLayer {
         return false;
     }
 
+    pixiDump(tgt = null) {
+        canvas.app.render();
+        let data = canvas.app.renderer.extract.base64(tgt);
+        let win = window.open();
+        win.document.write("<img src='" + data + "'/>");
+    }
     /**
      * Actions upon layer becoming active
      */

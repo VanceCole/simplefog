@@ -1,7 +1,6 @@
 import { SimpleFogLayer } from "../classes/SimpleFogLayer.js";
 
 if (!CONFIG.simplefog) CONFIG.simplefog = {};
-if (!window.simplefog) window.simplefog = {};
 
 Hooks.on("ready", function() {
 })

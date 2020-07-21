@@ -1,5 +1,5 @@
 import { SimplefogConfig } from "../classes/SimplefogConfig.js";
-import { SimplefogBrushControls } from "../classes/SimplefogBrushControls.js";
+import { BrushControls } from "../classes/BrushControls.js";
 
 /**
  * Add control buttons
@@ -89,7 +89,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
 Hooks.on("renderSceneControls", (controls, domObj, scene) => {
   if(controls.activeControl == 'simplefog') {
     if($('#simplefog-brush-controls').length) return;
-    new SimplefogBrushControls().render(true);
+    new BrushControls().render(true);
   } else {
     let sf = $('#simplefog-brush-controls');
     if (sf) sf.remove();

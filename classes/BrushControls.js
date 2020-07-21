@@ -1,4 +1,4 @@
-export class SimplefogBrushControls extends FormApplication {
+export class BrushControls extends FormApplication {
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
             classes: ["form"],
