@@ -8,26 +8,27 @@ Lets you draw fog of war manually
 - ~~Fog Color & Opacity~~
 - ~~Box Shape~~
 - ~~Circle Shape~~
-- Poly Shape
+- ~~Poly Shape~~
 - Image based fog import
 - ~~Undo~~
+- ~~refactor mask layer to its own class to be reusable~~
 - Hide token cursors under fog(?)
+- Core fog sync option(?) (Clamp lighting mask?)
 - ~~Grid snap brush~~
 - ~~Hex grid snap brush~~
 - ~~Optimization~~
 - Brush Smoothing / Interpolation
 - Allow custom default tint/opacity
-- square brushes?
-- Core fog sync option(?) (Clamp lighting mask?)
+- Square brushes?
 - Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay
-- allow cancel of current drawing via right click while dragging ?
-- blur / sepia / monochrome filters?
-- mouse cursor tool indications
-- documentation
-- shift / ctrl shape tool modifiers
-- refactor mask layer to its own class to be reusable
-- blur filter should recalcuate pixel width to maintain consistency with zoom level
+- Allow cancel of current drawing via right click while dragging ?
+- ~~Blur~~ / sepia / monochrome filters?
+- Mouse cursor tool indications
+- Documentation
+- Shift / ctrl shape tool modifiers
+- Blur filter should recalcuate pixel width to maintain consistency with zoom level
+- Keybindings for changing brush size
 
 # bugs
-- bug when activating scene with no player token
+- error when activating scene with no player token
 - sometimes hex grid tool stops drawing certain hexes

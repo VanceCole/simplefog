@@ -8,6 +8,7 @@ const transitionDefault = true;
 const transitionSpeedDefault = 800;
 const previewFill = 0x00ffff;
 const previewAlpha = 0.4;
+const shapeCloseDistance = 20;
 const defaultBlurRadius = 0;
 const defaultBlurQuality = 2;
 const defaultBrushSize = 50;
@@ -78,7 +79,6 @@ export class MaskLayer extends PlaceablesLayer {
          * React to changes to current scene
          */
         Hooks.on("updateScene", (scene, data, options) => {
-            console.log(scene);
             if(scene.data._view) return;
             // React to visibility change
             if (hasProperty(data, `flags.${this.layername}.visible`)) {
@@ -153,8 +153,18 @@ export class MaskLayer extends PlaceablesLayer {
             alpha: previewAlpha,
             visible: false
         });
+        this.shapePreview = this.brush({
+            shape: "shape",
+            x: 0,
+            y: 0,
+            vertices: [],
+            fill: previewFill,
+            alpha: previewAlpha,
+            visible: false,
+        });
         this.addChild(this.boxPreview);
         this.addChild(this.ellipsePreview);
+        this.addChild(this.shapePreview);
 
         // Set default flags if they dont exist already
         if (!canvas.scene.getFlag(this.layername, 'gmAlpha')) await canvas.scene.setFlag(this.layername, 'gmAlpha', gmAlphaDefault);
@@ -247,7 +257,6 @@ export class MaskLayer extends PlaceablesLayer {
      * @param steps {Integer} Number of steps to undo, default 1
      */
     async undo(steps = 1) {
-        console.log('undo');
         if (this.debug) console.log(`Undoing ${steps} steps.`);
         this.pointer = this.pointer - steps;
         let history = canvas.scene.getFlag(this.layername, 'history');
@@ -284,6 +293,7 @@ export class MaskLayer extends PlaceablesLayer {
         else if(data.shape === "box") brush.drawRect(0, 0, data.width, data.height);
         else if(data.shape === "roundedRect") brush.drawRoundedRect(0, 0, data.width, data.height, 10);
         else if(data.shape === "polygon") brush.drawPolygon(data.vertices);
+        else if(data.shape === "shape") brush.drawPolygon(data.vertices);
         brush.endFill();
         brush.alpha = data.alpha;
         brush.visible = data.visible;
@@ -463,7 +473,6 @@ export class MaskLayer extends PlaceablesLayer {
     registerKeyboardListeners() {
         $(document).keydown((e) => {
             if (ui.controls.activeControl !== this.layername) return;
-            console.log('undo1')
             if (e.which === 90 && e.ctrlKey) {
                 canvas[this.layername].undo();
             }
@@ -549,8 +558,7 @@ export class MaskLayer extends PlaceablesLayer {
                 }
             }
         }
-        else if (this.op === 'poly') {
-
+        else if (this.op === 'shape') {
         }
     }
 
@@ -612,8 +620,41 @@ export class MaskLayer extends PlaceablesLayer {
 
             }
             // Poly shape tool
-            else if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "poly") {
+            else if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "shape") {
+                if(!this.shape) this.shape = [];
+                let x = Math.floor(p.x);
+                let y = Math.floor(p.y);
+                if(this.shape[0]) {
+                    console.log(this.shape[0].x);
+                    console.log(x)
+                    let xo = Math.abs(this.shape[0].x - x);
+                    let yo = Math.abs(this.shape[0].y - y);
+                    if (xo < shapeCloseDistance && yo < shapeCloseDistance) {
+                        let verts = this.hexObjsToArr(this.shape);
+                        this.renderBrush({
+                            shape: 'shape',
+                            x: 0,
+                            y: 0,
+                            vertices: verts,
+                            visible: true,
+                            fill: game.user.getFlag(this.layername, 'brushOpacity'),
+                            alpha: 1,
+                        });
+                        this.shapePreview.clear();
+                        this.shapePreview.visible = false;
+                        this.shape = [];
+                        console.log(`Closing ${verts}`);
 
+                        return;
+                    }
+                }
+                this.shape.push({x: x, y: y});
+                
+                this.shapePreview.clear();
+                this.shapePreview.beginFill(previewFill);
+                this.shapePreview.drawPolygon(this.hexObjsToArr(this.shape));
+                this.shapePreview.endFill();
+                this.shapePreview.visible = true;
             }
             this.pointerMove(event);
         }
