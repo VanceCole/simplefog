@@ -8,6 +8,7 @@ const playerTintDefault = '0x000000';
 const transitionDefault = true;
 const transitionSpeedDefault = 800;
 const previewFill = 0x00ffff;
+const handleFill = 0xff6400;
 const previewAlpha = 0.4;
 const shapeCloseDistance = 20;
 const defaultBlurRadius = 0;
@@ -160,10 +161,21 @@ export class MaskLayer extends PlaceablesLayer {
       alpha: previewAlpha,
       visible: false,
     });
+    this.shapeHandle = this.brush({
+      shape: 'ellipse',
+      x: 0,
+      y: 0,
+      fill: handleFill,
+      alpha: previewAlpha,
+      width: shapeCloseDistance,
+      height: shapeCloseDistance,
+      visible: false,
+    });
     // Add preview brushes to layer
     this.addChild(this.boxPreview);
     this.addChild(this.ellipsePreview);
     this.addChild(this.shapePreview);
+    this.addChild(this.shapeHandle);
 
     // Set default flags if they dont exist already
     if (!canvas.scene.getFlag(this.layername, 'gmAlpha')) await canvas.scene.setFlag(this.layername, 'gmAlpha', gmAlphaDefault);
@@ -673,10 +685,17 @@ export class MaskLayer extends PlaceablesLayer {
               // Reset the preview shape
               this.shapePreview.clear();
               this.shapePreview.visible = false;
+              this.shapeHandle.visible = false;
               this.shape = [];
               console.log(`Closing ${verts}`);
               return;
             }
+          } else {
+            // If this is the first vertex
+            // Draw shape handle
+            this.shapeHandle.x = x;
+            this.shapeHandle.y = y;
+            this.shapeHandle.visible = true;
           }
           // If intermediate vertex, add it to array and redraw the preview
           this.shape.push({ x, y });
@@ -691,6 +710,9 @@ export class MaskLayer extends PlaceablesLayer {
       }
       // Call pointermove so single click will still draw brush if mouse does not move
       this.pointerMove(event);
+    } else if (event.data.button === 2) {
+      // Todo: Not sure why this doesnt trigger when drawing
+      this.cancelTool();
     }
   }
 
@@ -713,8 +735,6 @@ export class MaskLayer extends PlaceablesLayer {
             alpha: 1,
           });
           this.boxPreview.visible = false;
-          this.boxPreview.width = 0;
-          this.boxPreview.height = 0;
           break;
           // Drag ellipse tool
         case 'ellipse':
@@ -729,14 +749,10 @@ export class MaskLayer extends PlaceablesLayer {
             alpha: 1,
           });
           this.ellipsePreview.visible = false;
-          this.ellipsePreview.width = 0;
-          this.ellipsePreview.height = 0;
           break;
           // Grid tool
         case 'grid':
           this.boxPreview.visible = false;
-          this.boxPreview.width = 0;
-          this.boxPreview.height = 0;
           break;
         default:
           break;
@@ -747,6 +763,25 @@ export class MaskLayer extends PlaceablesLayer {
       // Push the history buffer
       this.commitHistory();
     }
+  }
+
+  /**
+   * Aborts any active drawing tools
+   */
+  cancelTool() {
+    // Box preview
+    this.boxPreview.visible = false;
+    // Ellipse Preview
+    this.ellipsePreview.visible = false;
+    // Shape preview
+    this.shapePreview.clear();
+    this.shapePreview.visible = false;
+    this.shapeHandle.visible = false;
+    this.shape = [];
+    // Cancel op flag
+    this.op = false;
+    // Clear history buffer
+    this.historyBuffer = [];
   }
 
   /**

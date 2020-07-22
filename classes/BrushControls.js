@@ -24,7 +24,7 @@ export class BrushControls extends FormApplication {
     // Return data to the template
     return {
       brushSize: game.user.getFlag('simplefog', 'brushSize'),
-      brushOpacity: base16ToPercent(game.user.getFlag('simplefog', 'brushOpacity')),
+      brushOpacity: hexToPercent(game.user.getFlag('simplefog', 'brushOpacity')),
       brushMode: game.user.getFlag('simplefog', 'brushMode'),
     };
   }
@@ -46,26 +46,26 @@ export class BrushControls extends FormApplication {
    */
   _updateObject(event, formData) {
     game.user.setFlag('simplefog', 'brushSize', formData.brushSize);
-    game.user.setFlag('simplefog', 'brushOpacity', percentToBase16(formData.brushOpacity));
+    game.user.setFlag('simplefog', 'brushOpacity', percentToHex(formData.brushOpacity));
     game.user.setFlag('simplefog', 'brushMode', $('input[name="mode"]:checked').val());
   }
 }
 
 /**
- * Converts a base16 color to an integer percentage
+ * Converts a hexadecimal color to an integer percentage
  * @param n {Hex}               Base 16 Color, f.x. 0x000000
  * @return {Integer}             f.x 0
  */
-function base16ToPercent(n) {
+function hexToPercent(n) {
   return Math.ceil(n / 0xFFFFFF * 100);
 }
 
 /**
- * Converts an integer percent (0-100) to a base16 greyscale color
+ * Converts an integer percent (0-100) to a hexadecimal greyscale color
  * @param n {Number}            0-100 numeric input
  * @return {Hex}                Base 16 format color, f.x. 0xFFFFFF
  */
-function percentToBase16(n) {
+function percentToHex(n) {
   let c = Math.ceil(n * 2.55).toString(16);
   if (c.length === 1) c = `0${c}`;
   c = `0x${c}${c}${c}`;
