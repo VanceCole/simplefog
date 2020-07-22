@@ -1,16 +1,16 @@
 export class BrushControls extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: ["form"],
+      classes: ['form'],
       closeOnSubmit: false,
       submitOnChange: true,
       submitOnClose: true,
       popOut: false,
       editable: game.user.isGM,
-      template: "modules/simplefog/templates/brush-controls.html",
-      id: "filter-config",
-      title: game.i18n.localize("Simplefog Options"),
-      parent: "#controls"
+      template: 'modules/simplefog/templates/brush-controls.html',
+      id: 'filter-config',
+      title: game.i18n.localize('Simplefog Options'),
+      parent: '#controls',
     });
   }
 
@@ -54,22 +54,20 @@ export class BrushControls extends FormApplication {
 /**
  * Converts a base16 color to an integer percentage
  * @param n {Hex}               Base 16 Color, f.x. 0x000000
- * @return {Number}             f.x 0
+ * @return {Integer}             f.x 0
  */
-function base16ToPercent (n) {
-  n = parseInt(n) / parseInt(0xFFFFFF); // Convert to decimal
-  n = Math.ceil(n*100);
-  return n;
+function base16ToPercent(n) {
+  return Math.ceil(n / 0xFFFFFF * 100);
 }
 
 /**
- * Converts an integer percent (0-100) to a base16 color
- * @param n {Number}            0-100 numeric input      
- * @return {Hex}                Base 16 format color, f.x. 0xFFFFFF        
+ * Converts an integer percent (0-100) to a base16 greyscale color
+ * @param n {Number}            0-100 numeric input
+ * @return {Hex}                Base 16 format color, f.x. 0xFFFFFF
  */
 function percentToBase16(n) {
-  n = n / 100; // Convert to decimal
-  n = Math.floor(n * parseInt(0xFFFFFF));
-  n = '0x' + n.toString(16);
-  return n;
+  let c = Math.ceil(n * 2.55).toString(16);
+  if (c.length === 1) c = `0${c}`;
+  c = `0x${c}${c}${c}`;
+  return c;
 }

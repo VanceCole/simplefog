@@ -1,17 +1,17 @@
 export class SimplefogConfig extends FormApplication {
   static get defaultOptions() {
-  return mergeObject(super.defaultOptions, {
-    classes: ["form"],
-    closeOnSubmit: false,
-    submitOnChange: true,
-    submitOnClose: true,
-    popOut: true,
-    editable: game.user.isGM,
-    width: 400,
-    template: "modules/simplefog/templates/config.html",
-    id: "filter-config",
-    title: game.i18n.localize("Simplefog Options")
-  });
+    return mergeObject(super.defaultOptions, {
+      classes: ['form'],
+      closeOnSubmit: false,
+      submitOnChange: true,
+      submitOnClose: true,
+      popOut: true,
+      editable: game.user.isGM,
+      width: 400,
+      template: 'modules/simplefog/templates/config.html',
+      id: 'filter-config',
+      title: game.i18n.localize('Simplefog Options'),
+    });
   }
 
   /* -------------------------------------------- */
@@ -22,16 +22,16 @@ export class SimplefogConfig extends FormApplication {
    */
   getData() {
   // Return data to the template
-  return {
-    gmAlpha: canvas.scene.getFlag('simplefog', 'gmAlpha') * 100,
-    gmTint: hexToWeb(canvas.scene.getFlag('simplefog', 'gmTint')),
-    playerAlpha: canvas.scene.getFlag('simplefog', 'playerAlpha') * 100,
-    playerTint: hexToWeb(canvas.scene.getFlag('simplefog', 'playerTint')),
-    transition: canvas.scene.getFlag('simplefog', 'transition'),
-    transitionSpeed: canvas.scene.getFlag('simplefog', 'transitionSpeed'),
-    blurRadius: canvas.scene.getFlag('simplefog', 'blurRadius'),
-    blurQuality: canvas.scene.getFlag('simplefog', 'blurQuality'),
-  };
+    return {
+      gmAlpha: canvas.scene.getFlag('simplefog', 'gmAlpha') * 100,
+      gmTint: hexToWeb(canvas.scene.getFlag('simplefog', 'gmTint')),
+      playerAlpha: canvas.scene.getFlag('simplefog', 'playerAlpha') * 100,
+      playerTint: hexToWeb(canvas.scene.getFlag('simplefog', 'playerTint')),
+      transition: canvas.scene.getFlag('simplefog', 'transition'),
+      transitionSpeed: canvas.scene.getFlag('simplefog', 'transitionSpeed'),
+      blurRadius: canvas.scene.getFlag('simplefog', 'blurRadius'),
+      blurQuality: canvas.scene.getFlag('simplefog', 'blurQuality'),
+    };
   }
 
   /* -------------------------------------------- */
@@ -40,7 +40,7 @@ export class SimplefogConfig extends FormApplication {
 
   /** @override */
   activateListeners(html) {
-  super.activateListeners(html);
+    super.activateListeners(html);
   }
 
   /**
@@ -63,20 +63,18 @@ export class SimplefogConfig extends FormApplication {
 
 /**
  * Converts web colors to base 16
- * @param n {Hex}               Web format color, f.x. #FF0000       
- * @return {Hex}                Base 16 format color, f.x. 0xFF0000         
+ * @param n {Hex}               Web format color, f.x. #FF0000
+ * @return {Hex}                Base 16 format color, f.x. 0xFF0000
  */
 function webToHex(n) {
-  return n.replace("#", "0x");
+  return n.replace('#', '0x');
 }
 
 /**
  * Converts a base16 color into a web color
  * @param n {Hex}               Base 16 Color, f.x. 0xFF0000
- * @return {Hex}                Web format color, f.x. #FF0000         
+ * @return {Hex}                Web format color, f.x. #FF0000
  */
-function hexToWeb (n) {
-  n = (n+'').replace("0x", "#");
-  return n;
+function hexToWeb(n) {
+  return (`${n}`).replace('0x', '#');
 }
-

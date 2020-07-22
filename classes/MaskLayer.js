@@ -22,10 +22,7 @@ export class MaskLayer extends PlaceablesLayer {
     this.historyBuffer = [];
     this.pointer = 0;
     this.gridLayout = {};
-    this.dragStart = {
-      x: 0,
-      y: 0,
-    };
+    this.dragStart = { x: 0, y: 0 };
     this.debug = true;
   }
 
