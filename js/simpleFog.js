@@ -9,11 +9,11 @@ Hooks.once("canvasInit", (canvas) => {
 });
 
 Hooks.once("canvasInit", (canvas) => {
-    canvas.simplefog = canvas.stage.addChildAt(new SimpleFogLayer(), 14);
+  canvas.simplefog = canvas.stage.addChildAt(new SimpleFogLayer(), 14);
 });
 
 Hooks.on("canvasInit", (canvas) => {
-    canvas.simplefog.canvasInit();
+  canvas.simplefog.canvasInit();
 });
 
 Hooks.on("canvasReady", (_) => {

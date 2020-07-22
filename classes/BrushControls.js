@@ -1,17 +1,17 @@
 export class BrushControls extends FormApplication {
-    static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
-            classes: ["form"],
-            closeOnSubmit: false,
-            submitOnChange: true,
-            submitOnClose: true,
-            popOut: false,
-            editable: game.user.isGM,
-            template: "modules/simplefog/templates/brush-controls.html",
-            id: "filter-config",
-            title: game.i18n.localize("Simplefog Options"),
-            parent: "#controls"
-      });
+  static get defaultOptions() {
+    return mergeObject(super.defaultOptions, {
+      classes: ["form"],
+      closeOnSubmit: false,
+      submitOnChange: true,
+      submitOnClose: true,
+      popOut: false,
+      editable: game.user.isGM,
+      template: "modules/simplefog/templates/brush-controls.html",
+      id: "filter-config",
+      title: game.i18n.localize("Simplefog Options"),
+      parent: "#controls"
+    });
   }
 
   /* -------------------------------------------- */
@@ -20,23 +20,23 @@ export class BrushControls extends FormApplication {
    * Obtain module metadata and merge it with game settings which track current module visibility
    * @return {Object}   The data provided to the template when rendering the form
    */
-    getData() {
-      // Return data to the template
-        return {
-            brushSize: game.user.getFlag('simplefog', 'brushSize'),
-            brushOpacity: base16ToPercent(game.user.getFlag('simplefog', 'brushOpacity')),
-            brushMode: game.user.getFlag('simplefog', 'brushMode'),
-        };
-    }
+  getData() {
+    // Return data to the template
+    return {
+      brushSize: game.user.getFlag('simplefog', 'brushSize'),
+      brushOpacity: base16ToPercent(game.user.getFlag('simplefog', 'brushOpacity')),
+      brushMode: game.user.getFlag('simplefog', 'brushMode'),
+    };
+  }
 
-    /* -------------------------------------------- */
-    /*  Event Listeners and Handlers                */
-    /* -------------------------------------------- */
+  /* -------------------------------------------- */
+  /*  Event Listeners and Handlers                */
+  /* -------------------------------------------- */
 
-    /** @override */
-    activateListeners(html) {
-        super.activateListeners(html);
-    }
+  /** @override */
+  activateListeners(html) {
+    super.activateListeners(html);
+  }
 
   /**
    * This method is called upon form submission after form data is validated
@@ -44,11 +44,11 @@ export class BrushControls extends FormApplication {
    * @param formData {Object}   The object of validated form data with which to update the object
    * @private
    */
-    _updateObject(event, formData) {
-        game.user.setFlag('simplefog', 'brushSize', formData.brushSize);
-        game.user.setFlag('simplefog', 'brushOpacity', percentToBase16(formData.brushOpacity));
-        game.user.setFlag('simplefog', 'brushMode', $('input[name="mode"]:checked').val());
-    }
+  _updateObject(event, formData) {
+    game.user.setFlag('simplefog', 'brushSize', formData.brushSize);
+    game.user.setFlag('simplefog', 'brushOpacity', percentToBase16(formData.brushOpacity));
+    game.user.setFlag('simplefog', 'brushMode', $('input[name="mode"]:checked').val());
+  }
 }
 
 /**
@@ -57,9 +57,9 @@ export class BrushControls extends FormApplication {
  * @return {Number}             f.x 0
  */
 function base16ToPercent (n) {
-    n = parseInt(n) / parseInt(0xFFFFFF); // Convert to decimal
-    n = Math.ceil(n*100);
-    return n;
+  n = parseInt(n) / parseInt(0xFFFFFF); // Convert to decimal
+  n = Math.ceil(n*100);
+  return n;
 }
 
 /**
@@ -68,8 +68,8 @@ function base16ToPercent (n) {
  * @return {Hex}                Base 16 format color, f.x. 0xFFFFFF        
  */
 function percentToBase16(n) {
-    n = n / 100; // Convert to decimal
-    n = Math.floor(n * parseInt(0xFFFFFF));
-    n = '0x' + n.toString(16);
-    return n;
+  n = n / 100; // Convert to decimal
+  n = Math.floor(n * parseInt(0xFFFFFF));
+  n = '0x' + n.toString(16);
+  return n;
 }
