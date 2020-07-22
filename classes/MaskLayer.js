@@ -278,8 +278,10 @@ export class MaskLayer extends PlaceablesLayer {
         pointer: 0,
       };
     }
+    let newpointer = this.pointer - steps;
+    if (newpointer < 0) newpointer = 0;
     // Set new pointer & update history
-    history.pointer = this.pointer - steps;
+    history.pointer = newpointer;
     await canvas.scene.unsetFlag(this.layername, 'history');
     await canvas.scene.setFlag(this.layername, 'history', history);
   }
@@ -496,9 +498,10 @@ export class MaskLayer extends PlaceablesLayer {
    * Adds the keyboard listeners to the layer
    */
   registerKeyboardListeners() {
-    $(document).keydown((e) => {
+    $(document).keydown((event) => {
+      console.log(event);
       if (ui.controls.activeControl !== this.layername) return;
-      if (e.which === 90 && e.ctrlKey) {
+      if (event.which === 90 && event.ctrlKey) {
         canvas[this.layername].undo();
       }
     });
@@ -592,6 +595,7 @@ export class MaskLayer extends PlaceablesLayer {
   }
 
   pointerDown(event) {
+    console.log(event);
     // Only react on left mouse button
     if (event.data.button === 0) {
       const p = event.data.getLocalPosition(canvas.app.stage);
@@ -717,6 +721,7 @@ export class MaskLayer extends PlaceablesLayer {
   }
 
   pointerUp(event) {
+    console.log(event);
     // Only react to left mouse button
     if (event.data.button === 0) {
       const p = event.data.getLocalPosition(canvas.app.stage);
