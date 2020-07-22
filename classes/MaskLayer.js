@@ -102,11 +102,9 @@ export class MaskLayer extends PlaceablesLayer {
       // React to alpha/tint changes
       if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerAlpha`)) {
         canvas[this.layername].setAlpha(data.flags[this.layername].playerAlpha);
-        canvas[this.layername].renderStack();
       }
       if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmAlpha`)) {
         canvas[this.layername].setAlpha(data.flags[this.layername].gmAlpha);
-        canvas[this.layername].renderStack();
       }
       if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerTint`)) canvas[this.layername].setTint(data.flags[this.layername].playerTint);
       if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmTint`)) canvas[this.layername].setTint(data.flags[this.layername].gmTint);
@@ -432,9 +430,10 @@ export class MaskLayer extends PlaceablesLayer {
         // eslint-disable-next-line no-await-in-loop
         await new Promise((resolve) => setTimeout(resolve, frame));
         this.layer.alpha -= rate;
-        f += 1;
+        f -= 1;
       }
       this.layer.alpha = alpha;
+      console.log(this.layer.alpha);
     }
   }
 
