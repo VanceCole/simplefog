@@ -162,6 +162,7 @@ export class MaskLayer extends PlaceablesLayer {
             alpha: previewAlpha,
             visible: false,
         });
+        // Add preview brushes to layer
         this.addChild(this.boxPreview);
         this.addChild(this.ellipsePreview);
         this.addChild(this.shapePreview);
@@ -184,14 +185,6 @@ export class MaskLayer extends PlaceablesLayer {
     /* -------------------------------------------- */
 
     /**
-     * Renders the given shape to the layer mask
-     * @param data {Object}       A collection of brush parameters
-     */
-    composite(shape) {
-        canvas.app.renderer.render(shape, this.masktexture, false, null, false);
-    }
-
-    /**
      * Renders the history stack to the mask
      * @param history {Array}       A collection of history events
      * @param start {Number}        The position in the history stack to begin rendering from
@@ -207,9 +200,9 @@ export class MaskLayer extends PlaceablesLayer {
             this.resetFog(false);
             start = 0;
         }
+
         console.log(`Rendering from: ${start} to ${stop}`);
         // Render all ops starting from pointer
-
         for(let i = start; i < stop; i++){
             for(let j = 0; j < history.events[i].length; j++) {
                 this.renderBrush(history.events[i][j], false);
@@ -224,18 +217,23 @@ export class MaskLayer extends PlaceablesLayer {
      * Add buffered history stack to scene flag and clear buffer
      */
     async commitHistory() {
+        // Do nothing if no history to be committed, otherwise get history
         if(this.historyBuffer.length === 0) return;
         let history = canvas.scene.getFlag(this.layername, 'history');
+        // If history storage doesnt exist, create it
         if(!history) history = {
             events: [],
             pointer: 0,
         };
+        // If pointer is less than history length (f.x. user undo), truncate history
         history.events = history.events.slice(0, history.pointer);
+        // Push the new history buffer to the scene
         history.events.push(this.historyBuffer);
         history.pointer = history.events.length;
         await canvas.scene.unsetFlag(this.layername, 'history');
         await canvas.scene.setFlag(this.layername,'history', history);
         console.log(`Pushed ${this.historyBuffer.length} updates.`);
+        // Clear the history buffer
         this.historyBuffer = [];
     }
 
@@ -244,7 +242,9 @@ export class MaskLayer extends PlaceablesLayer {
      * @param save {Boolean} If true, also resets the layer history
      */
     resetFog(save = true) {
-        this.setFill()
+        // Fill fog layer with solid
+        this.setFill();
+        // If save, also unset history and reset pointer
         if(save) {
             canvas.scene.unsetFlag(this.layername, 'history');
             canvas.scene.setFlag(this.layername, 'history', { events: [], pointer: 0 });
@@ -258,9 +258,15 @@ export class MaskLayer extends PlaceablesLayer {
      */
     async undo(steps = 1) {
         if (this.debug) console.log(`Undoing ${steps} steps.`);
-        this.pointer = this.pointer - steps;
+        // Grab existing history
+        // Todo: this could probably just grab and set the pointer for a slight performance improvement
         let history = canvas.scene.getFlag(this.layername, 'history');
-        history.pointer = this.pointer;
+        if(!history) history = {
+            events: [],
+            pointer: 0,
+        };
+        // Set new pointer & update history
+        history.pointer = this.pointer - steps;
         await canvas.scene.unsetFlag(this.layername, 'history');
         await canvas.scene.setFlag(this.layername, 'history', history);
     }
@@ -287,13 +293,16 @@ export class MaskLayer extends PlaceablesLayer {
      * });
      */
     brush(data) {
+        // Get new graphic & begin filling
         let brush = new PIXI.Graphics();
         brush.beginFill(data.fill);
+        // Draw the shape depending on type of brush
         if(data.shape === "ellipse") brush.drawEllipse(0, 0, data.width, data.height);
         else if(data.shape === "box") brush.drawRect(0, 0, data.width, data.height);
         else if(data.shape === "roundedRect") brush.drawRoundedRect(0, 0, data.width, data.height, 10);
         else if(data.shape === "polygon") brush.drawPolygon(data.vertices);
         else if(data.shape === "shape") brush.drawPolygon(data.vertices);
+        // End fill and set the basic props
         brush.endFill();
         brush.alpha = data.alpha;
         brush.visible = data.visible;
@@ -314,6 +323,14 @@ export class MaskLayer extends PlaceablesLayer {
     }
 
     /**
+     * Renders the given shape to the layer mask
+     * @param data {Object}       A collection of brush parameters
+     */
+    composite(shape) {
+        canvas.app.renderer.render(shape, this.masktexture, false, null, false);
+    }
+
+    /**
      * Returns a blank PIXI Sprite of canvas dimensions
      */
     getCanvasSprite() {
@@ -331,7 +348,8 @@ export class MaskLayer extends PlaceablesLayer {
     /* -------------------------------------------- */
 
     /**
-     * Returns the current scene tint applicable to the current user
+     * Gets and sets various layer wide properties
+     * Some properties have different values depending on if user is a GM or player
      */
     getTint() {
         let tint;
@@ -344,9 +362,6 @@ export class MaskLayer extends PlaceablesLayer {
         return tint;
     }
 
-    /**
-     * Sets the scene's tint value for the primary layer
-     */
     setTint(tint) {
         this.layer.tint = tint;
     }
@@ -373,9 +388,6 @@ export class MaskLayer extends PlaceablesLayer {
         this.blur.quality = q;
     }
 
-    /**
-     * Returns the current scene alpha applicable to the current user
-     */
     getAlpha() {
         let alpha;
         if (game.user.isGM) alpha = canvas.scene.getFlag(this.layername, 'gmAlpha');
@@ -483,82 +495,85 @@ export class MaskLayer extends PlaceablesLayer {
      * Mouse handlers for canvas layer interactions
      */
     pointerMove(event) {
+        // Get mouse position translated to canvas coords
         let p = event.data.getLocalPosition(canvas.app.stage);
         // Brush tool
-        if (this.op === 'brushing') {
-            // Send brush movement events to renderbrush to be drawn and added to history stack
-            this.renderBrush({
-                shape: "ellipse",
-                x: p.x,
-                y: p.y,
-                fill: game.user.getFlag(this.layername, 'brushOpacity'),
-                width: game.user.getFlag(this.layername, 'brushSize'),
-                height: game.user.getFlag(this.layername, 'brushSize'),
-                alpha: 1,
-                visible: true
-            });
-        }
-        // Drag box tool
-        else if (this.op === 'box') {
-            // Just update the preview shape
-            this.boxPreview.width = p.x - this.dragStart.x;
-            this.boxPreview.height = p.y - this.dragStart.y;
-        }
-        // Drag ellipse tool
-        else if (this.op === 'ellipse') {
-            // Just update the preview shape
-            this.ellipsePreview.width = (p.x - this.dragStart.x)*2;
-            this.ellipsePreview.height = (p.y - this.dragStart.y)*2;
-        }
-        else if (this.op === 'grid') {
-            const grid = canvas.scene.data.grid;
-            // Square grid
-            if (canvas.scene.data.gridType === 1) {
-                const gridx = Math.floor(p.x / grid);
-                const gridy = Math.floor(p.y / grid);
-                const x = gridx * grid;
-                const y = gridy * grid;
-                // Check if this grid was already drawn
-                if(!this.gridMatrix[gridx][gridy]) {
-                    this.gridMatrix[gridx][gridy] = 1;
-                    this.boxPreview.x = x;
-                    this.boxPreview.y = y;
-                    this.renderBrush({
-                        shape: 'box',
-                        x: x,
-                        y: y,
-                        width: grid,
-                        height: grid,
-                        visible: true,
-                        fill: game.user.getFlag(this.layername, 'brushOpacity'),
-                        alpha: 1,
-                    });
+        switch (this.op) {
+            case 'brushing':
+                // Send brush movement events to renderbrush to be drawn and added to history stack
+                this.renderBrush({
+                    shape: "ellipse",
+                    x: p.x,
+                    y: p.y,
+                    fill: game.user.getFlag(this.layername, 'brushOpacity'),
+                    width: game.user.getFlag(this.layername, 'brushSize'),
+                    height: game.user.getFlag(this.layername, 'brushSize'),
+                    alpha: 1,
+                    visible: true
+                });
+            break;
+            // Drag box tool
+            case 'box':
+                // Just update the preview shape
+                this.boxPreview.width = p.x - this.dragStart.x;
+                this.boxPreview.height = p.y - this.dragStart.y;
+                break;
+            // Drag ellipse tool
+            case 'ellipse':
+                // Just update the preview shape
+                this.ellipsePreview.width = (p.x - this.dragStart.x)*2;
+                this.ellipsePreview.height = (p.y - this.dragStart.y)*2;
+                break;
+            case 'grid':
+                const grid = canvas.scene.data.grid;
+                // Square grid
+                if (canvas.scene.data.gridType === 1) {
+                    const gridx = Math.floor(p.x / grid);
+                    const gridy = Math.floor(p.y / grid);
+                    const x = gridx * grid;
+                    const y = gridy * grid;
+                    // Check if this grid was already drawn
+                    if(!this.gridMatrix[gridx][gridy]) {
+                        this.gridMatrix[gridx][gridy] = 1;
+                        this.boxPreview.x = x;
+                        this.boxPreview.y = y;
+                        this.renderBrush({
+                            shape: 'box',
+                            x: x,
+                            y: y,
+                            width: grid,
+                            height: grid,
+                            visible: true,
+                            fill: game.user.getFlag(this.layername, 'brushOpacity'),
+                            alpha: 1,
+                        });
+                    }
                 }
-            }
 
-            // Hexagonal grids
-            else if ([2,3,4,5].includes(canvas.scene.data.gridType)) {
-                let qr = this.gridLayout.pixelToHex(p);
-                const gridq = Math.ceil(qr.q - 0.5);
-                const gridr = Math.ceil(qr.r - 0.5);
-                // Check if this grid was already drawn
-                if(!this.doesArrayOfArraysContainArray(this.gridMatrix, [gridq, gridr])) {
-                    const vertices = this.gridLayout.polygonCorners({q: gridq, r: gridr});
-                    const arr = this.hexObjsToArr(vertices);
-                    this.renderBrush({
-                        shape: 'polygon',
-                        vertices: arr,
-                        x: 0,
-                        y: 0,
-                        visible: true,
-                        fill: game.user.getFlag(this.layername, 'brushOpacity'),
-                        alpha: 1,
-                    });
-                    this.gridMatrix.push([gridr, gridq]);
+                // Hexagonal grids
+                else if ([2,3,4,5].includes(canvas.scene.data.gridType)) {
+                    let qr = this.gridLayout.pixelToHex(p);
+                    const gridq = Math.ceil(qr.q - 0.5);
+                    const gridr = Math.ceil(qr.r - 0.5);
+                    // Check if this grid was already drawn
+                    if(!this.doesArrayOfArraysContainArray(this.gridMatrix, [gridq, gridr])) {
+                        const vertices = this.gridLayout.polygonCorners({q: gridq, r: gridr});
+                        const arr = this.hexObjsToArr(vertices);
+                        this.renderBrush({
+                            shape: 'polygon',
+                            vertices: arr,
+                            x: 0,
+                            y: 0,
+                            visible: true,
+                            fill: game.user.getFlag(this.layername, 'brushOpacity'),
+                            alpha: 1,
+                        });
+                        this.gridMatrix.push([gridr, gridq]);
+                    }
                 }
-            }
-        }
-        else if (this.op === 'shape') {
+                break;
+            case 'shape':
+                break;
         }
     }
 
@@ -566,96 +581,109 @@ export class MaskLayer extends PlaceablesLayer {
         // Only react on left mouse button
         if (event.data.button === 0) {
             let p = event.data.getLocalPosition(canvas.app.stage);
-
-            // Brush tool
-            if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "brush") {
-                this.op = 'brushing';
-            }
-            // Grid tool
-            else if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "grid") {
-                this.op = 'grid';
-                const grid = canvas.scene.data.grid;
-                const width = canvas.dimensions.width;
-                const height = canvas.dimensions.height;
-                this.boxPreview.visible = true;
-                this.boxPreview.width = grid;
-                this.boxPreview.height = grid;
-                if(canvas.scene.data.gridType === 1) {
-                    this.gridMatrix = new Array(Math.ceil(width / grid)).fill(0).map(() => new Array(Math.ceil(height / grid)).fill(0));
-                }
-                else if(canvas.scene.data.gridType === 2) {
-                    this.gridMatrix = [];
-                    this.gridLayout = new Layout(Layout.pointy, {x:grid/2, y:grid/2}, {x: 0, y: grid / 2});
-                }
-                else if(canvas.scene.data.gridType === 3) {
-                    this.gridMatrix = [];
-                    this.gridLayout = new Layout(Layout.pointy, {x:grid/2, y:grid/2}, {x: Math.sqrt(3) * grid / 4, y: grid / 2});
-                }
-                else if(canvas.scene.data.gridType === 4) {
-                    this.gridMatrix = [];
-                    this.gridLayout = new Layout(Layout.flat, {x:grid/2, y:grid/2}, {x: grid / 2, y: 0});
-                }
-                else if(canvas.scene.data.gridType === 5) {
-                    this.gridMatrix = [];
-                    this.gridLayout = new Layout(Layout.flat, {x:grid/2, y:grid/2}, {x: grid / 2, y: Math.sqrt(3) * grid / 4});
-                }
-            }
-            // Drag box tool
-            else if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "box") {
-                this.op = 'box';
-                this.dragStart.x = p.x;
-                this.dragStart.y = p.y;
-                this.boxPreview.visible = true;
-                this.boxPreview.x = p.x;
-                this.boxPreview.y = p.y;
-            }
-            // Drag ellipse tool
-            else if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "ellipse") {
-                this.op = 'ellipse';
-                this.dragStart.x = p.x;
-                this.dragStart.y = p.y;
-                this.ellipsePreview.x = p.x;
-                this.ellipsePreview.y = p.y;
-                this.ellipsePreview.visible = true;
-
-            }
-            // Poly shape tool
-            else if (ui.controls.controls.find( n => n.name === this.layername ).activeTool === "shape") {
-                if(!this.shape) this.shape = [];
-                let x = Math.floor(p.x);
-                let y = Math.floor(p.y);
-                if(this.shape[0]) {
-                    console.log(this.shape[0].x);
-                    console.log(x)
-                    let xo = Math.abs(this.shape[0].x - x);
-                    let yo = Math.abs(this.shape[0].y - y);
-                    if (xo < shapeCloseDistance && yo < shapeCloseDistance) {
-                        let verts = this.hexObjsToArr(this.shape);
-                        this.renderBrush({
-                            shape: 'shape',
-                            x: 0,
-                            y: 0,
-                            vertices: verts,
-                            visible: true,
-                            fill: game.user.getFlag(this.layername, 'brushOpacity'),
-                            alpha: 1,
-                        });
-                        this.shapePreview.clear();
-                        this.shapePreview.visible = false;
-                        this.shape = [];
-                        console.log(`Closing ${verts}`);
-
-                        return;
+            // Check active tool
+            switch(ui.controls.controls.find( n => n.name === this.layername ).activeTool) {
+                // Activate brush op
+                case 'brush':
+                    this.op = 'brushing';
+                    break;
+                // Activate grid op
+                case 'grid':
+                    this.op = 'grid';
+                    // Get grid type & dimensions
+                    const grid = canvas.scene.data.grid;
+                    const width = canvas.dimensions.width;
+                    const height = canvas.dimensions.height;
+                    // Reveal the preview shape
+                    this.boxPreview.visible = true;
+                    this.boxPreview.width = grid;
+                    this.boxPreview.height = grid;
+                    // Check grid type, create a dupe detection matrix & if hex grid init a layout
+                    switch(canvas.scene.data.gridType) {
+                        // Square grid
+                        case 1:
+                            this.gridMatrix = new Array(Math.ceil(width / grid)).fill(0).map(() => new Array(Math.ceil(height / grid)).fill(0));
+                            break;
+                        // Pointy Hex Odd
+                        case 2:
+                            this.gridMatrix = [];
+                            this.gridLayout = new Layout(Layout.pointy, {x:grid/2, y:grid/2}, {x: 0, y: grid / 2});
+                            break;
+                        // Pointy Hex Even
+                        case 3:
+                            this.gridMatrix = [];
+                            this.gridLayout = new Layout(Layout.pointy, {x:grid/2, y:grid/2}, {x: Math.sqrt(3) * grid / 4, y: grid / 2});
+                            break;
+                        // Flat Hex Odd
+                        case 4:
+                            this.gridMatrix = [];
+                            this.gridLayout = new Layout(Layout.flat, {x:grid/2, y:grid/2}, {x: grid / 2, y: 0});
+                            break;
+                        // Flat Hex Even
+                        case 5:
+                            this.gridMatrix = [];
+                            this.gridLayout = new Layout(Layout.flat, {x:grid/2, y:grid/2}, {x: grid / 2, y: Math.sqrt(3) * grid / 4});
+                            break;
                     }
-                }
-                this.shape.push({x: x, y: y});
-                
-                this.shapePreview.clear();
-                this.shapePreview.beginFill(previewFill);
-                this.shapePreview.drawPolygon(this.hexObjsToArr(this.shape));
-                this.shapePreview.endFill();
-                this.shapePreview.visible = true;
+                    break;
+                // Activate box op, set dragstart & make preview shape visible
+                case 'box':
+                    this.op = 'box';
+                    this.dragStart.x = p.x;
+                    this.dragStart.y = p.y;
+                    this.boxPreview.visible = true;
+                    this.boxPreview.x = p.x;
+                    this.boxPreview.y = p.y;
+                    break;
+                // Activate ellipse op, set dragstart & make preview shape visible
+                case 'ellipse':
+                    this.op = 'ellipse';
+                    this.dragStart.x = p.x;
+                    this.dragStart.y = p.y;
+                    this.ellipsePreview.x = p.x;
+                    this.ellipsePreview.y = p.y;
+                    this.ellipsePreview.visible = true;
+                    break;
+                // Add vertex to shape array
+                case 'shape':
+                    if(!this.shape) this.shape = [];
+                    let x = Math.floor(p.x);
+                    let y = Math.floor(p.y);
+                    // If this is not the first vertex...
+                    if(this.shape.length) {
+                        // Check if new point is close enough to start to close the shape
+                        let xo = Math.abs(this.shape[0].x - x);
+                        let yo = Math.abs(this.shape[0].y - y);
+                        if (xo < shapeCloseDistance && yo < shapeCloseDistance) {
+                            let verts = this.hexObjsToArr(this.shape);
+                            // render the new shape to history
+                            this.renderBrush({
+                                shape: 'shape',
+                                x: 0,
+                                y: 0,
+                                vertices: verts,
+                                visible: true,
+                                fill: game.user.getFlag(this.layername, 'brushOpacity'),
+                                alpha: 1,
+                            });
+                            // Reset the preview shape
+                            this.shapePreview.clear();
+                            this.shapePreview.visible = false;
+                            this.shape = [];
+                            console.log(`Closing ${verts}`);
+                            return;
+                        }
+                    }
+                    // If intermediate vertex, add it to array and redraw the preview
+                    this.shape.push({x: x, y: y});
+                    this.shapePreview.clear();
+                    this.shapePreview.beginFill(previewFill);
+                    this.shapePreview.drawPolygon(this.hexObjsToArr(this.shape));
+                    this.shapePreview.endFill();
+                    this.shapePreview.visible = true;
+                    break;
             }
+            // Call pointermove so single click will still draw brush if mouse does not move
             this.pointerMove(event);
         }
     }
@@ -665,45 +693,44 @@ export class MaskLayer extends PlaceablesLayer {
         if (event.data.button === 0) {
             let p = event.data.getLocalPosition(canvas.app.stage);
             
-            // Drag box tool
-            if (this.op === 'box') {
-                this.renderBrush({
-                    shape: 'box',
-                    x: this.dragStart.x,
-                    y: this.dragStart.y,
-                    width: p.x - this.dragStart.x,
-                    height: p.y - this.dragStart.y,
-                    visible: true,
-                    fill: game.user.getFlag(this.layername, 'brushOpacity'),
-                    alpha: 1,
-                });
-                this.boxPreview.visible = false;
-                this.boxPreview.width = 0;
-                this.boxPreview.height = 0;
-            }
-
-            // Drag ellipse tool
-            else if (this.op === 'ellipse') {
-                this.renderBrush({
-                    shape: 'ellipse',
-                    x: this.dragStart.x,
-                    y: this.dragStart.y,
-                    width: Math.abs(p.x - this.dragStart.x),
-                    height: Math.abs(p.y - this.dragStart.y),
-                    visible: true,
-                    fill: game.user.getFlag(this.layername, 'brushOpacity'),
-                    alpha: 1,
-                });
-                this.ellipsePreview.visible = false;
-                this.ellipsePreview.width = 0;
-                this.ellipsePreview.height = 0;
-            }
-
-            // Grid tool
-            if (this.op === 'grid') {
-                this.boxPreview.visible = false;
-                this.boxPreview.width = 0;
-                this.boxPreview.height = 0;
+            switch (this.op) {
+                // Drag box tool
+                case 'box':
+                    this.renderBrush({
+                        shape: 'box',
+                        x: this.dragStart.x,
+                        y: this.dragStart.y,
+                        width: p.x - this.dragStart.x,
+                        height: p.y - this.dragStart.y,
+                        visible: true,
+                        fill: game.user.getFlag(this.layername, 'brushOpacity'),
+                        alpha: 1,
+                    });
+                    this.boxPreview.visible = false;
+                    this.boxPreview.width = 0;
+                    this.boxPreview.height = 0;
+                    break;
+                // Drag ellipse tool
+                case 'ellipse':
+                    this.renderBrush({
+                        shape: 'ellipse',
+                        x: this.dragStart.x,
+                        y: this.dragStart.y,
+                        width: Math.abs(p.x - this.dragStart.x),
+                        height: Math.abs(p.y - this.dragStart.y),
+                        visible: true,
+                        fill: game.user.getFlag(this.layername, 'brushOpacity'),
+                        alpha: 1,
+                    });
+                    this.ellipsePreview.visible = false;
+                    this.ellipsePreview.width = 0;
+                    this.ellipsePreview.height = 0;
+                    break;
+                case 'grid':
+                    this.boxPreview.visible = false;
+                    this.boxPreview.width = 0;
+                    this.boxPreview.height = 0;
+                    break;
             }
             // Reset operation
             this.op = false;
@@ -731,12 +758,16 @@ export class MaskLayer extends PlaceablesLayer {
         return false;
     }
 
+    /**
+     * Dumps a render of a given pixi container or texture to a new tab
+     */
     pixiDump(tgt = null) {
         canvas.app.render();
         let data = canvas.app.renderer.extract.base64(tgt);
         let win = window.open();
         win.document.write("<img src='" + data + "'/>");
     }
+
     /**
      * Actions upon layer becoming active
      */
