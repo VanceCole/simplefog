@@ -549,8 +549,9 @@ export class MaskLayer extends PlaceablesLayer {
           const x = gridx * grid;
           const y = gridy * grid;
           // Check if this grid was already drawn
-          if (!this.gridMatrix[gridx][gridy]) {
-            this.gridMatrix[gridx][gridy] = 1;
+          if (!this.dupes[gridx][gridy]) {
+            // Flag cell as drawn in dupes
+            this.dupes[gridx][gridy] = 1;
             this.boxPreview.x = x;
             this.boxPreview.y = y;
             this.renderBrush({
@@ -566,12 +567,15 @@ export class MaskLayer extends PlaceablesLayer {
           }
         // Hex Grid
         } else if ([2, 3, 4, 5].includes(canvas.scene.data.gridType)) {
+          // Convert pixel coord to hex coord
           const qr = this.gridLayout.pixelToHex(p);
           const gridq = Math.ceil(qr.q - 0.5);
           const gridr = Math.ceil(qr.r - 0.5);
-          // Check if this grid was already drawn
-          if (!this.doesArrayOfArraysContainArray(this.gridMatrix, [gridq, gridr])) {
+          // Check if this grid cell was already drawn
+          if (!this.doesArrayOfArraysContainArray(this.dupes, [gridq, gridr])) {
+            // Get the vert coords for the hex
             const vertices = this.gridLayout.polygonCorners({ q: gridq, r: gridr });
+            // Convert to array of individual verts
             const arr = this.hexObjsToArr(vertices);
             this.renderBrush({
               shape: 'polygon',
@@ -582,7 +586,8 @@ export class MaskLayer extends PlaceablesLayer {
               fill: game.user.getFlag(this.layername, 'brushOpacity'),
               alpha: 1,
             });
-            this.gridMatrix.push([gridr, gridq]);
+            // Flag cell as drawn in dupes
+            this.dupes.push([gridr, gridq]);
           }
         }
         break;
@@ -594,7 +599,6 @@ export class MaskLayer extends PlaceablesLayer {
   }
 
   pointerDown(event) {
-    console.log(event);
     // Only react on left mouse button
     if (event.data.button === 0) {
       const p = event.data.getLocalPosition(canvas.app.stage);
@@ -619,26 +623,26 @@ export class MaskLayer extends PlaceablesLayer {
           switch (canvas.scene.data.gridType) {
             // Square grid
             case 1:
-              this.gridMatrix = new Array(Math.ceil(width / grid)).fill(0).map(() => new Array(Math.ceil(height / grid)).fill(0));
+              this.dupes = new Array(Math.ceil(width / grid)).fill(0).map(() => new Array(Math.ceil(height / grid)).fill(0));
               break;
               // Pointy Hex Odd
             case 2:
-              this.gridMatrix = [];
+              this.dupes = [];
               this.gridLayout = new Layout(Layout.pointy, { x: grid / 2, y: grid / 2 }, { x: 0, y: grid / 2 });
               break;
               // Pointy Hex Even
             case 3:
-              this.gridMatrix = [];
+              this.dupes = [];
               this.gridLayout = new Layout(Layout.pointy, { x: grid / 2, y: grid / 2 }, { x: Math.sqrt(3) * grid / 4, y: grid / 2 });
               break;
               // Flat Hex Odd
             case 4:
-              this.gridMatrix = [];
+              this.dupes = [];
               this.gridLayout = new Layout(Layout.flat, { x: grid / 2, y: grid / 2 }, { x: grid / 2, y: 0 });
               break;
               // Flat Hex Even
             case 5:
-              this.gridMatrix = [];
+              this.dupes = [];
               this.gridLayout = new Layout(Layout.flat, { x: grid / 2, y: grid / 2 }, { x: grid / 2, y: Math.sqrt(3) * grid / 4 });
               break;
             default:
