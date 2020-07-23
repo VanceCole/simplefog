@@ -16,7 +16,7 @@ const defaultBlurQuality = 2;
 const defaultBrushSize = 50;
 
 // eslint-disable-next-line import/prefer-default-export
-export class MaskLayer extends PlaceablesLayer {
+export class MaskLayer extends CanvasLayer {
   constructor(layername) {
     super();
     this.layername = layername;
@@ -27,13 +27,13 @@ export class MaskLayer extends PlaceablesLayer {
     this.debug = true;
   }
 
-  static get layerOptions() {
-    return mergeObject(super.layerOptions, {
-      canDragCreate: false,
-      objectClass: Note,
-      sheetClass: NoteConfig,
-    });
-  }
+  // static get layerOptions() {
+  //   return mergeObject(super.layerOptions, {
+  //     canDragCreate: false,
+  //     objectClass: Note,
+  //     sheetClass: NoteConfig,
+  //   });
+  // }
 
   /* -------------------------------------------- */
   /*  Init                                        */
@@ -608,7 +608,7 @@ export class MaskLayer extends PlaceablesLayer {
         case 'brush':
           this.op = 'brushing';
           break;
-          // Activate grid op
+        // Activate grid op
         case 'grid':
           this.op = 'grid';
           // Get grid type & dimensions
@@ -649,7 +649,7 @@ export class MaskLayer extends PlaceablesLayer {
               break;
           }
           break;
-          // Activate box op, set dragstart & make preview shape visible
+        // Activate box op, set dragstart & make preview shape visible
         case 'box':
           this.op = 'box';
           this.dragStart.x = p.x;
@@ -658,7 +658,7 @@ export class MaskLayer extends PlaceablesLayer {
           this.boxPreview.x = p.x;
           this.boxPreview.y = p.y;
           break;
-          // Activate ellipse op, set dragstart & make preview shape visible
+        // Activate ellipse op, set dragstart & make preview shape visible
         case 'ellipse':
           this.op = 'ellipse';
           this.dragStart.x = p.x;

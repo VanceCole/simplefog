@@ -29,7 +29,7 @@ Lets you draw fog of war manually
 # bugs
 - error when activating scene with no player token
 - sometimes hex grid tool stops drawing certain hexes
-- create a light, use brush tool, blank journal entries will be created for some reason lol
+- ~~create a light, use mask brush tool, blank journal entries will be created~~
 
 # future features
 - Brush Smoothing / Interpolation
