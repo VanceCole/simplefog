@@ -491,7 +491,6 @@ export class MaskLayer extends CanvasLayer {
    * Adds the mouse listeners to the layer
    */
   registerMouseListeners() {
-    console.log('---------- adding mouse listeners');
     this.addListener('pointerdown', this.pointerDown);
     this.addListener('pointerup', this.pointerUp);
     this.addListener('pointermove', this.pointerMove);
