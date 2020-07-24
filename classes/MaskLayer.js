@@ -32,12 +32,11 @@ export class MaskLayer extends CanvasLayer {
 
     // React to canvas zoom
     Hooks.on('canvasPan', (canvas, dimensions) => {
+      // Scale blur filter radius to account for zooming
       this.blur.blur = this.getBlurRadius() * dimensions.scale;
     });
 
-    /**
-     * React to changes to current scene
-     */
+    // React to changes to current scene
     Hooks.on('updateScene', (scene, data) => {
       // Check if update applies to current viewed scene
       if (!scene._view) return;
@@ -68,14 +67,6 @@ export class MaskLayer extends CanvasLayer {
       if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmTint`)) canvas[this.layername].setTint(data.flags[this.layername].gmTint);
     });
   }
-
-  // static get layerOptions() {
-  //   return mergeObject(super.layerOptions, {
-  //     canDragCreate: false,
-  //     objectClass: Note,
-  //     sheetClass: NoteConfig,
-  //   });
-  // }
 
   /* -------------------------------------------- */
   /*  Init                                        */
@@ -226,7 +217,7 @@ export class MaskLayer extends CanvasLayer {
         this.renderBrush(history.events[i][j], false);
       }
     }
-    // Update pointer
+    // Update local pointer
     this.pointer = stop;
   }
 
@@ -319,11 +310,25 @@ export class MaskLayer extends CanvasLayer {
     const brush = new PIXI.Graphics();
     brush.beginFill(data.fill);
     // Draw the shape depending on type of brush
-    if (data.shape === 'ellipse') brush.drawEllipse(0, 0, data.width, data.height);
-    else if (data.shape === 'box') brush.drawRect(0, 0, data.width, data.height);
-    else if (data.shape === 'roundedRect') brush.drawRoundedRect(0, 0, data.width, data.height, 10);
-    else if (data.shape === 'polygon') brush.drawPolygon(data.vertices);
-    else if (data.shape === 'shape') brush.drawPolygon(data.vertices);
+    switch (data.shape) {
+      case 'ellipse':
+        brush.drawEllipse(0, 0, data.width, data.height);
+        break;
+      case 'box':
+        brush.drawRect(0, 0, data.width, data.height);
+        break;
+      case 'roundedRect':
+        brush.drawRoundedRect(0, 0, data.width, data.height, 10);
+        break;
+      case 'polygon':
+        brush.drawPolygon(data.vertices);
+        break;
+      case 'shape':
+        brush.drawPolygon(data.vertices);
+        break;
+      default:
+        break;
+    }
     // End fill and set the basic props
     brush.endFill();
     brush.alpha = data.alpha;
@@ -429,7 +434,9 @@ export class MaskLayer extends CanvasLayer {
    * @param skip {Boolean} Optional override to skip using animated transition
    */
   async setAlpha(alpha, skip = false) {
+    // If skip is false, do not transition and just set alpha immediately
     if (skip || !canvas.scene.getFlag(this.layername, 'transition')) this.layer.alpha = alpha;
+    // Loop until transition is complete
     else {
       const start = this.layer.alpha;
       const dist = start - alpha;
@@ -439,11 +446,13 @@ export class MaskLayer extends CanvasLayer {
       const rate = dist / (fps * speed / 1000);
       let f = fps * speed / 1000;
       while (f > 0) {
+        // Delay 1 frame before updating again
         // eslint-disable-next-line no-await-in-loop
         await new Promise((resolve) => setTimeout(resolve, frame));
         this.layer.alpha -= rate;
         f -= 1;
       }
+      // Reset target alpha in case loop overshot a bit
       this.layer.alpha = alpha;
     }
   }
