@@ -1,4 +1,7 @@
 import { SimpleFogLayer } from '../classes/SimpleFogLayer.js';
+import { SimplefogSightLayer } from '../classes/SimplefogSightLayer.js';
+
+SightLayer = SimplefogSightLayer;
 
 if (!CONFIG.simplefog) CONFIG.simplefog = {};
 

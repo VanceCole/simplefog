@@ -19,6 +19,7 @@ Lets you draw fog of war manually
 - Allow custom default tint/opacity
 - Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay
 - Allow cancel of current drawing via right click while dragging ?
+-- ~~Implemented for shape tool~~
 - ~~Blur~~
 - Mouse cursor tool indications
 - Documentation

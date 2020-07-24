@@ -206,7 +206,6 @@ export class MaskLayer extends CanvasLayer {
     if (history.events.length === 0) this.resetFog(false);
     if (stop <= this.pointer) {
       this.resetFog(false);
-      // eslint-disable-next-line no-param-reassign
       start = 0;
     }
 
@@ -219,6 +218,8 @@ export class MaskLayer extends CanvasLayer {
     }
     // Update local pointer
     this.pointer = stop;
+    // Update sight layer
+    canvas.sight.update();
   }
 
   /**
