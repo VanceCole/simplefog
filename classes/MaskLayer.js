@@ -117,14 +117,13 @@ export class MaskLayer extends CanvasLayer {
   async initCanvasVars() {
     // Check if masklayer is flagged visible
     const v = canvas.scene.getFlag(this.layername, 'visible');
-    if (v) {
-      this.visible = true;
-    } else if (v === false) {
-      this.visible = false;
-    } else {
+    if (v) this.visible = true;
+    else {
       this.visible = false;
       canvas.scene.setFlag(this.layername, 'visible', false);
     }
+
+    this.sortableChildren = true;
 
     // Set the history pointer
     this.pointer = 0;
@@ -139,6 +138,7 @@ export class MaskLayer extends CanvasLayer {
       height: 100,
       alpha: previewAlpha,
       visible: false,
+      zIndex: 10,
     });
     this.ellipsePreview = this.brush({
       shape: 'ellipse',
@@ -149,6 +149,7 @@ export class MaskLayer extends CanvasLayer {
       height: 100,
       alpha: previewAlpha,
       visible: false,
+      zIndex: 10,
     });
     this.shapePreview = this.brush({
       shape: 'shape',
@@ -158,6 +159,7 @@ export class MaskLayer extends CanvasLayer {
       fill: previewFill,
       alpha: previewAlpha,
       visible: false,
+      zIndex: 10,
     });
     this.shapeHandle = this.brush({
       shape: 'ellipse',
@@ -168,6 +170,7 @@ export class MaskLayer extends CanvasLayer {
       width: shapeCloseDistance,
       height: shapeCloseDistance,
       visible: false,
+      zIndex: 10,
     });
     // Add preview brushes to layer
     this.addChild(this.boxPreview);
@@ -320,6 +323,7 @@ export class MaskLayer extends CanvasLayer {
     brush.visible = data.visible;
     brush.x = data.x;
     brush.y = data.y;
+    brush.zIndex = data.zIndex;
     return brush;
   }
 
@@ -352,6 +356,7 @@ export class MaskLayer extends CanvasLayer {
     sprite.height = d.height;
     sprite.x = 0;
     sprite.y = 0;
+    sprite.zIndex = 0;
     return sprite;
   }
 

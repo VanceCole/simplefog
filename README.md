@@ -19,7 +19,7 @@ Lets you draw fog of war manually
 - Allow custom default tint/opacity
 - Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay
 - Allow cancel of current drawing via right click while dragging ?
-- ~~Blur~~ / sepia / monochrome filters?
+- ~~Blur~~
 - Mouse cursor tool indications
 - Documentation
 - Shift / ctrl shape tool modifiers
@@ -30,7 +30,11 @@ Lets you draw fog of war manually
 - error when activating scene with no player token
 - sometimes hex grid tool stops drawing certain hexes
 - ~~create a light, use mask brush tool, blank journal entries will be created~~
+- ~~preview shapes cannot be seen on full opacity black fog~~
 
 # future features
+- Opacity indactors on brush previews - red / green / grey for hide / show / 50% etc
 - Brush Smoothing / Interpolation
 - Image based fog import
+- localizations
+- sepia / monochrome filters
