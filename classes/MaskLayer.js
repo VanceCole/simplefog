@@ -8,9 +8,9 @@ const playerTintDefault = '0x000000';
 const transitionDefault = true;
 const transitionSpeedDefault = 800;
 const previewFill = 0x00ffff;
-const handleFill = 0xff6400;
+const HANDLEFILL = 0xff6400;
+const HANDLESIZE = 20;
 const previewAlpha = 0.4;
-const shapeCloseDistance = 20;
 const defaultBlurRadius = 0;
 const defaultBlurQuality = 2;
 const defaultBrushSize = 50;
@@ -25,6 +25,43 @@ export class MaskLayer extends CanvasLayer {
     this.gridLayout = {};
     this.dragStart = { x: 0, y: 0 };
     this.debug = true;
+
+    // Register event listerenrs
+    this.registerMouseListeners();
+    this.registerKeyboardListeners();
+
+    /**
+     * React to changes to current scene
+     */
+    Hooks.on('updateScene', (scene, data) => {
+      // Check if update applies to current viewed scene
+      if (!scene._view) return;
+      // React to visibility change
+      if (hasProperty(data, `flags.${this.layername}.visible`)) {
+        canvas[this.layername].visible = data.flags[this.layername].visible;
+      }
+      // React to composite history change
+      if (hasProperty(data, `flags.${this.layername}.blurRadius`)) {
+        canvas[this.layername].setBlurRadius(data.flags[this.layername].blurRadius);
+      }
+      // React to composite history change
+      if (hasProperty(data, `flags.${this.layername}.blurQuality`)) {
+        canvas[this.layername].setBlurQuality(data.flags[this.layername].blurQuality);
+      }
+      // React to composite history change
+      if (hasProperty(data, `flags.${this.layername}.history`)) {
+        canvas[this.layername].renderStack(data.flags[this.layername].history);
+      }
+      // React to alpha/tint changes
+      if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerAlpha`)) {
+        canvas[this.layername].setAlpha(data.flags[this.layername].playerAlpha);
+      }
+      if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmAlpha`)) {
+        canvas[this.layername].setAlpha(data.flags[this.layername].gmAlpha);
+      }
+      if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerTint`)) canvas[this.layername].setTint(data.flags[this.layername].playerTint);
+      if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmTint`)) canvas[this.layername].setTint(data.flags[this.layername].gmTint);
+    });
   }
 
   // static get layerOptions() {
@@ -68,47 +105,8 @@ export class MaskLayer extends CanvasLayer {
     this.setFill();
     this.setAlpha(this.getAlpha(), true);
 
-    // Register event listerenrs
-    this.registerMouseListeners();
-    this.registerKeyboardListeners();
-
     // Render initial history stack
     this.renderStack();
-
-    /**
-     * React to changes to current scene
-     */
-    Hooks.on('updateScene', (scene, data) => {
-      if (scene.data._view) return;
-      // React to visibility change
-      if (hasProperty(data, `flags.${this.layername}.visible`)) {
-        canvas[this.layername].visible = data.flags[this.layername].visible;
-      }
-
-      // React to composite history change
-      if (hasProperty(data, `flags.${this.layername}.blurRadius`)) {
-        canvas[this.layername].setBlurRadius(data.flags[this.layername].blurRadius);
-      }
-      // React to composite history change
-      if (hasProperty(data, `flags.${this.layername}.blurQuality`)) {
-        canvas[this.layername].setBlurQuality(data.flags[this.layername].blurQuality);
-      }
-
-      // React to composite history change
-      if (hasProperty(data, `flags.${this.layername}.history`)) {
-        canvas[this.layername].renderStack(data.flags[this.layername].history);
-      }
-
-      // React to alpha/tint changes
-      if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerAlpha`)) {
-        canvas[this.layername].setAlpha(data.flags[this.layername].playerAlpha);
-      }
-      if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmAlpha`)) {
-        canvas[this.layername].setAlpha(data.flags[this.layername].gmAlpha);
-      }
-      if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerTint`)) canvas[this.layername].setTint(data.flags[this.layername].playerTint);
-      if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmTint`)) canvas[this.layername].setTint(data.flags[this.layername].gmTint);
-    });
   }
 
   /**
@@ -116,13 +114,13 @@ export class MaskLayer extends CanvasLayer {
    */
   async initCanvasVars() {
     // Check if masklayer is flagged visible
-    const v = canvas.scene.getFlag(this.layername, 'visible');
-    if (v) this.visible = true;
+    if (canvas.scene.getFlag(this.layername, 'visible')) this.visible = true;
     else {
       this.visible = false;
       canvas.scene.setFlag(this.layername, 'visible', false);
     }
 
+    // Allow zIndex prop to function for items on this layer
     this.sortableChildren = true;
 
     // Set the history pointer
@@ -162,15 +160,15 @@ export class MaskLayer extends CanvasLayer {
       zIndex: 10,
     });
     this.shapeHandle = this.brush({
-      shape: 'ellipse',
+      shape: 'box',
       x: 0,
       y: 0,
-      fill: handleFill,
+      fill: HANDLEFILL,
+      width: HANDLESIZE * 2,
+      height: HANDLESIZE * 2,
       alpha: previewAlpha,
-      width: shapeCloseDistance,
-      height: shapeCloseDistance,
       visible: false,
-      zIndex: 10,
+      zIndex: 15,
     });
     // Add preview brushes to layer
     this.addChild(this.boxPreview);
@@ -187,8 +185,8 @@ export class MaskLayer extends CanvasLayer {
     if (!canvas.scene.getFlag(this.layername, 'transitionSpeed')) await canvas.scene.setFlag(this.layername, 'transitionSpeed', transitionSpeedDefault);
     if (!game.user.getFlag(this.layername, 'brushOpacity')) await game.user.setFlag(this.layername, 'brushOpacity', 0x000000);
     if (!game.user.getFlag(this.layername, 'brushSize')) await game.user.setFlag(this.layername, 'brushSize', defaultBrushSize);
-    if (!game.user.getFlag(this.layername, 'blurRadius')) await game.user.setFlag(this.layername, 'blurRadius', defaultBlurRadius);
-    if (!game.user.getFlag(this.layername, 'blurQuality')) await game.user.setFlag(this.layername, 'blurQuality', defaultBlurQuality);
+    if (!canvas.scene.getFlag(this.layername, 'blurRadius')) await canvas.scene.setFlag(this.layername, 'blurRadius', defaultBlurRadius);
+    if (!canvas.scene.getFlag(this.layername, 'blurQuality')) await canvas.scene.setFlag(this.layername, 'blurQuality', defaultBlurQuality);
   }
 
   /* -------------------------------------------- */
@@ -201,7 +199,11 @@ export class MaskLayer extends CanvasLayer {
    * @param start {Number}        The position in the history stack to begin rendering from
    * @param start {Number}        The position in the history stack to stop rendering
    */
-  renderStack(history = canvas.scene.getFlag(this.layername, 'history'), start = this.pointer, stop = history.pointer) {
+  renderStack(
+    history = canvas.scene.getFlag(this.layername, 'history'),
+    start = this.pointer,
+    stop = canvas.scene.getFlag(this.layername, 'history.pointer'),
+  ) {
     // If history is blank, do nothing
     if (history === undefined) return;
     // If history is zero, reset scene fog
@@ -244,7 +246,7 @@ export class MaskLayer extends CanvasLayer {
     history.pointer = history.events.length;
     await canvas.scene.unsetFlag(this.layername, 'history');
     await canvas.scene.setFlag(this.layername, 'history', history);
-    console.log(`Pushed ${this.historyBuffer.length} updates.`);
+    if (this.debug) console.log(`Pushed ${this.historyBuffer.length} updates.`);
     // Clear the history buffer
     this.historyBuffer = [];
   }
@@ -438,7 +440,6 @@ export class MaskLayer extends CanvasLayer {
         f -= 1;
       }
       this.layer.alpha = alpha;
-      console.log(this.layer.alpha);
     }
   }
 
@@ -490,10 +491,10 @@ export class MaskLayer extends CanvasLayer {
    * Adds the mouse listeners to the layer
    */
   registerMouseListeners() {
-    this.removeAllListeners();
-    this.on('pointerdown', this.pointerDown);
-    this.on('pointerup', this.pointerUp);
-    this.on('pointermove', this.pointerMove);
+    console.log('---------- adding mouse listeners');
+    this.addListener('pointerdown', this.pointerDown);
+    this.addListener('pointerup', this.pointerUp);
+    this.addListener('pointermove', this.pointerMove);
     this.dragging = false;
     this.brushing = false;
   }
@@ -503,7 +504,6 @@ export class MaskLayer extends CanvasLayer {
    */
   registerKeyboardListeners() {
     $(document).keydown((event) => {
-      console.log(event);
       if (ui.controls.activeControl !== this.layername) return;
       if (event.which === 90 && event.ctrlKey) {
         canvas[this.layername].undo();
@@ -682,7 +682,7 @@ export class MaskLayer extends CanvasLayer {
             // Check if new point is close enough to start to close the shape
             const xo = Math.abs(this.shape[0].x - x);
             const yo = Math.abs(this.shape[0].y - y);
-            if (xo < shapeCloseDistance && yo < shapeCloseDistance) {
+            if (xo < HANDLESIZE && yo < HANDLESIZE) {
               const verts = this.hexObjsToArr(this.shape);
               // render the new shape to history
               this.renderBrush({
@@ -699,14 +699,13 @@ export class MaskLayer extends CanvasLayer {
               this.shapePreview.visible = false;
               this.shapeHandle.visible = false;
               this.shape = [];
-              console.log(`Closing ${verts}`);
               return;
             }
           } else {
             // If this is the first vertex
             // Draw shape handle
-            this.shapeHandle.x = x;
-            this.shapeHandle.y = y;
+            this.shapeHandle.x = x - HANDLESIZE;
+            this.shapeHandle.y = y - HANDLESIZE;
             this.shapeHandle.visible = true;
           }
           // If intermediate vertex, add it to array and redraw the preview
@@ -729,7 +728,6 @@ export class MaskLayer extends CanvasLayer {
   }
 
   pointerUp(event) {
-    console.log(event);
     // Only react to left mouse button
     if (event.data.button === 0) {
       const p = event.data.getLocalPosition(canvas.app.stage);

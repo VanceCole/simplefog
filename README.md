@@ -27,10 +27,11 @@ Lets you draw fog of war manually
 - Keybindings for changing brush size
 
 # bugs
-- error when activating scene with no player token
 - sometimes hex grid tool stops drawing certain hexes
+- ~~error when activating scene with no player token~~
 - ~~create a light, use mask brush tool, blank journal entries will be created~~
 - ~~preview shapes cannot be seen on full opacity black fog~~
+- ~~Switching scenes dupes mouse listeners~~
 
 # future features
 - Opacity indactors on brush previews - red / green / grey for hide / show / 50% etc
