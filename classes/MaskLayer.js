@@ -30,6 +30,11 @@ export class MaskLayer extends CanvasLayer {
     this.registerMouseListeners();
     this.registerKeyboardListeners();
 
+    // React to canvas zoom
+    Hooks.on('canvasPan', (canvas, dimensions) => {
+      this.blur.blur = this.getBlurRadius() * dimensions.scale;
+    });
+
     /**
      * React to changes to current scene
      */

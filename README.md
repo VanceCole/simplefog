@@ -23,7 +23,7 @@ Lets you draw fog of war manually
 - Mouse cursor tool indications
 - Documentation
 - Shift / ctrl shape tool modifiers
-- Blur filter should recalcuate pixel width to maintain consistency with zoom level
+- ~~Blur filter should recalcuate pixel width to maintain consistency with zoom level~~
 - Keybindings for changing brush size
 
 # bugs
