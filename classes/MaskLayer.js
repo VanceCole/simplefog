@@ -226,7 +226,7 @@ export class MaskLayer extends CanvasLayer {
     // Update local pointer
     this.pointer = stop;
     // Update sight layer
-    canvas.sight.update();
+    canvas.sight.update(false);
   }
 
   /**

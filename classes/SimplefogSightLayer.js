@@ -6,9 +6,13 @@
  */
 
 export class SimplefogSightLayer extends SightLayer {
-  update() {
-    super.update();
+  update(updateSuper = true) {
+    if (updateSuper) super.update();
+    // Skip checking placeables if simplefog not visible anyway
+    if (!canvas.simplefog.visible) return;
+    const t = this.timer('sightUpdate');
     // get mask data
+    // Todo: kinda slow, probably a better way to do this
     const mask = canvas.simplefog.getMaskPixels();
     // loop through placeables
     canvas.tokens.placeables.forEach((placeable) => {
@@ -20,11 +24,20 @@ export class SimplefogSightLayer extends SightLayer {
     canvas.walls.placeables.forEach((placeable) => {
       if (placeable.data.door) {
         this.setPlaceableVisibility(placeable, mask);
-        console.log('door');
-        console.log(placeable);
       }
     });
-    console.log();
+    t.stop();
+  }
+
+  timer(name) {
+    const start = new Date();
+    return {
+      stop() {
+        const end = new Date();
+        const time = end.getTime() - start.getTime();
+        console.log('Timer:', name, 'finished in', time, 'ms');
+      },
+    };
   }
 
   /*
@@ -38,6 +51,7 @@ export class SimplefogSightLayer extends SightLayer {
   getCanvasCoords(placeable) {
     let x;
     let y;
+    // Check if placeable is a door
     if (placeable.data.door) {
       x = placeable.doorControl.x;
       y = placeable.doorControl.y;
@@ -59,6 +73,7 @@ export class SimplefogSightLayer extends SightLayer {
     const p = canvas.simplefog.getPixel(pos, mask);
     const pAvg = (p[0] + p[1] + p[2]) / 3;
     const v = (pAvg !== 255);
+    // if this is a door, we set vis on it's control object instead
     if (placeable.data.door) placeable.doorControl.visible = v;
     else placeable.visible = v;
   }
