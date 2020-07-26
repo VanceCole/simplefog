@@ -216,7 +216,7 @@ export class MaskLayer extends CanvasLayer {
       start = 0;
     }
 
-    console.log(`Rendering from: ${start} to ${stop}`);
+    if (this.debug) console.log(`Rendering from: ${start} to ${stop}`);
     // Render all ops starting from pointer
     for (let i = start; i < stop; i += 1) {
       for (let j = 0; j < history.events[i].length; j += 1) {
@@ -858,7 +858,6 @@ export class MaskLayer extends CanvasLayer {
    */
   getPixel(point, mask) {
     // point = this.worldTransform.applyInverse(point, { x: 0, y: 0 });
-    const res = mask.tex.baseTexture.resolution;
     const num = point.x + point.y * mask.tex.width;
     const px = mask.pixels;
     return [px[num * 4], px[num * 4 + 1], px[num * 4 + 2], px[num * 4 + 3]];

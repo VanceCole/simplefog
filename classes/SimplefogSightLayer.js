@@ -8,18 +8,21 @@
 export class SimplefogSightLayer extends SightLayer {
   update() {
     super.update();
-    console.log('-- Updating sight layer');
     // get mask data
     const mask = canvas.simplefog.getMaskPixels();
     // loop through placeables
-    canvas.tokens.placeables.forEach((token) => {
-      // Get canvas coords of token
-      const pos = this.getCanvasCoords(token);
-      // Get pixel at position
-      const p = canvas.simplefog.getPixel(pos, mask);
-      const v = (p[0] === 0);
-      // make placeable invis
-      token.visible = v;
+    canvas.tokens.placeables.forEach((placeable) => {
+      this.setPlaceableVisibility(placeable, mask);
+    });
+    canvas.notes.placeables.forEach((placeable) => {
+      this.setPlaceableVisibility(placeable, mask);
+    });
+    canvas.walls.placeables.forEach((placeable) => {
+      if (placeable.data.door) {
+        this.setPlaceableVisibility(placeable, mask);
+        console.log('door');
+        console.log(placeable);
+      }
     });
     console.log();
   }
@@ -32,11 +35,31 @@ export class SimplefogSightLayer extends SightLayer {
    *
    * If there is a more straight forward way to do this it would be nice!
    */
-  getCanvasCoords(token) {
-    let {x, y} = token._validPosition;
+  getCanvasCoords(placeable) {
+    let x;
+    let y;
+    if (placeable.data.door) {
+      x = placeable.doorControl.x;
+      y = placeable.doorControl.y;
+    } else {
+      x = placeable.data.x;
+      y = placeable.data.y;
+    }
     const { grid } = canvas.scene.data;
     x = Math.round(grid / 2 + x);
     y = Math.round(grid / 2 + y);
     return { x, y };
+  }
+
+  /*
+   * Checks mask opacity at location of placeable and sets visibility
+   */
+  setPlaceableVisibility(placeable, mask) {
+    const pos = this.getCanvasCoords(placeable);
+    const p = canvas.simplefog.getPixel(pos, mask);
+    const pAvg = (p[0] + p[1] + p[2]) / 3;
+    const v = (pAvg !== 255);
+    if (placeable.data.door) placeable.doorControl.visible = v;
+    else placeable.visible = v;
   }
 }
