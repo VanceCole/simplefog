@@ -2,8 +2,7 @@
 Lets you draw fog of war manually
 
 # todo
-- Hide token cursors under fog(?)
-- Core fog sync option(?) (Clamp lighting mask?)
+- Hide token/doors/other interactables under fog
 - ~~Brush sizes~~
 - ~~Brush/tool + - & .5~~
 - ~~Handle canvas resize~~
@@ -16,8 +15,6 @@ Lets you draw fog of war manually
 - ~~Grid snap brush~~
 - ~~Hex grid snap brush~~
 - ~~Optimization~~
-- Allow custom default tint/opacity
-- Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay
 - Allow cancel of current drawing via right click while dragging ?
 -- ~~Implemented for shape tool~~
 - ~~Blur~~
@@ -26,6 +23,9 @@ Lets you draw fog of war manually
 - Shift / ctrl shape tool modifiers
 - ~~Blur filter should recalcuate pixel width to maintain consistency with zoom level~~
 - Keybindings for changing brush size
+
+- Config window
+-- Custom default tint/opacity
 
 # bugs
 - sometimes hex grid tool stops drawing certain hexes
@@ -40,3 +40,4 @@ Lets you draw fog of war manually
 - Image based fog import
 - localizations
 - sepia / monochrome filters
+- Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay

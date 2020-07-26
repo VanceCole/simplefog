@@ -1,3 +1,10 @@
+/* MaskLayer extends CanvasLayer
+ *
+ * Creates an interactive layer which has an alpha channel mask
+ * Includes various tools for manipulating the mask, called brushes
+ * and history for syncing between players and replaying the mask
+ */
+
 import { Layout } from '../libs/hexagons.js';
 
 // Todo: most of these should be config vars
@@ -32,13 +39,13 @@ export class MaskLayer extends CanvasLayer {
 
     // React to canvas zoom
     Hooks.on('canvasPan', (canvas, dimensions) => {
-      // Scale blur filter radius to account for zooming
+    // Scale blur filter radius to account for zooming
       this.blur.blur = this.getBlurRadius() * dimensions.scale;
     });
 
     // React to changes to current scene
     Hooks.on('updateScene', (scene, data) => {
-      // Check if update applies to current viewed scene
+    // Check if update applies to current viewed scene
       if (!scene._view) return;
       // React to visibility change
       if (hasProperty(data, `flags.${this.layername}.visible`)) {
@@ -109,7 +116,7 @@ export class MaskLayer extends CanvasLayer {
    * Set up vars and initialize default values if needed
    */
   async initCanvasVars() {
-    // Check if masklayer is flagged visible
+  // Check if masklayer is flagged visible
     if (canvas.scene.getFlag(this.layername, 'visible')) this.visible = true;
     else {
       this.visible = false;
@@ -200,7 +207,7 @@ export class MaskLayer extends CanvasLayer {
     start = this.pointer,
     stop = canvas.scene.getFlag(this.layername, 'history.pointer'),
   ) {
-    // If history is blank, do nothing
+  // If history is blank, do nothing
     if (history === undefined) return;
     // If history is zero, reset scene fog
     if (history.events.length === 0) this.resetFog(false);
@@ -226,7 +233,7 @@ export class MaskLayer extends CanvasLayer {
    * Add buffered history stack to scene flag and clear buffer
    */
   async commitHistory() {
-    // Do nothing if no history to be committed, otherwise get history
+  // Do nothing if no history to be committed, otherwise get history
     if (this.historyBuffer.length === 0) return;
     let history = canvas.scene.getFlag(this.layername, 'history');
     // If history storage doesnt exist, create it
@@ -253,7 +260,7 @@ export class MaskLayer extends CanvasLayer {
    * @param save {Boolean} If true, also resets the layer history
    */
   resetFog(save = true) {
-    // Fill fog layer with solid
+  // Fill fog layer with solid
     this.setFill();
     // If save, also unset history and reset pointer
     if (save) {
@@ -307,7 +314,7 @@ export class MaskLayer extends CanvasLayer {
    * });
    */
   brush(data) {
-    // Get new graphic & begin filling
+  // Get new graphic & begin filling
     const brush = new PIXI.Graphics();
     brush.beginFill(data.fill);
     // Draw the shape depending on type of brush
@@ -435,7 +442,7 @@ export class MaskLayer extends CanvasLayer {
    * @param skip {Boolean} Optional override to skip using animated transition
    */
   async setAlpha(alpha, skip = false) {
-    // If skip is false, do not transition and just set alpha immediately
+  // If skip is false, do not transition and just set alpha immediately
     if (skip || !canvas.scene.getFlag(this.layername, 'transition')) this.layer.alpha = alpha;
     // Loop until transition is complete
     else {
@@ -529,7 +536,7 @@ export class MaskLayer extends CanvasLayer {
    * Mouse handlers for canvas layer interactions
    */
   pointerMove(event) {
-    // Get mouse position translated to canvas coords
+  // Get mouse position translated to canvas coords
     const p = event.data.getLocalPosition(canvas.app.stage);
     // Brush tool
     switch (this.op) {
@@ -584,7 +591,7 @@ export class MaskLayer extends CanvasLayer {
               alpha: 1,
             });
           }
-        // Hex Grid
+          // Hex Grid
         } else if ([2, 3, 4, 5].includes(canvas.scene.data.gridType)) {
           // Convert pixel coord to hex coord
           const qr = this.gridLayout.pixelToHex(p);
@@ -623,7 +630,7 @@ export class MaskLayer extends CanvasLayer {
       const p = event.data.getLocalPosition(canvas.app.stage);
       // Check active tool
       switch (ui.controls.controls.find((n) => n.name === this.layername).activeTool) {
-        // Activate brush op
+      // Activate brush op
         case 'brush':
           this.op = 'brushing';
           break;
@@ -640,26 +647,26 @@ export class MaskLayer extends CanvasLayer {
           this.boxPreview.height = grid;
           // Check grid type, create a dupe detection matrix & if hex grid init a layout
           switch (canvas.scene.data.gridType) {
-            // Square grid
+          // Square grid
             case 1:
               this.dupes = new Array(Math.ceil(width / grid)).fill(0).map(() => new Array(Math.ceil(height / grid)).fill(0));
               break;
-              // Pointy Hex Odd
+            // Pointy Hex Odd
             case 2:
               this.dupes = [];
               this.gridLayout = new Layout(Layout.pointy, { x: grid / 2, y: grid / 2 }, { x: 0, y: grid / 2 });
               break;
-              // Pointy Hex Even
+            // Pointy Hex Even
             case 3:
               this.dupes = [];
               this.gridLayout = new Layout(Layout.pointy, { x: grid / 2, y: grid / 2 }, { x: Math.sqrt(3) * grid / 4, y: grid / 2 });
               break;
-              // Flat Hex Odd
+            // Flat Hex Odd
             case 4:
               this.dupes = [];
               this.gridLayout = new Layout(Layout.flat, { x: grid / 2, y: grid / 2 }, { x: grid / 2, y: 0 });
               break;
-              // Flat Hex Even
+            // Flat Hex Even
             case 5:
               this.dupes = [];
               this.gridLayout = new Layout(Layout.flat, { x: grid / 2, y: grid / 2 }, { x: grid / 2, y: Math.sqrt(3) * grid / 4 });
@@ -668,7 +675,7 @@ export class MaskLayer extends CanvasLayer {
               break;
           }
           break;
-        // Activate box op, set dragstart & make preview shape visible
+          // Activate box op, set dragstart & make preview shape visible
         case 'box':
           this.op = 'box';
           this.dragStart.x = p.x;
@@ -677,7 +684,7 @@ export class MaskLayer extends CanvasLayer {
           this.boxPreview.x = p.x;
           this.boxPreview.y = p.y;
           break;
-        // Activate ellipse op, set dragstart & make preview shape visible
+          // Activate ellipse op, set dragstart & make preview shape visible
         case 'ellipse':
           this.op = 'ellipse';
           this.dragStart.x = p.x;
@@ -686,7 +693,7 @@ export class MaskLayer extends CanvasLayer {
           this.ellipsePreview.y = p.y;
           this.ellipsePreview.visible = true;
           break;
-          // Add vertex to shape array
+        // Add vertex to shape array
         case 'shape':
           if (!this.shape) this.shape = [];
           const x = Math.floor(p.x);
@@ -736,13 +743,13 @@ export class MaskLayer extends CanvasLayer {
       // Call pointermove so single click will still draw brush if mouse does not move
       this.pointerMove(event);
     } else if (event.data.button === 2) {
-      // Todo: Not sure why this doesnt trigger when drawing
+    // Todo: Not sure why this doesnt trigger when drawing
       this.cancelTool();
     }
   }
 
   pointerUp(event) {
-    // Only react to left mouse button
+  // Only react to left mouse button
     if (event.data.button === 0) {
       const p = event.data.getLocalPosition(canvas.app.stage);
 
@@ -794,7 +801,7 @@ export class MaskLayer extends CanvasLayer {
    * Aborts any active drawing tools
    */
   cancelTool() {
-    // Box preview
+  // Box preview
     this.boxPreview.visible = false;
     // Ellipse Preview
     this.ellipsePreview.visible = false;
@@ -833,6 +840,28 @@ export class MaskLayer extends CanvasLayer {
     const data = canvas.app.renderer.extract.base64(tgt);
     const win = window.open();
     win.document.write(`<img src='${data}'/>`);
+  }
+
+  /**
+   * Extracts pixel data of the mask layer to array
+   */
+  getMaskPixels() {
+    const tex = this.masktexture;
+    const pixels = canvas.app.renderer.plugins.extract.pixels(tex);
+    return { pixels, tex };
+  }
+
+  /**
+   * Gets the RGBA value of a given point from a mask object
+   * @param point {Object} { x: 0, y: 0 }
+   * @param mask  {Object} { pixelarray, texture} - see getMaskPixels()
+   */
+  getPixel(point, mask) {
+    // point = this.worldTransform.applyInverse(point, { x: 0, y: 0 });
+    const res = mask.tex.baseTexture.resolution;
+    const num = point.x + point.y * mask.tex.width;
+    const px = mask.pixels;
+    return [px[num * 4], px[num * 4 + 1], px[num * 4 + 2], px[num * 4 + 3]];
   }
 
   /**
