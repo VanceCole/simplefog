@@ -4,14 +4,14 @@ export default class SimplefogConfig extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ['form'],
-      closeOnSubmit: true,
+      closeOnSubmit: false,
       submitOnChange: true,
       submitOnClose: true,
       popOut: true,
       editable: game.user.isGM,
       width: 500,
       template: 'modules/simplefog/templates/scene-config.html',
-      id: 'filter-config',
+      id: 'simplefog-scene-config',
       title: game.i18n.localize('Simplefog Options'),
     });
   }
@@ -54,18 +54,25 @@ export default class SimplefogConfig extends FormApplication {
    * @private
    */
   async _updateObject(event, formData) {
-    // These settings can be dispatched and will be reacted to by hooks
-    canvas.scene.setFlag('simplefog', 'gmAlpha', formData.gmAlpha / 100);
-    canvas.scene.setFlag('simplefog', 'gmTint', webToHex(formData.gmTint));
-    canvas.scene.setFlag('simplefog', 'playerAlpha', formData.playerAlpha / 100);
-    canvas.scene.setFlag('simplefog', 'playerTint', webToHex(formData.playerTint));
-    canvas.scene.setFlag('simplefog', 'transition', formData.transition);
-    canvas.scene.setFlag('simplefog', 'transitionSpeed', formData.transitionSpeed);
-    canvas.scene.setFlag('simplefog', 'blurRadius', formData.blurRadius);
-    canvas.scene.setFlag('simplefog', 'blurQuality', formData.blurQuality);
-    // These two need to be awaited before calling for a sight update to prevent race condition
-    await canvas.scene.setFlag('simplefog', 'autoVisibility', formData.autoVisibility);
-    await canvas.scene.setFlag('simplefog', 'vThreshold', formData.vThreshold / 100);
+    Object.entries(formData).forEach(async ([key, val]) => {
+      // If setting is an opacity slider, convert from 1-100 to 0-1
+      if (['gmAlpha', 'playerAlpha', 'vThreshold'].includes('key')) val /= 100;
+      // If setting is a color value, convert webcolor to hex before saving
+      if (['gmTint', 'playerTint'].includes('key')) val = webToHex(val);
+      // Save settings to scene
+      await canvas.scene.setFlag('simplefog', key, val);
+      // If saveDefaults button clicked, also save to user's defaults
+      if (event.submitter?.name === 'saveDefaults') game.user.setFlag('simplefog', key, val);
+    });
+
+    // If save button was clicked, close app
+    if (event.submitter?.name === 'submit') {
+      Object.values(ui.windows).forEach((val) => {
+        if (val.id === 'simplefog-scene-config') val.close();
+      });
+    }
+
+    // Update sight layer
     canvas.sight.update();
   }
 }

@@ -192,8 +192,15 @@ export default class MaskLayer extends CanvasLayer {
     this.addChild(this.shapeHandle);
 
     // Set default flags if they dont exist already
-    Object.entries(DEFAULTS).forEach(([key, val]) => {
-      if (this.getSetting(key) === undefined) this.setSetting(key, val);
+    Object.keys(DEFAULTS).forEach((key) => {
+      // Check for existing scene specific setting
+      if (this.getSetting(key) !== undefined) return;
+      // Check for custom default
+      const def = game.user.getFlag(this.layername, key);
+      // If user has custom default, set it for scene
+      if (def !== undefined) this.setSetting(key, def);
+      // Otherwise fall back to module default
+      else this.setSetting(key, DEFAULTS[key]);
     });
     // These two make more sense per user, so set them on the game.user object instead of scene
     if (!game.user.getFlag(this.layername, 'brushOpacity')) game.user.setFlag(this.layername, 'brushOpacity', DEFAULTS.brushOpacity);
