@@ -24,8 +24,10 @@ Lets you draw fog of war manually
 - Keybindings for changing brush size
 
 - Config window
--- Custom default tint/opacity
+-- Allow saving current settings as new default
 -- Visibility options
+--- ~~Disable autoVis~~
+--- ~~Visibility threshold~~
 --- Reveal based on center of token
 --- Reveal only if entire token visible
 --- Reveal if any part of token is visible
