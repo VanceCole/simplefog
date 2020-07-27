@@ -6,6 +6,26 @@
  */
 
 import { Layout } from '../libs/hexagons.js';
+import { hexObjsToArr } from '../js/helpers.js';
+
+const DEFAULTS = {
+  gmAlpha: 0.6,
+  gmTint: '0x000000',
+  playerAlpha: 1,
+  playerTint: '0x000000',
+  transition: true,
+  transitionSpeed: 800,
+  previewFill: 0x00FFFF,
+  handlefill: 0xff6400,
+  handlesize: 20,
+  previewAlpha: 0.4,
+  blurQuality: 2,
+  blurRadius: 5,
+  brushSize: 50,
+  brushOpacity: 1,
+  autoVisibility: false,
+  vThreshold: 1,
+};
 
 // eslint-disable-next-line import/prefer-default-export
 export default class MaskLayer extends CanvasLayer {
@@ -17,24 +37,6 @@ export default class MaskLayer extends CanvasLayer {
     this.gridLayout = {};
     this.dragStart = { x: 0, y: 0 };
     this.debug = true;
-    this.DEFAULTS = {
-      gmAlpha: 0.6,
-      gmTint: '0x000000',
-      playerAlpha: 1,
-      playerTint: '0x000000',
-      transition: true,
-      transitionSpeed: 800,
-      previewFill: 0x00FFFF,
-      handlefill: 0xff6400,
-      handlesize: 20,
-      previewAlpha: 0.4,
-      blurQuality: 2,
-      blurRadius: 5,
-      brushSize: 50,
-      brushOpacity: 1,
-      autoVisibility: false,
-      vThreshold: 1,
-    };
 
     // Register event listerenrs
     this.registerMouseListeners();
@@ -144,8 +146,8 @@ export default class MaskLayer extends CanvasLayer {
       shape: 'box',
       x: 0,
       y: 0,
-      fill: this.DEFAULTS.previewFill,
-      alpha: this.DEFAULTS.previewAlpha,
+      fill: DEFAULTS.previewFill,
+      alpha: DEFAULTS.previewAlpha,
       width: 100,
       height: 100,
       visible: false,
@@ -155,8 +157,8 @@ export default class MaskLayer extends CanvasLayer {
       shape: 'ellipse',
       x: 0,
       y: 0,
-      fill: this.DEFAULTS.previewFill,
-      alpha: this.DEFAULTS.previewAlpha,
+      fill: DEFAULTS.previewFill,
+      alpha: DEFAULTS.previewAlpha,
       width: 100,
       height: 100,
       visible: false,
@@ -167,8 +169,8 @@ export default class MaskLayer extends CanvasLayer {
       x: 0,
       y: 0,
       vertices: [],
-      fill: this.DEFAULTS.previewFill,
-      alpha: this.DEFAULTS.previewAlpha,
+      fill: DEFAULTS.previewFill,
+      alpha: DEFAULTS.previewAlpha,
       visible: false,
       zIndex: 10,
     });
@@ -176,10 +178,10 @@ export default class MaskLayer extends CanvasLayer {
       shape: 'box',
       x: 0,
       y: 0,
-      fill: this.DEFAULTS.handlefill,
-      width: this.DEFAULTS.handlesize * 2,
-      height: this.DEFAULTS.handlesize * 2,
-      alpha: this.DEFAULTS.previewAlpha,
+      fill: DEFAULTS.handlefill,
+      width: DEFAULTS.handlesize * 2,
+      height: DEFAULTS.handlesize * 2,
+      alpha: DEFAULTS.previewAlpha,
       visible: false,
       zIndex: 15,
     });
@@ -190,12 +192,12 @@ export default class MaskLayer extends CanvasLayer {
     this.addChild(this.shapeHandle);
 
     // Set default flags if they dont exist already
-    Object.entries(this.DEFAULTS).forEach(([key, val]) => {
+    Object.entries(DEFAULTS).forEach(([key, val]) => {
       if (this.getSetting(key) === undefined) this.setSetting(key, val);
     });
     // These two make more sense per user, so set them on the game.user object instead of scene
-    if (!game.user.getFlag(this.layername, 'brushOpacity')) game.user.setFlag(this.layername, 'brushOpacity', this.DEFAULTS.brushOpacity);
-    if (!game.user.getFlag(this.layername, 'brushSize')) game.user.setFlag(this.layername, 'brushSize', this.DEFAULTS.brushSize);
+    if (!game.user.getFlag(this.layername, 'brushOpacity')) game.user.setFlag(this.layername, 'brushOpacity', DEFAULTS.brushOpacity);
+    if (!game.user.getFlag(this.layername, 'brushSize')) game.user.setFlag(this.layername, 'brushSize', DEFAULTS.brushSize);
   }
 
   /* -------------------------------------------- */
@@ -394,6 +396,18 @@ export default class MaskLayer extends CanvasLayer {
    * Gets and sets various layer wide properties
    * Some properties have different values depending on if user is a GM or player
    */
+
+  getSetting(name) {
+    return canvas.scene.getFlag(this.layername, name);
+  }
+
+  async setSetting(name, value) {
+    const v = await canvas.scene.setFlag(this.layername, name, value);
+    return v;
+  }
+
+  // Tint & Alpha have special cases because they can differ between GM & Players
+  // And alpha can be animated for transition effects
   getTint() {
     let tint;
     if (game.user.isGM) tint = this.getSetting('gmTint');
@@ -409,22 +423,13 @@ export default class MaskLayer extends CanvasLayer {
     this.layer.tint = tint;
   }
 
-  getSetting(name) {
-    return canvas.scene.getFlag(this.layername, name);
-  }
-
-  async setSetting(name, value) {
-    const v = await canvas.scene.setFlag(this.layername, name, value);
-    return v;
-  }
-
   getAlpha() {
     let alpha;
     if (game.user.isGM) alpha = this.getSetting('gmAlpha');
     else alpha = this.getSetting('playerAlpha');
     if (!alpha) {
-      if (game.user.isGM) alpha = this.DEFAULTS.gmAlpha;
-      else alpha = this.DEFAULTS.playerAlpha;
+      if (game.user.isGM) alpha = DEFAULTS.gmAlpha;
+      else alpha = DEFAULTS.playerAlpha;
     }
     return alpha;
   }
@@ -456,22 +461,6 @@ export default class MaskLayer extends CanvasLayer {
       // Reset target alpha in case loop overshot a bit
       this.layer.alpha = alpha;
     }
-  }
-
-  /**
-   * Converts an object containing coordinate pair arrays into a single array of points for PIXI
-   * @param hex {Object}  An object containing a set of [x,y] pairs
-   */
-  hexObjsToArr(hex) {
-    const a = [];
-    hex.forEach((point) => {
-      a.push(point.x);
-      a.push(point.y);
-    });
-    // Append first point to end of array to complete the shape
-    a.push(hex[0].x);
-    a.push(hex[0].y);
-    return a;
   }
 
   /**
@@ -595,7 +584,7 @@ export default class MaskLayer extends CanvasLayer {
             // Get the vert coords for the hex
             const vertices = this.gridLayout.polygonCorners({ q: gridq, r: gridr });
             // Convert to array of individual verts
-            const arr = this.hexObjsToArr(vertices);
+            const arr = hexObjsToArr(vertices);
             this.renderBrush({
               shape: 'polygon',
               vertices: arr,
@@ -696,8 +685,8 @@ export default class MaskLayer extends CanvasLayer {
             // Check if new point is close enough to start to close the shape
             const xo = Math.abs(this.shape[0].x - x);
             const yo = Math.abs(this.shape[0].y - y);
-            if (xo < this.DEFFAULTS.handlesize && yo < this.DEFAULTS.handlesize) {
-              const verts = this.hexObjsToArr(this.shape);
+            if (xo < this.DEFFAULTS.handlesize && yo < DEFAULTS.handlesize) {
+              const verts = hexObjsToArr(this.shape);
               // render the new shape to history
               this.renderBrush({
                 shape: 'shape',
@@ -718,15 +707,15 @@ export default class MaskLayer extends CanvasLayer {
           } else {
             // If this is the first vertex
             // Draw shape handle
-            this.shapeHandle.x = x - this.DEFAULTS.handlesize;
-            this.shapeHandle.y = y - this.DEFAULTS.handlesize;
+            this.shapeHandle.x = x - DEFAULTS.handlesize;
+            this.shapeHandle.y = y - DEFAULTS.handlesize;
             this.shapeHandle.visible = true;
           }
           // If intermediate vertex, add it to array and redraw the preview
           this.shape.push({ x, y });
           this.shapePreview.clear();
-          this.shapePreview.beginFill(this.DEFAULTS.previewFill);
-          this.shapePreview.drawPolygon(this.hexObjsToArr(this.shape));
+          this.shapePreview.beginFill(DEFAULTS.previewFill);
+          this.shapePreview.drawPolygon(hexObjsToArr(this.shape));
           this.shapePreview.endFill();
           this.shapePreview.visible = true;
           break;

@@ -36,3 +36,19 @@ export function percentToHex(n) {
   c = `0x${c}${c}${c}`;
   return c;
 }
+
+/**
+ * Converts an object containing coordinate pair arrays into a single array of points for PIXI
+ * @param hex {Object}  An object containing a set of [x,y] pairs
+ */
+export function hexObjsToArr(hex) {
+  const a = [];
+  hex.forEach((point) => {
+    a.push(point.x);
+    a.push(point.y);
+  });
+  // Append first point to end of array to complete the shape
+  a.push(hex[0].x);
+  a.push(hex[0].y);
+  return a;
+}
