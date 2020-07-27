@@ -34,7 +34,7 @@ export default class SimplefogConfig extends FormApplication {
       blurRadius: canvas.scene.getFlag('simplefog', 'blurRadius'),
       blurQuality: canvas.scene.getFlag('simplefog', 'blurQuality'),
       autoVisibility: canvas.scene.getFlag('simplefog', 'autoVisibility'),
-      vThreshold: canvas.scene.getFlag('simplefog', 'vThreshold'),
+      vThreshold: canvas.scene.getFlag('simplefog', 'vThreshold') * 100,
     };
   }
 
@@ -65,7 +65,7 @@ export default class SimplefogConfig extends FormApplication {
     canvas.scene.setFlag('simplefog', 'blurQuality', formData.blurQuality);
     // These two need to be awaited before calling for a sight update to prevent race condition
     await canvas.scene.setFlag('simplefog', 'autoVisibility', formData.autoVisibility);
-    await canvas.scene.setFlag('simplefog', 'vThreshold', formData.vThreshold);
+    await canvas.scene.setFlag('simplefog', 'vThreshold', formData.vThreshold / 100);
     canvas.sight.update();
   }
 }

@@ -55,11 +55,16 @@
     </div>
     <div class="form-group">
         <label for="vThreshold">Visibility Threshold</label>
-        <input type="range" name="vThreshold" value="{{ vThreshold }}" min="0" max="1" step=".05" data-dtype="Number"/>
+        <input type="range" name="vThreshold" value="{{ vThreshold }}" min="0" max="100" step="1" data-dtype="Number"/>
         <span class="range-value">{{ vThreshold }}</span>
     </div>
     <hr>
-    <button type="submit" name="save">
-        <i class="fas fa-save"></i> Save current settings as default
-    </button>
+    <footer class="sheet-footer flexrow">
+        <button type="submit" name="save">
+            <i class="fas fa-save"></i> Save current settings as default
+        </button>
+        <button type="submit" name="submit">
+            <i class="fa fa-check"></i> OK
+        </button>
+    </footer>
 </form>
