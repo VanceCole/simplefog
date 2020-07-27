@@ -10,9 +10,8 @@ export default class SimplefogSightLayer extends SightLayer {
     if (updateSuper) super.update();
     // Skip checking placeables if simplefog not visible anyway
     // Skip if autoVisibility not enabled for this scene
-    console.log(canvas.scene.getFlag('simplefog', 'autoVisibility'));
     if (!canvas.scene.getFlag('simplefog', 'autoVisibility')) return;
-    const t = this.timer('sightUpdate');
+    const t = this.timer('AutoVisibility');
     // get mask data
     // Todo: kinda slow, probably a better way to do this
     const mask = canvas.simplefog.getMaskPixels();
@@ -37,7 +36,7 @@ export default class SimplefogSightLayer extends SightLayer {
       stop() {
         const end = new Date();
         const time = end.getTime() - start.getTime();
-        console.log('Timer:', name, 'finished in', time, 'ms');
+        console.log('Simplefog | ', name, 'rendered in', time, 'ms');
       },
     };
   }

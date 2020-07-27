@@ -7,21 +7,6 @@
 
 import { Layout } from '../libs/hexagons.js';
 
-// Todo: most of these should be config vars
-const gmAlphaDefault = 0.6;
-const gmTintDefault = '0x000000';
-const playerAlphaDefault = 1;
-const playerTintDefault = '0x000000';
-const transitionDefault = true;
-const transitionSpeedDefault = 800;
-const previewFill = 0x00ffff;
-const HANDLEFILL = 0xff6400;
-const HANDLESIZE = 20;
-const previewAlpha = 0.4;
-const defaultBlurRadius = 0;
-const defaultBlurQuality = 2;
-const defaultBrushSize = 50;
-
 // eslint-disable-next-line import/prefer-default-export
 export default class MaskLayer extends CanvasLayer {
   constructor(layername) {
@@ -32,6 +17,24 @@ export default class MaskLayer extends CanvasLayer {
     this.gridLayout = {};
     this.dragStart = { x: 0, y: 0 };
     this.debug = true;
+    this.DEFAULTS = {
+      gmAlpha: 0.6,
+      gmTint: '0x000000',
+      playerAlpha: 1,
+      playerTint: '0x000000',
+      transition: true,
+      transitionSpeed: 800,
+      previewFill: 0x00FFFF,
+      handlefill: 0xff6400,
+      handlesize: 20,
+      previewAlpha: 0.4,
+      blurQuality: 2,
+      blurRadius: 5,
+      brushSize: 50,
+      brushOpacity: 1,
+      autoVisibility: false,
+      vThreshold: 1,
+    };
 
     // Register event listerenrs
     this.registerMouseListeners();
@@ -40,7 +43,7 @@ export default class MaskLayer extends CanvasLayer {
     // React to canvas zoom
     Hooks.on('canvasPan', (canvas, dimensions) => {
     // Scale blur filter radius to account for zooming
-      this.blur.blur = this.getBlurRadius() * dimensions.scale;
+      this.blur.blur = this.getSetting('blurRadius') * dimensions.scale;
     });
 
     // React to changes to current scene
@@ -53,11 +56,11 @@ export default class MaskLayer extends CanvasLayer {
       }
       // React to composite history change
       if (hasProperty(data, `flags.${this.layername}.blurRadius`)) {
-        canvas[this.layername].setBlurRadius(data.flags[this.layername].blurRadius);
+        canvas[this.layername].blur.blur = this.getSetting('blurRadius');
       }
       // React to composite history change
       if (hasProperty(data, `flags.${this.layername}.blurQuality`)) {
-        canvas[this.layername].setBlurQuality(data.flags[this.layername].blurQuality);
+        canvas[this.layername].blur.quality = this.getSetting('blurQuality');
       }
       // React to composite history change
       if (hasProperty(data, `flags.${this.layername}.history`)) {
@@ -102,8 +105,8 @@ export default class MaskLayer extends CanvasLayer {
     // this.blur.autoFit = false;
     this.blur.padding = 0;
     this.blur.repeatEdgePixels = true;
-    this.setBlurRadius(this.getBlurRadius());
-    this.setBlurQuality(this.getBlurQuality());
+    this.blur.blur = this.getSetting('blurRadius');
+    this.blur.quality = this.getSetting('blurQuality');
     this.filters = [this.blur];
 
     // Create the mask elements
@@ -124,10 +127,10 @@ export default class MaskLayer extends CanvasLayer {
    */
   async initCanvasVars() {
   // Check if masklayer is flagged visible
-    if (canvas.scene.getFlag(this.layername, 'visible')) this.visible = true;
+    if (this.getSetting('visible')) this.visible = true;
     else {
       this.visible = false;
-      canvas.scene.setFlag(this.layername, 'visible', false);
+      this.setSetting('visible', false);
     }
 
     // Allow zIndex prop to function for items on this layer
@@ -141,10 +144,10 @@ export default class MaskLayer extends CanvasLayer {
       shape: 'box',
       x: 0,
       y: 0,
-      fill: previewFill,
+      fill: this.DEFAULTS.previewFill,
+      alpha: this.DEFAULTS.previewAlpha,
       width: 100,
       height: 100,
-      alpha: previewAlpha,
       visible: false,
       zIndex: 10,
     });
@@ -152,10 +155,10 @@ export default class MaskLayer extends CanvasLayer {
       shape: 'ellipse',
       x: 0,
       y: 0,
-      fill: previewFill,
+      fill: this.DEFAULTS.previewFill,
+      alpha: this.DEFAULTS.previewAlpha,
       width: 100,
       height: 100,
-      alpha: previewAlpha,
       visible: false,
       zIndex: 10,
     });
@@ -164,8 +167,8 @@ export default class MaskLayer extends CanvasLayer {
       x: 0,
       y: 0,
       vertices: [],
-      fill: previewFill,
-      alpha: previewAlpha,
+      fill: this.DEFAULTS.previewFill,
+      alpha: this.DEFAULTS.previewAlpha,
       visible: false,
       zIndex: 10,
     });
@@ -173,10 +176,10 @@ export default class MaskLayer extends CanvasLayer {
       shape: 'box',
       x: 0,
       y: 0,
-      fill: HANDLEFILL,
-      width: HANDLESIZE * 2,
-      height: HANDLESIZE * 2,
-      alpha: previewAlpha,
+      fill: this.DEFAULTS.handlefill,
+      width: this.DEFAULTS.handlesize * 2,
+      height: this.DEFAULTS.handlesize * 2,
+      alpha: this.DEFAULTS.previewAlpha,
       visible: false,
       zIndex: 15,
     });
@@ -187,18 +190,12 @@ export default class MaskLayer extends CanvasLayer {
     this.addChild(this.shapeHandle);
 
     // Set default flags if they dont exist already
-    if (canvas.scene.getFlag(this.layername, 'transition') === undefined) await canvas.scene.setFlag(this.layername, 'transition', transitionDefault);
-    if (!canvas.scene.getFlag(this.layername, 'transitionSpeed')) await canvas.scene.setFlag(this.layername, 'transitionSpeed', transitionSpeedDefault);
-    if (!canvas.scene.getFlag(this.layername, 'gmAlpha')) await canvas.scene.setFlag(this.layername, 'gmAlpha', gmAlphaDefault);
-    if (!canvas.scene.getFlag(this.layername, 'gmTint')) await canvas.scene.setFlag(this.layername, 'gmTint', gmTintDefault);
-    if (!canvas.scene.getFlag(this.layername, 'playerAlpha')) await canvas.scene.setFlag(this.layername, 'playerAlpha', playerAlphaDefault);
-    if (!canvas.scene.getFlag(this.layername, 'playerTint')) await canvas.scene.setFlag(this.layername, 'playerTint', playerTintDefault);
-    if (!canvas.scene.getFlag(this.layername, 'blurRadius')) await canvas.scene.setFlag(this.layername, 'blurRadius', defaultBlurRadius);
-    if (!canvas.scene.getFlag(this.layername, 'blurQuality')) await canvas.scene.setFlag(this.layername, 'blurQuality', defaultBlurQuality);
-    if (canvas.scene.getFlag(this.layername, 'autoVisibility') === undefined) await canvas.scene.setFlag(this.layername, 'autoVisibility', false);
-    if (!canvas.scene.getFlag(this.layername, 'vThreshold')) await canvas.scene.setFlag(this.layername, 'vThreshold', 1);
-    if (!game.user.getFlag(this.layername, 'brushOpacity')) await game.user.setFlag(this.layername, 'brushOpacity', 0x000000);
-    if (!game.user.getFlag(this.layername, 'brushSize')) await game.user.setFlag(this.layername, 'brushSize', defaultBrushSize);
+    Object.entries(this.DEFAULTS).forEach(([key, val]) => {
+      if (this.getSetting(key) === undefined) this.setSetting(key, val);
+    });
+    // These two make more sense per user, so set them on the game.user object instead of scene
+    if (!game.user.getFlag(this.layername, 'brushOpacity')) game.user.setFlag(this.layername, 'brushOpacity', this.DEFAULTS.brushOpacity);
+    if (!game.user.getFlag(this.layername, 'brushSize')) game.user.setFlag(this.layername, 'brushSize', this.DEFAULTS.brushSize);
   }
 
   /* -------------------------------------------- */
@@ -212,9 +209,9 @@ export default class MaskLayer extends CanvasLayer {
    * @param start {Number}        The position in the history stack to stop rendering
    */
   renderStack(
-    history = canvas.scene.getFlag(this.layername, 'history'),
+    history = this.getSetting('history'),
     start = this.pointer,
-    stop = canvas.scene.getFlag(this.layername, 'history.pointer'),
+    stop = this.getSetting('history.pointer'),
   ) {
   // If history is blank, do nothing
     if (history === undefined) return;
@@ -244,7 +241,7 @@ export default class MaskLayer extends CanvasLayer {
   async commitHistory() {
   // Do nothing if no history to be committed, otherwise get history
     if (this.historyBuffer.length === 0) return;
-    let history = canvas.scene.getFlag(this.layername, 'history');
+    let history = this.getSetting('history');
     // If history storage doesnt exist, create it
     if (!history) {
       history = {
@@ -258,7 +255,7 @@ export default class MaskLayer extends CanvasLayer {
     history.events.push(this.historyBuffer);
     history.pointer = history.events.length;
     await canvas.scene.unsetFlag(this.layername, 'history');
-    await canvas.scene.setFlag(this.layername, 'history', history);
+    await this.setSetting('history', history);
     if (this.debug) console.log(`Pushed ${this.historyBuffer.length} updates.`);
     // Clear the history buffer
     this.historyBuffer = [];
@@ -274,7 +271,7 @@ export default class MaskLayer extends CanvasLayer {
     // If save, also unset history and reset pointer
     if (save) {
       canvas.scene.unsetFlag(this.layername, 'history');
-      canvas.scene.setFlag(this.layername, 'history', { events: [], pointer: 0 });
+      this.setSetting('history', { events: [], pointer: 0 });
       this.pointer = 0;
     }
   }
@@ -287,7 +284,7 @@ export default class MaskLayer extends CanvasLayer {
     if (this.debug) console.log(`Undoing ${steps} steps.`);
     // Grab existing history
     // Todo: this could probably just grab and set the pointer for a slight performance improvement
-    let history = canvas.scene.getFlag(this.layername, 'history');
+    let history = this.getSetting('history');
     if (!history) {
       history = {
         events: [],
@@ -299,7 +296,7 @@ export default class MaskLayer extends CanvasLayer {
     // Set new pointer & update history
     history.pointer = newpointer;
     await canvas.scene.unsetFlag(this.layername, 'history');
-    await canvas.scene.setFlag(this.layername, 'history', history);
+    await this.setSetting('history', history);
   }
 
   /* -------------------------------------------- */
@@ -399,8 +396,8 @@ export default class MaskLayer extends CanvasLayer {
    */
   getTint() {
     let tint;
-    if (game.user.isGM) tint = canvas.scene.getFlag(this.layername, 'gmTint');
-    else tint = canvas.scene.getFlag(this.layername, 'playerTint');
+    if (game.user.isGM) tint = this.getSetting('gmTint');
+    else tint = this.getSetting('playerTint');
     if (!tint) {
       if (game.user.isGM) tint = this.gmTintDefault;
       else tint = this.playerTintDefault;
@@ -412,35 +409,22 @@ export default class MaskLayer extends CanvasLayer {
     this.layer.tint = tint;
   }
 
-  getBlurRadius() {
-    let blur;
-    blur = canvas.scene.getFlag(this.layername, 'blurRadius');
-    if (!blur) blur = defaultBlurRadius;
-    return blur;
+  getSetting(name) {
+    return canvas.scene.getFlag(this.layername, name);
   }
 
-  setBlurRadius(r) {
-    this.blur.blur = r;
-  }
-
-  getBlurQuality() {
-    let qual;
-    qual = canvas.scene.getFlag(this.layername, 'blurQuality');
-    if (!qual) qual = defaultBlurQuality;
-    return qual;
-  }
-
-  setBlurQuality(q) {
-    this.blur.quality = q;
+  async setSetting(name, value) {
+    const v = await canvas.scene.setFlag(this.layername, name, value);
+    return v;
   }
 
   getAlpha() {
     let alpha;
-    if (game.user.isGM) alpha = canvas.scene.getFlag(this.layername, 'gmAlpha');
-    else alpha = canvas.scene.getFlag(this.layername, 'playerAlpha');
+    if (game.user.isGM) alpha = this.getSetting('gmAlpha');
+    else alpha = this.getSetting('playerAlpha');
     if (!alpha) {
-      if (game.user.isGM) alpha = this.gmAlphaDefault;
-      else alpha = this.playerAlphaDefault;
+      if (game.user.isGM) alpha = this.DEFAULTS.gmAlpha;
+      else alpha = this.DEFAULTS.playerAlpha;
     }
     return alpha;
   }
@@ -452,13 +436,13 @@ export default class MaskLayer extends CanvasLayer {
    */
   async setAlpha(alpha, skip = false) {
   // If skip is false, do not transition and just set alpha immediately
-    if (skip || !canvas.scene.getFlag(this.layername, 'transition')) this.layer.alpha = alpha;
+    if (skip || !this.getSetting('transition')) this.layer.alpha = alpha;
     // Loop until transition is complete
     else {
       const start = this.layer.alpha;
       const dist = start - alpha;
       const fps = 60;
-      const speed = canvas.scene.getFlag(this.layername, 'transitionSpeed');
+      const speed = this.getSetting('transitionSpeed');
       const frame = 1000 / fps;
       const rate = dist / (fps * speed / 1000);
       let f = fps * speed / 1000;
@@ -505,12 +489,12 @@ export default class MaskLayer extends CanvasLayer {
    * Toggles visibility of primary layer
    */
   toggle() {
-    if (canvas.scene.getFlag(this.layername, 'visible')) {
+    if (this.getSetting('visible')) {
       canvas[this.layername].visible = false;
-      canvas.scene.setFlag(this.layername, 'visible', false);
+      this.setSetting('visible', false);
     } else {
       canvas[this.layername].visible = true;
-      canvas.scene.setFlag(this.layername, 'visible', true);
+      this.setSetting('visible', true);
     }
   }
 
@@ -712,7 +696,7 @@ export default class MaskLayer extends CanvasLayer {
             // Check if new point is close enough to start to close the shape
             const xo = Math.abs(this.shape[0].x - x);
             const yo = Math.abs(this.shape[0].y - y);
-            if (xo < HANDLESIZE && yo < HANDLESIZE) {
+            if (xo < this.DEFFAULTS.handlesize && yo < this.DEFAULTS.handlesize) {
               const verts = this.hexObjsToArr(this.shape);
               // render the new shape to history
               this.renderBrush({
@@ -734,14 +718,14 @@ export default class MaskLayer extends CanvasLayer {
           } else {
             // If this is the first vertex
             // Draw shape handle
-            this.shapeHandle.x = x - HANDLESIZE;
-            this.shapeHandle.y = y - HANDLESIZE;
+            this.shapeHandle.x = x - this.DEFAULTS.handlesize;
+            this.shapeHandle.y = y - this.DEFAULTS.handlesize;
             this.shapeHandle.visible = true;
           }
           // If intermediate vertex, add it to array and redraw the preview
           this.shape.push({ x, y });
           this.shapePreview.clear();
-          this.shapePreview.beginFill(previewFill);
+          this.shapePreview.beginFill(this.DEFAULTS.previewFill);
           this.shapePreview.drawPolygon(this.hexObjsToArr(this.shape));
           this.shapePreview.endFill();
           this.shapePreview.visible = true;
