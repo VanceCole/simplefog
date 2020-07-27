@@ -23,7 +23,7 @@ const defaultBlurQuality = 2;
 const defaultBrushSize = 50;
 
 // eslint-disable-next-line import/prefer-default-export
-export class MaskLayer extends CanvasLayer {
+export default class MaskLayer extends CanvasLayer {
   constructor(layername) {
     super();
     this.layername = layername;
@@ -180,16 +180,16 @@ export class MaskLayer extends CanvasLayer {
     this.addChild(this.shapeHandle);
 
     // Set default flags if they dont exist already
+    if (canvas.scene.getFlag(this.layername, 'transition') === undefined) await canvas.scene.setFlag(this.layername, 'transition', transitionDefault);
+    if (!canvas.scene.getFlag(this.layername, 'transitionSpeed')) await canvas.scene.setFlag(this.layername, 'transitionSpeed', transitionSpeedDefault);
     if (!canvas.scene.getFlag(this.layername, 'gmAlpha')) await canvas.scene.setFlag(this.layername, 'gmAlpha', gmAlphaDefault);
     if (!canvas.scene.getFlag(this.layername, 'gmTint')) await canvas.scene.setFlag(this.layername, 'gmTint', gmTintDefault);
     if (!canvas.scene.getFlag(this.layername, 'playerAlpha')) await canvas.scene.setFlag(this.layername, 'playerAlpha', playerAlphaDefault);
     if (!canvas.scene.getFlag(this.layername, 'playerTint')) await canvas.scene.setFlag(this.layername, 'playerTint', playerTintDefault);
-    if (canvas.scene.getFlag(this.layername, 'transition') === undefined) await canvas.scene.setFlag(this.layername, 'transition', transitionDefault);
-    if (!canvas.scene.getFlag(this.layername, 'transitionSpeed')) await canvas.scene.setFlag(this.layername, 'transitionSpeed', transitionSpeedDefault);
-    if (!game.user.getFlag(this.layername, 'brushOpacity')) await game.user.setFlag(this.layername, 'brushOpacity', 0x000000);
-    if (!game.user.getFlag(this.layername, 'brushSize')) await game.user.setFlag(this.layername, 'brushSize', defaultBrushSize);
     if (!canvas.scene.getFlag(this.layername, 'blurRadius')) await canvas.scene.setFlag(this.layername, 'blurRadius', defaultBlurRadius);
     if (!canvas.scene.getFlag(this.layername, 'blurQuality')) await canvas.scene.setFlag(this.layername, 'blurQuality', defaultBlurQuality);
+    if (!game.user.getFlag(this.layername, 'brushOpacity')) await game.user.setFlag(this.layername, 'brushOpacity', 0x000000);
+    if (!game.user.getFlag(this.layername, 'brushSize')) await game.user.setFlag(this.layername, 'brushSize', defaultBrushSize);
   }
 
   /* -------------------------------------------- */

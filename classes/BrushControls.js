@@ -1,4 +1,4 @@
-export class BrushControls extends FormApplication {
+export default class BrushControls extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ['form'],

@@ -1,5 +1,14 @@
-import { SimplefogConfig } from '../classes/SimplefogConfig.js';
-import { BrushControls } from '../classes/BrushControls.js';
+import SimplefogConfig from '../classes/SimplefogConfig.js';
+import BrushControls from '../classes/BrushControls.js';
+import config from './config.js';
+
+Hooks.once('init', () => {
+  console.log('simplefog | Initializing simplefog');
+  // Register global module settings
+  config.forEach((cfg) => {
+    game.settings.register('simplefog', cfg.name, cfg.data);
+  });
+});
 
 /**
  * Add control buttons

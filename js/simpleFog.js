@@ -1,5 +1,5 @@
-import { SimpleFogLayer } from '../classes/SimpleFogLayer.js';
-import { SimplefogSightLayer } from '../classes/SimplefogSightLayer.js';
+import SimpleFogLayer from '../classes/SimpleFogLayer.js';
+import SimplefogSightLayer from '../classes/SimplefogSightLayer.js';
 
 // Replace sight layer with our extended version that will check token visibility
 SightLayer = SimplefogSightLayer;

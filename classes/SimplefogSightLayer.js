@@ -5,7 +5,7 @@
  * on opacity of simplefog layer mask
  */
 
-export class SimplefogSightLayer extends SightLayer {
+export default class SimplefogSightLayer extends SightLayer {
   update(updateSuper = true) {
     if (updateSuper) super.update();
     // Skip checking placeables if simplefog not visible anyway

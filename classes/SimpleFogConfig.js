@@ -1,4 +1,4 @@
-export class SimplefogConfig extends FormApplication {
+export default class SimplefogConfig extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ['form'],
