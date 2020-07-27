@@ -63,6 +63,13 @@ export default class MaskLayer extends CanvasLayer {
       if (hasProperty(data, `flags.${this.layername}.history`)) {
         canvas[this.layername].renderStack(data.flags[this.layername].history);
       }
+      // React to autoVisibility setting changes
+      if (
+        hasProperty(data, `flags.${this.layername}.autoVisibility`)
+        || hasProperty(data, `flags.${this.layername}.vThreshold`)
+      ) {
+        canvas.sight.update();
+      }
       // React to alpha/tint changes
       if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerAlpha`)) {
         canvas[this.layername].setAlpha(data.flags[this.layername].playerAlpha);
