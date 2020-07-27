@@ -188,6 +188,8 @@ export default class MaskLayer extends CanvasLayer {
     if (!canvas.scene.getFlag(this.layername, 'playerTint')) await canvas.scene.setFlag(this.layername, 'playerTint', playerTintDefault);
     if (!canvas.scene.getFlag(this.layername, 'blurRadius')) await canvas.scene.setFlag(this.layername, 'blurRadius', defaultBlurRadius);
     if (!canvas.scene.getFlag(this.layername, 'blurQuality')) await canvas.scene.setFlag(this.layername, 'blurQuality', defaultBlurQuality);
+    if (canvas.scene.getFlag(this.layername, 'autoVisibility') === undefined) await canvas.scene.setFlag(this.layername, 'autoVisibility', false);
+    if (!canvas.scene.getFlag(this.layername, 'vThreshold')) await canvas.scene.setFlag(this.layername, 'vThreshold', 1);
     if (!game.user.getFlag(this.layername, 'brushOpacity')) await game.user.setFlag(this.layername, 'brushOpacity', 0x000000);
     if (!game.user.getFlag(this.layername, 'brushSize')) await game.user.setFlag(this.layername, 'brushSize', defaultBrushSize);
   }
@@ -675,7 +677,7 @@ export default class MaskLayer extends CanvasLayer {
               break;
           }
           break;
-          // Activate box op, set dragstart & make preview shape visible
+        // Activate box op, set dragstart & make preview shape visible
         case 'box':
           this.op = 'box';
           this.dragStart.x = p.x;
@@ -684,7 +686,7 @@ export default class MaskLayer extends CanvasLayer {
           this.boxPreview.x = p.x;
           this.boxPreview.y = p.y;
           break;
-          // Activate ellipse op, set dragstart & make preview shape visible
+        // Activate ellipse op, set dragstart & make preview shape visible
         case 'ellipse':
           this.op = 'ellipse';
           this.dragStart.x = p.x;
@@ -693,7 +695,7 @@ export default class MaskLayer extends CanvasLayer {
           this.ellipsePreview.y = p.y;
           this.ellipsePreview.visible = true;
           break;
-        // Add vertex to shape array
+        // Draw shapes
         case 'shape':
           if (!this.shape) this.shape = [];
           const x = Math.floor(p.x);

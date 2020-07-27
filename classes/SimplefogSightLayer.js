@@ -9,7 +9,9 @@ export default class SimplefogSightLayer extends SightLayer {
   update(updateSuper = true) {
     if (updateSuper) super.update();
     // Skip checking placeables if simplefog not visible anyway
-    if (!canvas.simplefog.visible) return;
+    // Skip if autoVisibility not enabled for this scene
+    console.log(canvas.scene.getFlag('simplefog', 'autoVisibility'));
+    if (!canvas.scene.getFlag('simplefog', 'autoVisibility')) return;
     const t = this.timer('sightUpdate');
     // get mask data
     // Todo: kinda slow, probably a better way to do this
@@ -72,7 +74,9 @@ export default class SimplefogSightLayer extends SightLayer {
     const pos = this.getCanvasCoords(placeable);
     const p = canvas.simplefog.getPixel(pos, mask);
     const pAvg = (p[0] + p[1] + p[2]) / 3;
-    const v = (pAvg !== 255);
+    console.log(`${pAvg / 255} / ${canvas.scene.getFlag('simplefog', 'vThreshold')}`);
+    const v = ((pAvg / 255) < canvas.scene.getFlag('simplefog', 'vThreshold'));
+    console.log(v);
     // if this is a door, we set vis on it's control object instead
     if (placeable.data.door) placeable.doorControl.visible = v;
     else placeable.visible = v;

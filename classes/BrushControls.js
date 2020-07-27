@@ -1,3 +1,5 @@
+import { hexToPercent, percentToHex } from '../js/helpers.js';
+
 export default class BrushControls extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
@@ -49,25 +51,4 @@ export default class BrushControls extends FormApplication {
     game.user.setFlag('simplefog', 'brushOpacity', percentToHex(formData.brushOpacity));
     game.user.setFlag('simplefog', 'brushMode', $('input[name="mode"]:checked').val());
   }
-}
-
-/**
- * Converts a hexadecimal color to an integer percentage
- * @param n {Hex}               Base 16 Color, f.x. 0x000000
- * @return {Integer}             f.x 0
- */
-function hexToPercent(n) {
-  return Math.ceil(n / 0xFFFFFF * 100);
-}
-
-/**
- * Converts an integer percent (0-100) to a hexadecimal greyscale color
- * @param n {Number}            0-100 numeric input
- * @return {Hex}                Base 16 format color, f.x. 0xFFFFFF
- */
-function percentToHex(n) {
-  let c = Math.ceil(n * 2.55).toString(16);
-  if (c.length === 1) c = `0${c}`;
-  c = `0x${c}${c}${c}`;
-  return c;
 }

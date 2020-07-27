@@ -23,7 +23,7 @@
         <span class="range-value">{{ playerAlpha }}</span>
     </div>
     <hr>
-    <h3 class="form-header"><i class="fas fa-low-vision"></i> Filter Settings</h3>
+    <h3 class="form-header"><i class="fas fa-filter"></i> Filter Settings</h3>
     <div class="form-group">
         <label for="blur">Blur Radius</label>
         <input type="range" name="blurRadius" value="{{ blurRadius }}" min="0" max="50" step="1" data-dtype="Number"/>
@@ -33,16 +33,33 @@
         <label for="blurQuality">Blur Quality</label>
         <input type="range" name="blurQuality" value="{{ blurQuality }}" min="1" max="8" step="1" data-dtype="Number"/>
         <span class="range-value">{{ blurQuality }}</span>
+        <p class="notes">Higher blur quality improves the appearance of the blur effect, but may cause slower performance.</p>
     </div>
     <hr>
     <h3 class="form-header"><i class="fas fa-adjust"></i> Transition Settings</h3>
     <div class="form-group">
         <label for="transition">Enable Transitions</label>
-        <input type='checkbox' checked="{{ transition }}" name='transition'/>
+        <input type='checkbox' {{#if transition}}checked{{/if}} name='transition'/>
     </div>
     <div class="form-group">
         <label for="transitionSpeed">Transition Speed</label>
         <input type="range" name="transitionSpeed" value="{{ transitionSpeed }}" min="100" max="5000" step="100" data-dtype="Number"/>
         <span class="range-value">{{ transitionSpeed }}</span>
     </div>
+    <hr>
+    <h3 class="form-header"><i class="fas fa-low-vision"></i> Visibility Settings</h3>
+    <p class="notes"><b>Please Note:</b> Automatic visibility may cause slow performance on scenes with large dimensions. I hope to improve the speed of this feature in the near future, but for now please use with caution!</p>
+    <div class="form-group">
+        <label for="autoVisibility">Enable Automatic Visibility</label>
+        <input type='checkbox' {{#if autoVisibility}}checked{{/if}} name='autoVisibility'/>
+    </div>
+    <div class="form-group">
+        <label for="vThreshold">Visibility Threshold</label>
+        <input type="range" name="vThreshold" value="{{ vThreshold }}" min="0" max="1" step=".05" data-dtype="Number"/>
+        <span class="range-value">{{ vThreshold }}</span>
+    </div>
+    <hr>
+    <button type="submit" name="save">
+        <i class="fas fa-save"></i> Save current settings as default
+    </button>
 </form>

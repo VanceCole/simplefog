@@ -1,3 +1,5 @@
+import { webToHex, hexToWeb } from '../js/helpers.js';
+
 export default class SimplefogConfig extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
@@ -7,7 +9,7 @@ export default class SimplefogConfig extends FormApplication {
       submitOnClose: true,
       popOut: true,
       editable: game.user.isGM,
-      width: 400,
+      width: 500,
       template: 'modules/simplefog/templates/config.html',
       id: 'filter-config',
       title: game.i18n.localize('Simplefog Options'),
@@ -31,6 +33,8 @@ export default class SimplefogConfig extends FormApplication {
       transitionSpeed: canvas.scene.getFlag('simplefog', 'transitionSpeed'),
       blurRadius: canvas.scene.getFlag('simplefog', 'blurRadius'),
       blurQuality: canvas.scene.getFlag('simplefog', 'blurQuality'),
+      autoVisibility: canvas.scene.getFlag('simplefog', 'autoVisibility'),
+      vThreshold: canvas.scene.getFlag('simplefog', 'vThreshold'),
     };
   }
 
@@ -49,7 +53,8 @@ export default class SimplefogConfig extends FormApplication {
    * @param formData {Object}   The object of validated form data with which to update the object
    * @private
    */
-  _updateObject(event, formData) {
+  async _updateObject(event, formData) {
+    // These settings can be dispatched and will be reacted to by hooks
     canvas.scene.setFlag('simplefog', 'gmAlpha', formData.gmAlpha / 100);
     canvas.scene.setFlag('simplefog', 'gmTint', webToHex(formData.gmTint));
     canvas.scene.setFlag('simplefog', 'playerAlpha', formData.playerAlpha / 100);
@@ -58,23 +63,9 @@ export default class SimplefogConfig extends FormApplication {
     canvas.scene.setFlag('simplefog', 'transitionSpeed', formData.transitionSpeed);
     canvas.scene.setFlag('simplefog', 'blurRadius', formData.blurRadius);
     canvas.scene.setFlag('simplefog', 'blurQuality', formData.blurQuality);
+    // These two need to be awaited before calling for a sight update to prevent race condition
+    await canvas.scene.setFlag('simplefog', 'autoVisibility', formData.autoVisibility);
+    await canvas.scene.setFlag('simplefog', 'vThreshold', formData.vThreshold);
+    canvas.sight.update();
   }
-}
-
-/**
- * Converts web colors to base 16
- * @param n {Hex}               Web format color, f.x. #FF0000
- * @return {Hex}                Base 16 format color, f.x. 0xFF0000
- */
-function webToHex(n) {
-  return n.replace('#', '0x');
-}
-
-/**
- * Converts a base16 color into a web color
- * @param n {Hex}               Base 16 Color, f.x. 0xFF0000
- * @return {Hex}                Web format color, f.x. #FF0000
- */
-function hexToWeb(n) {
-  return (`${n}`).replace('0x', '#');
 }
