@@ -4,13 +4,13 @@ export default class SimplefogConfig extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ['form'],
-      closeOnSubmit: false,
+      closeOnSubmit: true,
       submitOnChange: true,
       submitOnClose: true,
       popOut: true,
       editable: game.user.isGM,
       width: 500,
-      template: 'modules/simplefog/templates/config.html',
+      template: 'modules/simplefog/templates/scene-config.html',
       id: 'filter-config',
       title: game.i18n.localize('Simplefog Options'),
     });
