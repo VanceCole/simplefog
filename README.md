@@ -18,7 +18,6 @@ Lets you draw fog of war manually
 - ~~Blur~~
 - ~~Mouse cursor tool indications~~
 - ~~Allow cancel of current drawing via right click while dragging~~
-    - implemented for shape tool, but ellipse / box not working
 - Documentation
 - Shift / ctrl shape tool modifiers
 - ~~Blur filter should recalcuate pixel width to maintain consistency with zoom level~~
@@ -34,6 +33,7 @@ Lets you draw fog of war manually
 
 # bugs
 - sometimes hex grid tool stops drawing certain hexes
+- right click to cancel during draw for ellipse / box tool does not respond to event
 - ~~error when activating scene with no player token~~
 - ~~create a light, use mask brush tool, blank journal entries will be created~~
 - ~~preview shapes cannot be seen on full opacity black fog~~

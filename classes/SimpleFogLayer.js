@@ -364,7 +364,7 @@ export default class SimpleFogLayer extends MaskLayer {
   /**
    * pointerDown handlers for each tool
    */
-  _pointerDownGrid(p) {
+  _pointerDownGrid() {
     // Set active drag operation
     this.op = 'grid';
     // Get grid type & dimensions
