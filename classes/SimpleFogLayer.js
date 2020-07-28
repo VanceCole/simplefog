@@ -252,6 +252,9 @@ export default class SimpleFogLayer extends MaskLayer {
     });
   }
 
+  /**
+   * Sets the active tool & shows preview for brush & grid tools
+   */
   setActiveTool(tool) {
     this.clearActiveTool();
     this.activeTool = tool;
@@ -289,26 +292,7 @@ export default class SimpleFogLayer extends MaskLayer {
 
   /**
    * Mouse handlers for canvas layer interactions
-   *
-   * Todo: actions need to be refactored out for clarity
    */
-  _pointerMove(event) {
-  // Get mouse position translated to canvas coords
-    const p = event.data.getLocalPosition(canvas.app.stage);
-    switch (this.activeTool) {
-      case 'brush': this._pointerMoveBrush(p);
-        break;
-      case 'box': this._pointerMoveBox(p);
-        break;
-      case 'grid': this._pointerMoveGrid(p);
-        break;
-      case 'ellipse': this._pointerMoveEllipse(p);
-        break;
-      default:
-        break;
-    }
-  }
-
   _pointerDown(event) {
     // Only react on left mouse button
     if (event.data.button === 0) {
@@ -339,16 +323,31 @@ export default class SimpleFogLayer extends MaskLayer {
     }
   }
 
+  _pointerMove(event) {
+  // Get mouse position translated to canvas coords
+    const p = event.data.getLocalPosition(canvas.app.stage);
+    switch (this.activeTool) {
+      case 'brush': this._pointerMoveBrush(p);
+        break;
+      case 'box': this._pointerMoveBox(p);
+        break;
+      case 'grid': this._pointerMoveGrid(p);
+        break;
+      case 'ellipse': this._pointerMoveEllipse(p);
+        break;
+      default:
+        break;
+    }
+  }
+
   _pointerUp(event) {
   // Only react to left mouse button
     if (event.data.button === 0) {
       // Translate click to canvas position
       const p = event.data.getLocalPosition(canvas.app.stage);
       switch (this.op) {
-        // Drag box tool
         case 'box': this._pointerUpBox(p);
           break;
-        // Drag ellipse tool
         case 'ellipse': this._pointerUpEllipse(p);
           break;
         default: // Do nothing
@@ -361,21 +360,9 @@ export default class SimpleFogLayer extends MaskLayer {
     }
   }
 
-  /**
-   * pointerDown handlers for each tool
+  /*
+   * Box Tool
    */
-  _pointerDownGrid() {
-    // Set active drag operation
-    this.op = 'grid';
-    // Get grid type & dimensions
-    const { grid } = canvas.scene.data;
-    // Reveal the preview shape
-    this.boxPreview.visible = true;
-    this.boxPreview.width = grid;
-    this.boxPreview.height = grid;
-    this._initGrid();
-  }
-
   _pointerDownBox(p) {
     // Set active drag operation
     this.op = 'box';
@@ -388,6 +375,32 @@ export default class SimpleFogLayer extends MaskLayer {
     this.boxPreview.y = p.y;
   }
 
+  _pointerMoveBox(p) {
+    // If drag operation has started
+    if (this.op) {
+      // Just update the preview shape
+      this.boxPreview.width = p.x - this.dragStart.x;
+      this.boxPreview.height = p.y - this.dragStart.y;
+    }
+  }
+
+  _pointerUpBox(p) {
+    this.renderBrush({
+      shape: 'box',
+      x: this.dragStart.x,
+      y: this.dragStart.y,
+      width: p.x - this.dragStart.x,
+      height: p.y - this.dragStart.y,
+      visible: true,
+      fill: game.user.getFlag(this.layername, 'brushOpacity'),
+      alpha: 1,
+    });
+    this.boxPreview.visible = false;
+  }
+
+  /*
+   * Ellipse Tool
+   */
   _pointerDownEllipse(p) {
     // Set active drag operation
     this.op = 'ellipse';
@@ -400,6 +413,32 @@ export default class SimpleFogLayer extends MaskLayer {
     this.ellipsePreview.visible = true;
   }
 
+  _pointerMoveEllipse(p) {
+    // If drag operation has started
+    if (this.op) {
+      // Just update the preview shape
+      this.ellipsePreview.width = (p.x - this.dragStart.x) * 2;
+      this.ellipsePreview.height = (p.y - this.dragStart.y) * 2;
+    }
+  }
+
+  _pointerUpEllipse(p) {
+    this.renderBrush({
+      shape: 'ellipse',
+      x: this.dragStart.x,
+      y: this.dragStart.y,
+      width: Math.abs(p.x - this.dragStart.x),
+      height: Math.abs(p.y - this.dragStart.y),
+      visible: true,
+      fill: game.user.getFlag(this.layername, 'brushOpacity'),
+      alpha: 1,
+    });
+    this.ellipsePreview.visible = false;
+  }
+
+  /*
+   * Shape Tool
+   */
   _pointerDownShape(p) {
     if (!this.shape) this.shape = [];
     const x = Math.floor(p.x);
@@ -445,46 +484,18 @@ export default class SimpleFogLayer extends MaskLayer {
   }
 
   /**
-   * pointerMove handlers for each tool
+   * Grid Tool
    */
-  _pointerMoveBrush(p) {
-    const size = game.user.getFlag(this.layername, 'brushSize');
-    this.ellipsePreview.width = size * 2;
-    this.ellipsePreview.height = size * 2;
-    this.ellipsePreview.x = p.x;
-    this.ellipsePreview.y = p.y;
-    // If drag operation has started
-    if (this.op) {
-      // Send brush movement events to renderbrush to be drawn and added to history stack
-      this.renderBrush({
-        shape: 'ellipse',
-        x: p.x,
-        y: p.y,
-        fill: game.user.getFlag(this.layername, 'brushOpacity'),
-        width: game.user.getFlag(this.layername, 'brushSize'),
-        height: game.user.getFlag(this.layername, 'brushSize'),
-        alpha: 1,
-        visible: true,
-      });
-    }
-  }
-
-  _pointerMoveBox(p) {
-    // If drag operation has started
-    if (this.op) {
-      // Just update the preview shape
-      this.boxPreview.width = p.x - this.dragStart.x;
-      this.boxPreview.height = p.y - this.dragStart.y;
-    }
-  }
-
-  _pointerMoveEllipse(p) {
-    // If drag operation has started
-    if (this.op) {
-      // Just update the preview shape
-      this.ellipsePreview.width = (p.x - this.dragStart.x) * 2;
-      this.ellipsePreview.height = (p.y - this.dragStart.y) * 2;
-    }
+  _pointerDownGrid() {
+    // Set active drag operation
+    this.op = 'grid';
+    // Get grid type & dimensions
+    const { grid } = canvas.scene.data;
+    // Reveal the preview shape
+    this.boxPreview.visible = true;
+    this.boxPreview.width = grid;
+    this.boxPreview.height = grid;
+    this._initGrid();
   }
 
   _pointerMoveGrid(p) {
@@ -528,7 +539,6 @@ export default class SimpleFogLayer extends MaskLayer {
       this.shapePreview.beginFill(DEFAULTS.previewFill);
       this.shapePreview.drawPolygon(vertexArray);
       this.shapePreview.endFill();
-      this.shapePreview.visible = true;
       // If drag operation has started
       if (this.op) {
         // Check if this grid cell was already drawn
@@ -548,37 +558,6 @@ export default class SimpleFogLayer extends MaskLayer {
         }
       }
     }
-  }
-
-  /**
-   * pointerUp handlers for each tool
-   */
-  _pointerUpBox(p) {
-    this.renderBrush({
-      shape: 'box',
-      x: this.dragStart.x,
-      y: this.dragStart.y,
-      width: p.x - this.dragStart.x,
-      height: p.y - this.dragStart.y,
-      visible: true,
-      fill: game.user.getFlag(this.layername, 'brushOpacity'),
-      alpha: 1,
-    });
-    this.boxPreview.visible = false;
-  }
-
-  _pointerUpEllipse(p) {
-    this.renderBrush({
-      shape: 'ellipse',
-      x: this.dragStart.x,
-      y: this.dragStart.y,
-      width: Math.abs(p.x - this.dragStart.x),
-      height: Math.abs(p.y - this.dragStart.y),
-      visible: true,
-      fill: game.user.getFlag(this.layername, 'brushOpacity'),
-      alpha: 1,
-    });
-    this.ellipsePreview.visible = false;
   }
 
   /*
