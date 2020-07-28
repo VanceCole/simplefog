@@ -248,13 +248,12 @@ export default class SimplefogLayer extends MaskLayer {
     $(document).keydown((event) => {
       // Only react if simplefog layer is active
       if (ui.controls.activeControl !== this.layername) return;
-      console.log(event);
       if (event.which === 219 && this.activeTool === 'brush') {
-        let s = game.user.getFlag(this.layername, 'brushSize');
+        const s = game.user.getFlag(this.layername, 'brushSize');
         this.setBrushSize(s * 0.8);
       }
       if (event.which === 221 && this.activeTool === 'brush') {
-        let s = game.user.getFlag(this.layername, 'brushSize');
+        const s = game.user.getFlag(this.layername, 'brushSize');
         this.setBrushSize(s * 1.25);
       }
       // React to ctrl+z
@@ -295,7 +294,8 @@ export default class SimplefogLayer extends MaskLayer {
    */
   async setBrushSize(s) {
     await game.user.setFlag(this.layername, 'brushSize', s);
-    this._pointerMoveBrush();
+    let p = { x: this.ellipsePreview.x, y: this.ellipsePreview.y };
+    this._pointerMoveBrush(p);
   }
 
   /**
