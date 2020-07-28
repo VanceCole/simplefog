@@ -19,18 +19,19 @@ Lets you draw fog of war manually
 - ~~Mouse cursor tool indications~~
 -- todo: hex grid
 - ~~Allow cancel of current drawing via right click while dragging
--- implemented for shape tool, but ellipse / box not working
+    - implemented for shape tool, but ellipse / box not working
 - Documentation
 - Shift / ctrl shape tool modifiers
 - ~~Blur filter should recalcuate pixel width to maintain consistency with zoom level~~
 - Keybindings for changing brush size
 - ~~Allow saving current settings as new default~~
 - Visibility options
--- ~~Disable autoVis~~
--- ~~Visibility threshold~~
--- Reveal based on center of token
--- Reveal only if entire token visible
--- Reveal if any part of token is visible
+    - ~~Disable autoVis~~
+    - ~~Visibility threshold~~
+    - Reveal based on center of token
+    - Reveal only if entire token visible
+    - Reveal if any part of token is visible
+- Refactor mouse events handlers
 
 # bugs
 - sometimes hex grid tool stops drawing certain hexes

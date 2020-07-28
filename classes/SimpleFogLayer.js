@@ -288,6 +288,8 @@ export default class SimpleFogLayer extends MaskLayer {
 
   /**
    * Mouse handlers for canvas layer interactions
+   *
+   * Todo: actions need to be refactored out for clarity
    */
   _pointerMove(event) {
   // Get mouse position translated to canvas coords
