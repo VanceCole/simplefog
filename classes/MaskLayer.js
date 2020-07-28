@@ -32,8 +32,11 @@ export default class MaskLayer extends CanvasLayer {
    * layer.mask  - PIXI Sprite wrapping the renderable mask
    * masktexture - renderable texture that holds the actual mask data
    */
-  async layerInit() {
-    await this.initLayerVars();
+  async maskInit() {
+    // Check if masklayer is flagged visible
+    let v = this.getSetting('visible');
+    if (v === undefined) v = false;
+    this.visible = v;
 
     // The layer is the primary sprite to be displayed
     this.layer = this.getCanvasSprite();
@@ -63,16 +66,6 @@ export default class MaskLayer extends CanvasLayer {
 
     // Render initial history stack
     this.renderStack();
-  }
-
-  /**
-   * Set up vars and initialize default values if needed
-   */
-  async initLayerVars() {
-  // Check if masklayer is flagged visible
-    let v = this.getSetting('visible');
-    if (v === undefined) v = false;
-    this.visible = v;
   }
 
   /* -------------------------------------------- */

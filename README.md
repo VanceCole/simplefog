@@ -18,7 +18,6 @@ Lets you draw fog of war manually
 - ~~Blur~~
 - ~~Mouse cursor tool indications~~
 - ~~Allow cancel of current drawing via right click while dragging~~
-- Documentation
 - ~~Shift shape tool modifiers~~
 - ~~Blur filter should recalcuate pixel width to maintain consistency with zoom level~~
 - Keybindings for changing brush size
@@ -30,6 +29,7 @@ Lets you draw fog of war manually
     - Reveal only if entire token visible
     - Reveal if any part of token is visible
 - ~~Refactor mouse events handlers~~
+- Documentation
 
 # bugs
 - sometimes hex grid tool stops drawing certain hexes

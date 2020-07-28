@@ -18,6 +18,5 @@ Hooks.once('canvasInit', () => {
 });
 
 Hooks.on('canvasInit', () => {
-  canvas.simplefog.layerInit();
-  canvas.simplefog.fogInit();
+  canvas.simplefog.init();
 });

@@ -43,11 +43,8 @@ export default class SimplefogLayer extends MaskLayer {
     Hooks.on('updateScene', (scene, data) => { this._updateScene(scene, data); });
   }
 
-  async fogInit() {
-    await this._initFogVars();
-  }
-
-  _initFogVars() {
+  async init() {
+    this.maskInit();
     // Preview brush objects
     this.boxPreview = this.brush({
       shape: 'box',
