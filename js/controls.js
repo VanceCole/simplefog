@@ -85,12 +85,19 @@ Hooks.on('getSceneControlButtons', (controls) => {
 
 /**
  * Handles adding the custom brush controls pallet
+ * and switching active brush flag
  */
 Hooks.on('renderSceneControls', (controls) => {
   if (controls.activeControl === 'simplefog') {
-    if ($('#simplefog-brush-controls').length) return;
-    new BrushControls().render(true);
+    // Open brush tools if not already open
+    if (!$('#simplefog-brush-controls').length) new BrushControls().render(true);
+    // Set active tool
+    const tool = controls.controls.find((control) => control.name === 'simplefog').activeTool;
+    canvas.simplefog.setActiveTool(tool);
   } else {
+    // Clear active tool
+    canvas.simplefog.clearActiveTool();
+    // Remove brush tools if open
     const sf = $('#simplefog-brush-controls');
     if (sf) sf.remove();
   }

@@ -252,12 +252,73 @@ export default class SimpleFogLayer extends MaskLayer {
     });
   }
 
+  setActiveTool(tool) {
+    this.clearActiveTool();
+    this.activeTool = tool;
+    if (tool === 'brush') this.ellipsePreview.visible = true;
+    else if (tool === 'grid') {
+      if (canvas.scene.data.gridType === 1) {
+        this.boxPreview.visible = true;
+      } else if ([2, 3, 4, 5].includes(canvas.scene.data.gridType)) {
+        this.shapePreview = visible;
+      }
+    }
+  }
+
+  clearActiveTool() {
+    if (this.activeTool) {
+      this.ellipsePreview.visible = false;
+      this.boxPreview.visible = false;
+      this.shapePreview.visible = false;
+    }
+    this.activeTool = false;
+  }
+
   /**
    * Mouse handlers for canvas layer interactions
    */
   _pointerMove(event) {
   // Get mouse position translated to canvas coords
     const p = event.data.getLocalPosition(canvas.app.stage);
+    let x;
+    let y;
+    let gridx;
+    let gridy;
+    let gridq;
+    let gridr;
+    const { grid, gridType } = canvas.scene.data;
+    switch (this.activeTool) {
+      case 'brush':
+        const size = game.user.getFlag(this.layername, 'brushSize');
+        this.ellipsePreview.width = size * 2;
+        this.ellipsePreview.height = size * 2;
+        this.ellipsePreview.x = p.x;
+        this.ellipsePreview.y = p.y;
+        break;
+      case 'box':
+        break;
+      case 'grid':
+        // Square grid
+        if (gridType === 1) {
+          gridx = Math.floor(p.x / grid);
+          gridy = Math.floor(p.y / grid);
+          x = gridx * grid;
+          y = gridy * grid;
+          this.boxPreview.x = x;
+          this.boxPreview.y = y;
+          // Hex Grid
+        } else if ([2, 3, 4, 5].includes(gridType)) {
+          // Convert pixel coord to hex coord
+          const qr = this.gridLayout.pixelToHex(p);
+          gridq = Math.ceil(qr.q - 0.5);
+          gridr = Math.ceil(qr.r - 0.5);
+        }
+        break;
+      case 'ellipse':
+        break;
+      default:
+        break;
+    }
     // Brush tool
     switch (this.op) {
       case 'brushing':
@@ -286,20 +347,11 @@ export default class SimpleFogLayer extends MaskLayer {
         this.ellipsePreview.height = (p.y - this.dragStart.y) * 2;
         break;
       case 'grid':
-        // eslint-disable-next-line no-case-declarations
-        const { grid } = canvas.scene.data;
         // Square grid
-        if (canvas.scene.data.gridType === 1) {
-          const gridx = Math.floor(p.x / grid);
-          const gridy = Math.floor(p.y / grid);
-          const x = gridx * grid;
-          const y = gridy * grid;
-          // Check if this grid was already drawn
+        if (gridType === 1) {
           if (!this.dupes[gridx][gridy]) {
             // Flag cell as drawn in dupes
             this.dupes[gridx][gridy] = 1;
-            this.boxPreview.x = x;
-            this.boxPreview.y = y;
             this.renderBrush({
               shape: 'box',
               x,
@@ -312,11 +364,7 @@ export default class SimpleFogLayer extends MaskLayer {
             });
           }
           // Hex Grid
-        } else if ([2, 3, 4, 5].includes(canvas.scene.data.gridType)) {
-          // Convert pixel coord to hex coord
-          const qr = this.gridLayout.pixelToHex(p);
-          const gridq = Math.ceil(qr.q - 0.5);
-          const gridr = Math.ceil(qr.r - 0.5);
+        } else if ([2, 3, 4, 5].includes(gridType)) {
           // Check if this grid cell was already drawn
           if (!this.doesArrayOfArraysContainArray(this.dupes, [gridq, gridr])) {
             // Get the vert coords for the hex
@@ -349,7 +397,7 @@ export default class SimpleFogLayer extends MaskLayer {
     if (event.data.button === 0) {
       const p = event.data.getLocalPosition(canvas.app.stage);
       // Check active tool
-      switch (ui.controls.controls.find((n) => n.name === this.layername).activeTool) {
+      switch (this.activeTool) {
       // Activate brush op
         case 'brush':
           this.op = 'brushing';
@@ -463,8 +511,10 @@ export default class SimpleFogLayer extends MaskLayer {
       // Call _pointermove so single click will still draw brush if mouse does not move
       this._pointerMove(event);
     } else if (event.data.button === 2) {
-    // Todo: Not sure why this doesnt trigger when drawing
-      this.cancelTool();
+    // Todo: Not sure why this doesnt trigger when drawing ellipse & box
+      if (['shape', 'box', 'ellipse'].includes(this.activeTool)) {
+        this.cancelTool();
+      }
     }
   }
 
@@ -501,10 +551,6 @@ export default class SimpleFogLayer extends MaskLayer {
             alpha: 1,
           });
           this.ellipsePreview.visible = false;
-          break;
-          // Grid tool
-        case 'grid':
-          this.boxPreview.visible = false;
           break;
         default:
           break;
