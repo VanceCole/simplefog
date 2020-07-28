@@ -8,8 +8,7 @@
   "compatibleCoreVersion": "0.6.4",
   "esmodules": [
     "js/simplefog.js",
-    "js/controls.js",
-    "classes/SimplefogLayer.js"
+    "js/controls.js"
   ],
   "styles": [
     "css/brush-controls.css"

@@ -110,6 +110,81 @@ export default class SimpleFogLayer extends MaskLayer {
   }
 
   /* -------------------------------------------- */
+  /*  Getters and setters for layer props         */
+  /* -------------------------------------------- */
+
+  /**
+   * Gets and sets various layer wide properties
+   * Some properties have different values depending on if user is a GM or player
+   */
+
+  getSetting(name) {
+    return canvas.scene.getFlag(this.layername, name);
+  }
+
+  async setSetting(name, value) {
+    const v = await canvas.scene.setFlag(this.layername, name, value);
+    return v;
+  }
+
+  // Tint & Alpha have special cases because they can differ between GM & Players
+  // And alpha can be animated for transition effects
+  getTint() {
+    let tint;
+    if (game.user.isGM) tint = this.getSetting('gmTint');
+    else tint = this.getSetting('playerTint');
+    if (!tint) {
+      if (game.user.isGM) tint = this.gmTintDefault;
+      else tint = this.playerTintDefault;
+    }
+    return tint;
+  }
+
+  setTint(tint) {
+    this.layer.tint = tint;
+  }
+
+  getAlpha() {
+    let alpha;
+    if (game.user.isGM) alpha = this.getSetting('gmAlpha');
+    else alpha = this.getSetting('playerAlpha');
+    if (!alpha) {
+      if (game.user.isGM) alpha = DEFAULTS.gmAlpha;
+      else alpha = DEFAULTS.playerAlpha;
+    }
+    return alpha;
+  }
+
+  /**
+   * Sets the scene's alpha for the primary layer.
+   * @param alpha {Number} 0-1 opacity representation
+   * @param skip {Boolean} Optional override to skip using animated transition
+   */
+  async setAlpha(alpha, skip = false) {
+  // If skip is false, do not transition and just set alpha immediately
+    if (skip || !this.getSetting('transition')) this.layer.alpha = alpha;
+    // Loop until transition is complete
+    else {
+      const start = this.layer.alpha;
+      const dist = start - alpha;
+      const fps = 60;
+      const speed = this.getSetting('transitionSpeed');
+      const frame = 1000 / fps;
+      const rate = dist / (fps * speed / 1000);
+      let f = fps * speed / 1000;
+      while (f > 0) {
+        // Delay 1 frame before updating again
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => setTimeout(resolve, frame));
+        this.layer.alpha -= rate;
+        f -= 1;
+      }
+      // Reset target alpha in case loop overshot a bit
+      this.layer.alpha = alpha;
+    }
+  }
+
+  /* -------------------------------------------- */
   /*  Event Listeners and Handlers                */
   /* -------------------------------------------- */
 
