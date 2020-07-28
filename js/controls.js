@@ -79,7 +79,7 @@ Hooks.on('getSceneControlButtons', (controls) => {
               title: 'Reset Simple Fog',
               content: 'Are you sure? Fog of war will be reset.',
               yes: () => {
-                canvas.simplefog.resetFog();
+                canvas.simplefog.resetMask();
               },
               defaultYes: true,
             });
