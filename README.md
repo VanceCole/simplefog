@@ -16,8 +16,10 @@ Lets you draw fog of war manually
 - ~~Hex grid snap brush~~
 - ~~Optimization~~
 - ~~Blur~~
-- Mouse cursor tool indications
-- Allow cancel of current drawing via right click while dragging (Currently implemented for shape tool, but not others)
+- ~~Mouse cursor tool indications~~
+-- todo: hex grid
+- ~~Allow cancel of current drawing via right click while dragging
+-- implemented for shape tool, but ellipse / box not working
 - Documentation
 - Shift / ctrl shape tool modifiers
 - ~~Blur filter should recalcuate pixel width to maintain consistency with zoom level~~

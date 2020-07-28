@@ -62,3 +62,19 @@ export function pixiDump(tgt = null) {
   const win = window.open();
   win.document.write(`<img src='${data}'/>`);
 }
+
+/**
+ * Checks if an array of arrays contains an equivalent to the given array
+ * @param arrayOfArrays {Array} Haystack
+ * @param array {Array}         Needle
+ */
+export function doesArrayOfArraysContainArray(arrayOfArrays, array) {
+  const aOA = arrayOfArrays.map((arr) => arr.slice());
+  const a = array.slice(0);
+  for (let i = 0; i < aOA.length; i += 1) {
+    if (aOA[i].sort().join(',') === a.sort().join(',')) {
+      return true;
+    }
+  }
+  return false;
+}

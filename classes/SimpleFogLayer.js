@@ -1,6 +1,6 @@
 import MaskLayer from './MaskLayer.js';
 import { Layout } from '../libs/hexagons.js';
-import { hexObjsToArr } from '../js/helpers.js';
+import { hexObjsToArr, doesArrayOfArraysContainArray } from '../js/helpers.js';
 
 const DEFAULTS = {
   gmAlpha: 0.6,
@@ -258,6 +258,8 @@ export default class SimpleFogLayer extends MaskLayer {
     if (tool === 'brush') this.ellipsePreview.visible = true;
     else if (tool === 'grid') {
       if (canvas.scene.data.gridType === 1) {
+        this.boxPreview.width = canvas.scene.data.grid;
+        this.boxPreview.height = canvas.scene.data.grid;
         this.boxPreview.visible = true;
       } else if ([2, 3, 4, 5].includes(canvas.scene.data.gridType)) {
         this.shapePreview = visible;
@@ -265,13 +267,23 @@ export default class SimpleFogLayer extends MaskLayer {
     }
   }
 
+  /**
+   * Aborts any active drawing tools
+   */
   clearActiveTool() {
-    if (this.activeTool) {
-      this.ellipsePreview.visible = false;
-      this.boxPreview.visible = false;
-      this.shapePreview.visible = false;
-    }
-    this.activeTool = false;
+  // Box preview
+    this.boxPreview.visible = false;
+    // Ellipse Preview
+    this.ellipsePreview.visible = false;
+    // Shape preview
+    this.shapePreview.clear();
+    this.shapePreview.visible = false;
+    this.shapeHandle.visible = false;
+    this.shape = [];
+    // Cancel op flag
+    this.op = false;
+    // Clear history buffer
+    this.historyBuffer = [];
   }
 
   /**
@@ -366,7 +378,7 @@ export default class SimpleFogLayer extends MaskLayer {
           // Hex Grid
         } else if ([2, 3, 4, 5].includes(gridType)) {
           // Check if this grid cell was already drawn
-          if (!this.doesArrayOfArraysContainArray(this.dupes, [gridq, gridr])) {
+          if (!doesArrayOfArraysContainArray(this.dupes, [gridq, gridr])) {
             // Get the vert coords for the hex
             const vertices = this.gridLayout.polygonCorners({ q: gridq, r: gridr });
             // Convert to array of individual verts
@@ -513,7 +525,7 @@ export default class SimpleFogLayer extends MaskLayer {
     } else if (event.data.button === 2) {
     // Todo: Not sure why this doesnt trigger when drawing ellipse & box
       if (['shape', 'box', 'ellipse'].includes(this.activeTool)) {
-        this.cancelTool();
+        this.clearActiveTool();
       }
     }
   }
@@ -538,7 +550,7 @@ export default class SimpleFogLayer extends MaskLayer {
           });
           this.boxPreview.visible = false;
           break;
-          // Drag ellipse tool
+        // Drag ellipse tool
         case 'ellipse':
           this.renderBrush({
             shape: 'ellipse',
@@ -561,40 +573,5 @@ export default class SimpleFogLayer extends MaskLayer {
       // Push the history buffer
       this.commitHistory();
     }
-  }
-
-  /**
-   * Aborts any active drawing tools
-   */
-  cancelTool() {
-  // Box preview
-    this.boxPreview.visible = false;
-    // Ellipse Preview
-    this.ellipsePreview.visible = false;
-    // Shape preview
-    this.shapePreview.clear();
-    this.shapePreview.visible = false;
-    this.shapeHandle.visible = false;
-    this.shape = [];
-    // Cancel op flag
-    this.op = false;
-    // Clear history buffer
-    this.historyBuffer = [];
-  }
-
-  /**
-   * Checks if an array of arrays contains an equivalent to the given array
-   * @param arrayOfArrays {Array} Haystack
-   * @param array {Array}         Needle
-   */
-  doesArrayOfArraysContainArray(arrayOfArrays, array) {
-    const aOA = arrayOfArrays.map((arr) => arr.slice());
-    const a = array.slice(0);
-    for (let i = 0; i < aOA.length; i += 1) {
-      if (aOA[i].sort().join(',') === a.sort().join(',')) {
-        return true;
-      }
-    }
-    return false;
   }
 }
