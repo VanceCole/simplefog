@@ -300,7 +300,7 @@ export default class SimpleFogLayer extends MaskLayer {
       this.op = true;
       // Check active tool
       switch (this.activeTool) {
-        case 'brush': this.op = true;
+        case 'brush': this._pointerDownBrush(p);
           break;
         case 'grid': this._pointerDownGrid(p);
           break;
@@ -357,6 +357,35 @@ export default class SimpleFogLayer extends MaskLayer {
       this.op = false;
       // Push the history buffer
       this.commitHistory();
+    }
+  }
+
+  /**
+   * Brush Tool
+   */
+  _pointerDownBrush() {
+    this.op = true;
+  }
+
+  _pointerMoveBrush(p) {
+    const size = game.user.getFlag(this.layername, 'brushSize');
+    this.ellipsePreview.width = size * 2;
+    this.ellipsePreview.height = size * 2;
+    this.ellipsePreview.x = p.x;
+    this.ellipsePreview.y = p.y;
+    // If drag operation has started
+    if (this.op) {
+      // Send brush movement events to renderbrush to be drawn and added to history stack
+      this.renderBrush({
+        shape: 'ellipse',
+        x: p.x,
+        y: p.y,
+        fill: game.user.getFlag(this.layername, 'brushOpacity'),
+        width: game.user.getFlag(this.layername, 'brushSize'),
+        height: game.user.getFlag(this.layername, 'brushSize'),
+        alpha: 1,
+        visible: true,
+      });
     }
   }
 
