@@ -294,7 +294,7 @@ export default class SimplefogLayer extends MaskLayer {
    */
   async setBrushSize(s) {
     await game.user.setFlag(this.layername, 'brushSize', s);
-    let p = { x: this.ellipsePreview.x, y: this.ellipsePreview.y };
+    const p = { x: this.ellipsePreview.x, y: this.ellipsePreview.y };
     this._pointerMoveBrush(p);
   }
 

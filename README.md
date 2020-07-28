@@ -20,14 +20,11 @@ Lets you draw fog of war manually
 - ~~Allow cancel of current drawing via right click while dragging~~
 - ~~Shift shape tool modifiers~~
 - ~~Blur filter should recalcuate pixel width to maintain consistency with zoom level~~
-- Keybindings for changing brush size
+- ~~Keybindings for changing brush size~~
 - ~~Allow saving current settings as new default~~
-- Visibility options
+- ~~Visibility options~~
     - ~~Disable autoVis~~
     - ~~Visibility threshold~~
-    - Reveal based on center of token
-    - Reveal only if entire token visible
-    - Reveal if any part of token is visible
 - ~~Refactor mouse events handlers~~
 - Documentation
 
@@ -40,6 +37,10 @@ Lets you draw fog of war manually
 - ~~Switching scenes dupes mouse listeners~~
 
 # future features
+- AutoVisibility options:
+  - Reveal based on center of token
+  - Reveal only if entire token visible
+  - Reveal if any part of token is visible
 - Opacity indactors on brush previews - red / green / grey for hide / show / 50% etc
 - Brush Smoothing / Interpolation
 - Image based fog import
