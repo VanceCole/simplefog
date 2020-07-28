@@ -1,4 +1,4 @@
-import SimpleFogLayer from '../classes/SimplefogLayer.js';
+import SimplefogLayer from '../classes/SimplefogLayer.js';
 import SimplefogSightLayer from '../classes/SimplefogSightLayer.js';
 import config from './config.js';
 
@@ -14,7 +14,7 @@ Hooks.once('init', () => {
 SightLayer = SimplefogSightLayer;
 
 Hooks.once('canvasInit', () => {
-  canvas.simplefog = canvas.stage.addChildAt(new SimpleFogLayer(), 14);
+  canvas.simplefog = canvas.stage.addChildAt(new SimplefogLayer(), 14);
 });
 
 Hooks.on('canvasInit', () => {

@@ -1,3 +1,8 @@
+/* SimplefogLayer extends MaskLayer
+ *
+ * Implements tools for manipulating the MaskLayer
+ */
+
 import MaskLayer from './MaskLayer.js';
 import { Layout } from '../libs/hexagons.js';
 import { hexObjsToArr, doesArrayOfArraysContainArray } from '../js/helpers.js';
@@ -21,7 +26,7 @@ const DEFAULTS = {
   vThreshold: 1,
 };
 
-export default class SimpleFogLayer extends MaskLayer {
+export default class SimplefogLayer extends MaskLayer {
   constructor() {
     super('simplefog');
     // Register event listerenrs
@@ -258,8 +263,13 @@ export default class SimpleFogLayer extends MaskLayer {
   setActiveTool(tool) {
     this.clearActiveTool();
     this.activeTool = tool;
-    if (tool === 'brush') this.ellipsePreview.visible = true;
-    else if (tool === 'grid') {
+    if (tool === 'brush') {
+      this.ellipsePreview.visible = true;
+      $('#simplefog-brush-controls #brush-size-container').show();
+    } else {
+      $('#simplefog-brush-controls #brush-size-container').hide();
+    }
+    if (tool === 'grid') {
       if (canvas.scene.data.gridType === 1) {
         this.boxPreview.width = canvas.scene.data.grid;
         this.boxPreview.height = canvas.scene.data.grid;

@@ -10,7 +10,7 @@ Hooks.on('getSceneControlButtons', (controls) => {
       name: 'simplefog',
       title: 'Simple Fog',
       icon: 'fas fa-cloud',
-      layer: 'SimpleFogLayer',
+      layer: 'SimplefogLayer',
       tools: [
         {
           name: 'simplefogtoggle',

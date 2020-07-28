@@ -1,14 +1,18 @@
 <div id="simplefog-brush-controls">
     <form id="simplefog-brush-controls-form">
-        <h3 class="form-header">Brush Size</h3>
-        <div class="form-group">
-            <input type="range" name="brushSize" value="{{ brushSize }}" min="10" max="500" step="10" data-dtype="Number"/>
+        <div id="brush-size-container">
+            <h3 class="form-header">Brush Size</h3>
+            <div class="form-group">
+                <input type="range" name="brushSize" value="{{ brushSize }}" min="10" max="500" step="10" data-dtype="Number"/>
+            </div>
         </div>
-        <h3 class="form-header">Brush Opacity</h3>
-        <div class="form-group brush-opacity">
-            <input type="range" name="brushOpacity" value="{{ brushOpacity }}" min="0" max="100" step="1" data-dtype="Number"/>
-            <div class="label left-label">Reveal</div>
-            <div class="label right-label">Hide</div>
+        <div id="brush-opacity-container">
+            <h3 class="form-header">Brush Opacity</h3>
+            <div class="form-group brush-opacity">
+                <input type="range" name="brushOpacity" value="{{ brushOpacity }}" min="0" max="100" step="1" data-dtype="Number"/>
+                <div class="label left-label">Reveal</div>
+                <div class="label right-label">Hide</div>
+            </div>
         </div>
     </form>
 </div>
