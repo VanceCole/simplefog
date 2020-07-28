@@ -19,7 +19,7 @@ Lets you draw fog of war manually
 - ~~Mouse cursor tool indications~~
 - ~~Allow cancel of current drawing via right click while dragging~~
 - Documentation
-- Shift / ctrl shape tool modifiers
+- ~~Shift shape tool modifiers~~
 - ~~Blur filter should recalcuate pixel width to maintain consistency with zoom level~~
 - Keybindings for changing brush size
 - ~~Allow saving current settings as new default~~

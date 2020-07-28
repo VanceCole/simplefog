@@ -293,29 +293,29 @@ export default class SimpleFogLayer extends MaskLayer {
   /**
    * Mouse handlers for canvas layer interactions
    */
-  _pointerDown(event) {
+  _pointerDown(e) {
     // Only react on left mouse button
-    if (event.data.button === 0) {
-      const p = event.data.getLocalPosition(canvas.app.stage);
+    if (e.data.button === 0) {
+      const p = e.data.getLocalPosition(canvas.app.stage);
       this.op = true;
       // Check active tool
       switch (this.activeTool) {
-        case 'brush': this._pointerDownBrush(p);
+        case 'brush': this._pointerDownBrush(p, e);
           break;
-        case 'grid': this._pointerDownGrid(p);
+        case 'grid': this._pointerDownGrid(p, e);
           break;
-        case 'box': this._pointerDownBox(p);
+        case 'box': this._pointerDownBox(p, e);
           break;
-        case 'ellipse': this._pointerDownEllipse(p);
+        case 'ellipse': this._pointerDownEllipse(p, e);
           break;
-        case 'shape': this._pointerDownShape(p);
+        case 'shape': this._pointerDownShape(p, e);
           break;
         default: // Do nothing
           break;
       }
       // Call _pointermove so single click will still draw brush if mouse does not move
-      this._pointerMove(event);
-    } else if (event.data.button === 2) {
+      this._pointerMove(e);
+    } else if (e.data.button === 2) {
     // Todo: Not sure why this doesnt trigger when drawing ellipse & box
       if (['shape', 'box', 'ellipse'].includes(this.activeTool)) {
         this.clearActiveTool();
@@ -323,32 +323,32 @@ export default class SimpleFogLayer extends MaskLayer {
     }
   }
 
-  _pointerMove(event) {
+  _pointerMove(e) {
   // Get mouse position translated to canvas coords
-    const p = event.data.getLocalPosition(canvas.app.stage);
+    const p = e.data.getLocalPosition(canvas.app.stage);
     switch (this.activeTool) {
-      case 'brush': this._pointerMoveBrush(p);
+      case 'brush': this._pointerMoveBrush(p, e);
         break;
-      case 'box': this._pointerMoveBox(p);
+      case 'box': this._pointerMoveBox(p, e);
         break;
-      case 'grid': this._pointerMoveGrid(p);
+      case 'grid': this._pointerMoveGrid(p, e);
         break;
-      case 'ellipse': this._pointerMoveEllipse(p);
+      case 'ellipse': this._pointerMoveEllipse(p, e);
         break;
       default:
         break;
     }
   }
 
-  _pointerUp(event) {
+  _pointerUp(e) {
   // Only react to left mouse button
-    if (event.data.button === 0) {
+    if (e.data.button === 0) {
       // Translate click to canvas position
-      const p = event.data.getLocalPosition(canvas.app.stage);
+      const p = e.data.getLocalPosition(canvas.app.stage);
       switch (this.op) {
-        case 'box': this._pointerUpBox(p);
+        case 'box': this._pointerUpBox(p, e);
           break;
-        case 'ellipse': this._pointerUpEllipse(p);
+        case 'ellipse': this._pointerUpEllipse(p, e);
           break;
         default: // Do nothing
           break;
@@ -404,22 +404,25 @@ export default class SimpleFogLayer extends MaskLayer {
     this.boxPreview.y = p.y;
   }
 
-  _pointerMoveBox(p) {
+  _pointerMoveBox(p, e) {
     // If drag operation has started
     if (this.op) {
-      // Just update the preview shape
-      this.boxPreview.width = p.x - this.dragStart.x;
-      this.boxPreview.height = p.y - this.dragStart.y;
+      // update the preview shape
+      const d = this._getDragBounds(p, e);
+      this.boxPreview.width = d.w;
+      this.boxPreview.height = d.h;
     }
   }
 
-  _pointerUpBox(p) {
+  _pointerUpBox(p, e) {
+    // update the preview shape
+    const d = this._getDragBounds(p, e);
     this.renderBrush({
       shape: 'box',
       x: this.dragStart.x,
       y: this.dragStart.y,
-      width: p.x - this.dragStart.x,
-      height: p.y - this.dragStart.y,
+      width: d.w,
+      height: d.h,
       visible: true,
       fill: game.user.getFlag(this.layername, 'brushOpacity'),
       alpha: 1,
@@ -442,22 +445,24 @@ export default class SimpleFogLayer extends MaskLayer {
     this.ellipsePreview.visible = true;
   }
 
-  _pointerMoveEllipse(p) {
+  _pointerMoveEllipse(p, e) {
     // If drag operation has started
+    const d = this._getDragBounds(p, e);
     if (this.op) {
       // Just update the preview shape
-      this.ellipsePreview.width = (p.x - this.dragStart.x) * 2;
-      this.ellipsePreview.height = (p.y - this.dragStart.y) * 2;
+      this.ellipsePreview.width = d.w * 2;
+      this.ellipsePreview.height = d.h * 2;
     }
   }
 
-  _pointerUpEllipse(p) {
+  _pointerUpEllipse(p, e) {
+    const d = this._getDragBounds(p, e);
     this.renderBrush({
       shape: 'ellipse',
       x: this.dragStart.x,
       y: this.dragStart.y,
-      width: Math.abs(p.x - this.dragStart.x),
-      height: Math.abs(p.y - this.dragStart.y),
+      width: Math.abs(d.w),
+      height: Math.abs(d.h),
       visible: true,
       fill: game.user.getFlag(this.layername, 'brushOpacity'),
       alpha: 1,
@@ -587,6 +592,19 @@ export default class SimpleFogLayer extends MaskLayer {
         }
       }
     }
+  }
+
+  /*
+   * Returns height and width given a pointer coord and event for modifer keys
+   */
+  _getDragBounds(p, e) {
+    let h = p.y - this.dragStart.y;
+    let w = p.x - this.dragStart.x;
+    if (e.data.originalEvent.shiftKey) {
+      if (h > w) w = h;
+      else h = w;
+    }
+    return { w, h };
   }
 
   /*
