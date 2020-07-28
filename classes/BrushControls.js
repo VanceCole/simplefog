@@ -27,7 +27,6 @@ export default class BrushControls extends FormApplication {
     return {
       brushSize: game.user.getFlag('simplefog', 'brushSize'),
       brushOpacity: hexToPercent(game.user.getFlag('simplefog', 'brushOpacity')),
-      brushMode: game.user.getFlag('simplefog', 'brushMode'),
     };
   }
 
@@ -46,9 +45,9 @@ export default class BrushControls extends FormApplication {
    * @param formData {Object}   The object of validated form data with which to update the object
    * @private
    */
-  _updateObject(event, formData) {
+  async _updateObject(event, formData) {
     game.user.setFlag('simplefog', 'brushSize', formData.brushSize);
-    game.user.setFlag('simplefog', 'brushOpacity', percentToHex(formData.brushOpacity));
-    game.user.setFlag('simplefog', 'brushMode', $('input[name="mode"]:checked').val());
+    await game.user.setFlag('simplefog', 'brushOpacity', percentToHex(formData.brushOpacity));
+    canvas.simplefog.setPreviewTint();
   }
 }

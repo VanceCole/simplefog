@@ -5,7 +5,7 @@
 
 import MaskLayer from './MaskLayer.js';
 import { Layout } from '../libs/hexagons.js';
-import { hexObjsToArr, doesArrayOfArraysContainArray } from '../js/helpers.js';
+import { hexObjsToArr, doesArrayOfArraysContainArray, hexToPercent } from '../js/helpers.js';
 
 const DEFAULTS = {
   gmAlpha: 0.6,
@@ -14,7 +14,7 @@ const DEFAULTS = {
   playerTint: '0x000000',
   transition: true,
   transitionSpeed: 800,
-  previewFill: 0x00FFFF,
+  previewColor: 0x00FFFF,
   handlefill: 0xff6400,
   handlesize: 20,
   previewAlpha: 0.4,
@@ -50,7 +50,7 @@ export default class SimplefogLayer extends MaskLayer {
       shape: 'box',
       x: 0,
       y: 0,
-      fill: DEFAULTS.previewFill,
+      fill: 0xFFFFFF,
       alpha: DEFAULTS.previewAlpha,
       width: 100,
       height: 100,
@@ -61,7 +61,7 @@ export default class SimplefogLayer extends MaskLayer {
       shape: 'ellipse',
       x: 0,
       y: 0,
-      fill: DEFAULTS.previewFill,
+      fill: 0xFFFFFF,
       alpha: DEFAULTS.previewAlpha,
       width: 100,
       height: 100,
@@ -73,7 +73,7 @@ export default class SimplefogLayer extends MaskLayer {
       x: 0,
       y: 0,
       vertices: [],
-      fill: DEFAULTS.previewFill,
+      fill: 0xFFFFFF,
       alpha: DEFAULTS.previewAlpha,
       visible: false,
       zIndex: 10,
@@ -270,6 +270,7 @@ export default class SimplefogLayer extends MaskLayer {
   setActiveTool(tool) {
     this.clearActiveTool();
     this.activeTool = tool;
+    this.setPreviewTint();
     if (tool === 'brush') {
       this.ellipsePreview.visible = true;
       $('#simplefog-brush-controls #brush-size-container').show();
@@ -286,6 +287,16 @@ export default class SimplefogLayer extends MaskLayer {
         this.shapePreview.visible = true;
       }
     }
+  }
+
+  setPreviewTint() {
+    const vt = canvas.scene.getFlag(this.layername, 'vThreshold');
+    const bo = hexToPercent(game.user.getFlag(this.layername, 'brushOpacity')) / 100;
+    let tint = 0xFF0000;
+    if (bo < vt) tint = 0x00FF00;
+    this.ellipsePreview.tint = tint;
+    this.boxPreview.tint = tint;
+    this.shapePreview.tint = tint;
   }
 
   /**
@@ -538,7 +549,7 @@ export default class SimplefogLayer extends MaskLayer {
     // If intermediate vertex, add it to array and redraw the preview
     this.shape.push({ x, y });
     this.shapePreview.clear();
-    this.shapePreview.beginFill(DEFAULTS.previewFill);
+    this.shapePreview.beginFill(0xFFFFFF);
     this.shapePreview.drawPolygon(hexObjsToArr(this.shape));
     this.shapePreview.endFill();
     this.shapePreview.visible = true;
@@ -550,12 +561,6 @@ export default class SimplefogLayer extends MaskLayer {
   _pointerDownGrid() {
     // Set active drag operation
     this.op = 'grid';
-    // Get grid type & dimensions
-    const { grid } = canvas.scene.data;
-    // Reveal the preview shape
-    this.boxPreview.visible = true;
-    this.boxPreview.width = grid;
-    this.boxPreview.height = grid;
     this._initGrid();
   }
 
@@ -569,6 +574,8 @@ export default class SimplefogLayer extends MaskLayer {
       const y = gridy * grid;
       this.boxPreview.x = x;
       this.boxPreview.y = y;
+      this.boxPreview.width = grid;
+      this.boxPreview.height = grid;
       if (this.op) {
         if (!this.dupes[gridx][gridy]) {
           // Flag cell as drawn in dupes
@@ -597,7 +604,7 @@ export default class SimplefogLayer extends MaskLayer {
       const vertexArray = hexObjsToArr(vertices);
       // Update the preview shape
       this.shapePreview.clear();
-      this.shapePreview.beginFill(DEFAULTS.previewFill);
+      this.shapePreview.beginFill(0xFFFFFF);
       this.shapePreview.drawPolygon(vertexArray);
       this.shapePreview.endFill();
       // If drag operation has started

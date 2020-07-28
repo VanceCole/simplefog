@@ -1,7 +1,7 @@
 {
   "name": "simplefog",
-  "title": "Simple Fog of War",
-  "description": "Allows manually drawing fog of war.",
+  "title": "Simplefog - Manual Fog of War",
+  "description": "Simplefog allows you to draw fog of war manually, optionally automatically hiding and revealing tokens underneath based on opacity. It provides a number of tools to quickly draw and erase fog in various shapes - brush, rectangles, ellipses, polygons or to reveal tiles you click/drag on the grid. The fog opacity and color can be adjusted (for both GM and player) and you can animate the transition, allowing for effects like Fade to Black.",
   "author": "Vance Cole",
   "version": "0.0.1",
   "minimumCoreVersion": "0.6.0",
