@@ -262,7 +262,8 @@ export default class SimpleFogLayer extends MaskLayer {
         this.boxPreview.height = canvas.scene.data.grid;
         this.boxPreview.visible = true;
       } else if ([2, 3, 4, 5].includes(canvas.scene.data.gridType)) {
-        this.shapePreview = visible;
+        this._initGrid();
+        this.shapePreview.visible = true;
       }
     }
   }
@@ -294,112 +295,14 @@ export default class SimpleFogLayer extends MaskLayer {
   _pointerMove(event) {
   // Get mouse position translated to canvas coords
     const p = event.data.getLocalPosition(canvas.app.stage);
-    let x;
-    let y;
-    let gridx;
-    let gridy;
-    let gridq;
-    let gridr;
-    const { grid, gridType } = canvas.scene.data;
     switch (this.activeTool) {
-      case 'brush':
-        const size = game.user.getFlag(this.layername, 'brushSize');
-        this.ellipsePreview.width = size * 2;
-        this.ellipsePreview.height = size * 2;
-        this.ellipsePreview.x = p.x;
-        this.ellipsePreview.y = p.y;
+      case 'brush': this._pointerMoveBrush(p);
         break;
-      case 'box':
+      case 'box': this._pointerMoveBox(p);
         break;
-      case 'grid':
-        // Square grid
-        if (gridType === 1) {
-          gridx = Math.floor(p.x / grid);
-          gridy = Math.floor(p.y / grid);
-          x = gridx * grid;
-          y = gridy * grid;
-          this.boxPreview.x = x;
-          this.boxPreview.y = y;
-          // Hex Grid
-        } else if ([2, 3, 4, 5].includes(gridType)) {
-          // Convert pixel coord to hex coord
-          const qr = this.gridLayout.pixelToHex(p);
-          gridq = Math.ceil(qr.q - 0.5);
-          gridr = Math.ceil(qr.r - 0.5);
-        }
+      case 'grid': this._pointerMoveGrid(p);
         break;
-      case 'ellipse':
-        break;
-      default:
-        break;
-    }
-    // Brush tool
-    switch (this.op) {
-      case 'brushing':
-        // Send brush movement events to renderbrush to be drawn and added to history stack
-        this.renderBrush({
-          shape: 'ellipse',
-          x: p.x,
-          y: p.y,
-          fill: game.user.getFlag(this.layername, 'brushOpacity'),
-          width: game.user.getFlag(this.layername, 'brushSize'),
-          height: game.user.getFlag(this.layername, 'brushSize'),
-          alpha: 1,
-          visible: true,
-        });
-        break;
-        // Drag box tool
-      case 'box':
-        // Just update the preview shape
-        this.boxPreview.width = p.x - this.dragStart.x;
-        this.boxPreview.height = p.y - this.dragStart.y;
-        break;
-        // Drag ellipse tool
-      case 'ellipse':
-        // Just update the preview shape
-        this.ellipsePreview.width = (p.x - this.dragStart.x) * 2;
-        this.ellipsePreview.height = (p.y - this.dragStart.y) * 2;
-        break;
-      case 'grid':
-        // Square grid
-        if (gridType === 1) {
-          if (!this.dupes[gridx][gridy]) {
-            // Flag cell as drawn in dupes
-            this.dupes[gridx][gridy] = 1;
-            this.renderBrush({
-              shape: 'box',
-              x,
-              y,
-              width: grid,
-              height: grid,
-              visible: true,
-              fill: game.user.getFlag(this.layername, 'brushOpacity'),
-              alpha: 1,
-            });
-          }
-          // Hex Grid
-        } else if ([2, 3, 4, 5].includes(gridType)) {
-          // Check if this grid cell was already drawn
-          if (!doesArrayOfArraysContainArray(this.dupes, [gridq, gridr])) {
-            // Get the vert coords for the hex
-            const vertices = this.gridLayout.polygonCorners({ q: gridq, r: gridr });
-            // Convert to array of individual verts
-            const arr = hexObjsToArr(vertices);
-            this.renderBrush({
-              shape: 'polygon',
-              vertices: arr,
-              x: 0,
-              y: 0,
-              visible: true,
-              fill: game.user.getFlag(this.layername, 'brushOpacity'),
-              alpha: 1,
-            });
-            // Flag cell as drawn in dupes
-            this.dupes.push([gridr, gridq]);
-          }
-        }
-        break;
-      case 'shape':
+      case 'ellipse': this._pointerMoveEllipse(p);
         break;
       default:
         break;
@@ -410,116 +313,20 @@ export default class SimpleFogLayer extends MaskLayer {
     // Only react on left mouse button
     if (event.data.button === 0) {
       const p = event.data.getLocalPosition(canvas.app.stage);
+      this.op = true;
       // Check active tool
       switch (this.activeTool) {
-      // Activate brush op
-        case 'brush':
-          this.op = 'brushing';
+        case 'brush': this.op = true;
           break;
-        // Activate grid op
-        case 'grid':
-          this.op = 'grid';
-          // Get grid type & dimensions
-          const { grid } = canvas.scene.data;
-          const { width } = canvas.dimensions;
-          const { height } = canvas.dimensions;
-          // Reveal the preview shape
-          this.boxPreview.visible = true;
-          this.boxPreview.width = grid;
-          this.boxPreview.height = grid;
-          // Check grid type, create a dupe detection matrix & if hex grid init a layout
-          switch (canvas.scene.data.gridType) {
-          // Square grid
-            case 1:
-              this.dupes = new Array(Math.ceil(width / grid)).fill(0).map(() => new Array(Math.ceil(height / grid)).fill(0));
-              break;
-            // Pointy Hex Odd
-            case 2:
-              this.dupes = [];
-              this.gridLayout = new Layout(Layout.pointy, { x: grid / 2, y: grid / 2 }, { x: 0, y: grid / 2 });
-              break;
-            // Pointy Hex Even
-            case 3:
-              this.dupes = [];
-              this.gridLayout = new Layout(Layout.pointy, { x: grid / 2, y: grid / 2 }, { x: Math.sqrt(3) * grid / 4, y: grid / 2 });
-              break;
-            // Flat Hex Odd
-            case 4:
-              this.dupes = [];
-              this.gridLayout = new Layout(Layout.flat, { x: grid / 2, y: grid / 2 }, { x: grid / 2, y: 0 });
-              break;
-            // Flat Hex Even
-            case 5:
-              this.dupes = [];
-              this.gridLayout = new Layout(Layout.flat, { x: grid / 2, y: grid / 2 }, { x: grid / 2, y: Math.sqrt(3) * grid / 4 });
-              break;
-            default:
-              break;
-          }
+        case 'grid': this._pointerDownGrid(p);
           break;
-        // Activate box op, set dragstart & make preview shape visible
-        case 'box':
-          this.op = 'box';
-          this.dragStart.x = p.x;
-          this.dragStart.y = p.y;
-          this.boxPreview.visible = true;
-          this.boxPreview.x = p.x;
-          this.boxPreview.y = p.y;
+        case 'box': this._pointerDownBox(p);
           break;
-        // Activate ellipse op, set dragstart & make preview shape visible
-        case 'ellipse':
-          this.op = 'ellipse';
-          this.dragStart.x = p.x;
-          this.dragStart.y = p.y;
-          this.ellipsePreview.x = p.x;
-          this.ellipsePreview.y = p.y;
-          this.ellipsePreview.visible = true;
+        case 'ellipse': this._pointerDownEllipse(p);
           break;
-        // Draw shapes
-        case 'shape':
-          if (!this.shape) this.shape = [];
-          const x = Math.floor(p.x);
-          const y = Math.floor(p.y);
-          // If this is not the first vertex...
-          if (this.shape.length) {
-            // Check if new point is close enough to start to close the shape
-            const xo = Math.abs(this.shape[0].x - x);
-            const yo = Math.abs(this.shape[0].y - y);
-            if (xo < DEFAULTS.handlesize && yo < DEFAULTS.handlesize) {
-              const verts = hexObjsToArr(this.shape);
-              // render the new shape to history
-              this.renderBrush({
-                shape: 'shape',
-                x: 0,
-                y: 0,
-                vertices: verts,
-                visible: true,
-                fill: game.user.getFlag(this.layername, 'brushOpacity'),
-                alpha: 1,
-              });
-              // Reset the preview shape
-              this.shapePreview.clear();
-              this.shapePreview.visible = false;
-              this.shapeHandle.visible = false;
-              this.shape = [];
-              return;
-            }
-          } else {
-            // If this is the first vertex
-            // Draw shape handle
-            this.shapeHandle.x = x - DEFAULTS.handlesize;
-            this.shapeHandle.y = y - DEFAULTS.handlesize;
-            this.shapeHandle.visible = true;
-          }
-          // If intermediate vertex, add it to array and redraw the preview
-          this.shape.push({ x, y });
-          this.shapePreview.clear();
-          this.shapePreview.beginFill(DEFAULTS.previewFill);
-          this.shapePreview.drawPolygon(hexObjsToArr(this.shape));
-          this.shapePreview.endFill();
-          this.shapePreview.visible = true;
+        case 'shape': this._pointerDownShape(p);
           break;
-        default:
+        default: // Do nothing
           break;
       }
       // Call _pointermove so single click will still draw brush if mouse does not move
@@ -535,45 +342,277 @@ export default class SimpleFogLayer extends MaskLayer {
   _pointerUp(event) {
   // Only react to left mouse button
     if (event.data.button === 0) {
+      // Translate click to canvas position
       const p = event.data.getLocalPosition(canvas.app.stage);
-
       switch (this.op) {
         // Drag box tool
-        case 'box':
-          this.renderBrush({
-            shape: 'box',
-            x: this.dragStart.x,
-            y: this.dragStart.y,
-            width: p.x - this.dragStart.x,
-            height: p.y - this.dragStart.y,
-            visible: true,
-            fill: game.user.getFlag(this.layername, 'brushOpacity'),
-            alpha: 1,
-          });
-          this.boxPreview.visible = false;
+        case 'box': this._pointerUpBox(p);
           break;
         // Drag ellipse tool
-        case 'ellipse':
-          this.renderBrush({
-            shape: 'ellipse',
-            x: this.dragStart.x,
-            y: this.dragStart.y,
-            width: Math.abs(p.x - this.dragStart.x),
-            height: Math.abs(p.y - this.dragStart.y),
-            visible: true,
-            fill: game.user.getFlag(this.layername, 'brushOpacity'),
-            alpha: 1,
-          });
-          this.ellipsePreview.visible = false;
+        case 'ellipse': this._pointerUpEllipse(p);
           break;
-        default:
+        default: // Do nothing
           break;
       }
       // Reset operation
       this.op = false;
-
       // Push the history buffer
       this.commitHistory();
+    }
+  }
+
+  /**
+   * pointerDown handlers for each tool
+   */
+  _pointerDownGrid(p) {
+    // Set active drag operation
+    this.op = 'grid';
+    // Get grid type & dimensions
+    const { grid } = canvas.scene.data;
+    // Reveal the preview shape
+    this.boxPreview.visible = true;
+    this.boxPreview.width = grid;
+    this.boxPreview.height = grid;
+    this._initGrid();
+  }
+
+  _pointerDownBox(p) {
+    // Set active drag operation
+    this.op = 'box';
+    // Set drag start coords
+    this.dragStart.x = p.x;
+    this.dragStart.y = p.y;
+    // Reveal the preview shape
+    this.boxPreview.visible = true;
+    this.boxPreview.x = p.x;
+    this.boxPreview.y = p.y;
+  }
+
+  _pointerDownEllipse(p) {
+    // Set active drag operation
+    this.op = 'ellipse';
+    // Set drag start coords
+    this.dragStart.x = p.x;
+    this.dragStart.y = p.y;
+    // Reveal the preview shape
+    this.ellipsePreview.x = p.x;
+    this.ellipsePreview.y = p.y;
+    this.ellipsePreview.visible = true;
+  }
+
+  _pointerDownShape(p) {
+    if (!this.shape) this.shape = [];
+    const x = Math.floor(p.x);
+    const y = Math.floor(p.y);
+    // If this is not the first vertex...
+    if (this.shape.length) {
+      // Check if new point is close enough to start to close the shape
+      const xo = Math.abs(this.shape[0].x - x);
+      const yo = Math.abs(this.shape[0].y - y);
+      if (xo < DEFAULTS.handlesize && yo < DEFAULTS.handlesize) {
+        const verts = hexObjsToArr(this.shape);
+        // render the new shape to history
+        this.renderBrush({
+          shape: 'shape',
+          x: 0,
+          y: 0,
+          vertices: verts,
+          visible: true,
+          fill: game.user.getFlag(this.layername, 'brushOpacity'),
+          alpha: 1,
+        });
+        // Reset the preview shape
+        this.shapePreview.clear();
+        this.shapePreview.visible = false;
+        this.shapeHandle.visible = false;
+        this.shape = [];
+        return;
+      }
+    } else {
+      // If this is the first vertex
+      // Draw shape handle
+      this.shapeHandle.x = x - DEFAULTS.handlesize;
+      this.shapeHandle.y = y - DEFAULTS.handlesize;
+      this.shapeHandle.visible = true;
+    }
+    // If intermediate vertex, add it to array and redraw the preview
+    this.shape.push({ x, y });
+    this.shapePreview.clear();
+    this.shapePreview.beginFill(DEFAULTS.previewFill);
+    this.shapePreview.drawPolygon(hexObjsToArr(this.shape));
+    this.shapePreview.endFill();
+    this.shapePreview.visible = true;
+  }
+
+  /**
+   * pointerMove handlers for each tool
+   */
+  _pointerMoveBrush(p) {
+    const size = game.user.getFlag(this.layername, 'brushSize');
+    this.ellipsePreview.width = size * 2;
+    this.ellipsePreview.height = size * 2;
+    this.ellipsePreview.x = p.x;
+    this.ellipsePreview.y = p.y;
+    // If drag operation has started
+    if (this.op) {
+      // Send brush movement events to renderbrush to be drawn and added to history stack
+      this.renderBrush({
+        shape: 'ellipse',
+        x: p.x,
+        y: p.y,
+        fill: game.user.getFlag(this.layername, 'brushOpacity'),
+        width: game.user.getFlag(this.layername, 'brushSize'),
+        height: game.user.getFlag(this.layername, 'brushSize'),
+        alpha: 1,
+        visible: true,
+      });
+    }
+  }
+
+  _pointerMoveBox(p) {
+    // If drag operation has started
+    if (this.op) {
+      // Just update the preview shape
+      this.boxPreview.width = p.x - this.dragStart.x;
+      this.boxPreview.height = p.y - this.dragStart.y;
+    }
+  }
+
+  _pointerMoveEllipse(p) {
+    // If drag operation has started
+    if (this.op) {
+      // Just update the preview shape
+      this.ellipsePreview.width = (p.x - this.dragStart.x) * 2;
+      this.ellipsePreview.height = (p.y - this.dragStart.y) * 2;
+    }
+  }
+
+  _pointerMoveGrid(p) {
+    const { grid, gridType } = canvas.scene.data;
+    // Square grid
+    if (gridType === 1) {
+      const gridx = Math.floor(p.x / grid);
+      const gridy = Math.floor(p.y / grid);
+      const x = gridx * grid;
+      const y = gridy * grid;
+      this.boxPreview.x = x;
+      this.boxPreview.y = y;
+      if (this.op) {
+        if (!this.dupes[gridx][gridy]) {
+          // Flag cell as drawn in dupes
+          this.dupes[gridx][gridy] = 1;
+          this.renderBrush({
+            shape: 'box',
+            x,
+            y,
+            width: grid,
+            height: grid,
+            visible: true,
+            fill: game.user.getFlag(this.layername, 'brushOpacity'),
+            alpha: 1,
+          });
+        }
+      }
+      // Hex Grid
+    } else if ([2, 3, 4, 5].includes(gridType)) {
+      // Convert pixel coord to hex coord
+      const qr = this.gridLayout.pixelToHex(p);
+      const gridq = Math.ceil(qr.q - 0.5);
+      const gridr = Math.ceil(qr.r - 0.5);
+      // Get current grid coord verts
+      const vertices = this.gridLayout.polygonCorners({ q: gridq, r: gridr });
+      // Convert to array of individual verts
+      const vertexArray = hexObjsToArr(vertices);
+      // Update the preview shape
+      this.shapePreview.clear();
+      this.shapePreview.beginFill(DEFAULTS.previewFill);
+      this.shapePreview.drawPolygon(vertexArray);
+      this.shapePreview.endFill();
+      this.shapePreview.visible = true;
+      // If drag operation has started
+      if (this.op) {
+        // Check if this grid cell was already drawn
+        if (!doesArrayOfArraysContainArray(this.dupes, [gridq, gridr])) {
+          // Get the vert coords for the hex
+          this.renderBrush({
+            shape: 'polygon',
+            vertices: vertexArray,
+            x: 0,
+            y: 0,
+            visible: true,
+            fill: game.user.getFlag(this.layername, 'brushOpacity'),
+            alpha: 1,
+          });
+          // Flag cell as drawn in dupes
+          this.dupes.push([gridr, gridq]);
+        }
+      }
+    }
+  }
+
+  /**
+   * pointerUp handlers for each tool
+   */
+  _pointerUpBox(p) {
+    this.renderBrush({
+      shape: 'box',
+      x: this.dragStart.x,
+      y: this.dragStart.y,
+      width: p.x - this.dragStart.x,
+      height: p.y - this.dragStart.y,
+      visible: true,
+      fill: game.user.getFlag(this.layername, 'brushOpacity'),
+      alpha: 1,
+    });
+    this.boxPreview.visible = false;
+  }
+
+  _pointerUpEllipse(p) {
+    this.renderBrush({
+      shape: 'ellipse',
+      x: this.dragStart.x,
+      y: this.dragStart.y,
+      width: Math.abs(p.x - this.dragStart.x),
+      height: Math.abs(p.y - this.dragStart.y),
+      visible: true,
+      fill: game.user.getFlag(this.layername, 'brushOpacity'),
+      alpha: 1,
+    });
+    this.ellipsePreview.visible = false;
+  }
+
+  /*
+   * Checks grid type, creates a dupe detection matrix & if hex grid init a layout
+   */
+  _initGrid() {
+    const { grid } = canvas.scene.data;
+    const { width, height } = canvas.dimensions;
+    switch (canvas.scene.data.gridType) {
+    // Square grid
+      case 1: this.dupes = new Array(Math.ceil(width / grid)).fill(0).map(() => new Array(Math.ceil(height / grid)).fill(0));
+        break;
+      // Pointy Hex Odd
+      case 2:
+        this.dupes = [];
+        this.gridLayout = new Layout(Layout.pointy, { x: grid / 2, y: grid / 2 }, { x: 0, y: grid / 2 });
+        break;
+      // Pointy Hex Even
+      case 3:
+        this.dupes = [];
+        this.gridLayout = new Layout(Layout.pointy, { x: grid / 2, y: grid / 2 }, { x: Math.sqrt(3) * grid / 4, y: grid / 2 });
+        break;
+      // Flat Hex Odd
+      case 4:
+        this.dupes = [];
+        this.gridLayout = new Layout(Layout.flat, { x: grid / 2, y: grid / 2 }, { x: grid / 2, y: 0 });
+        break;
+      // Flat Hex Even
+      case 5:
+        this.dupes = [];
+        this.gridLayout = new Layout(Layout.flat, { x: grid / 2, y: grid / 2 }, { x: grid / 2, y: Math.sqrt(3) * grid / 4 });
+        break;
+      default:
+        break;
     }
   }
 }
