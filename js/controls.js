@@ -18,6 +18,7 @@ Hooks.on('getSceneControlButtons', (controls) => {
           icon: 'fas fa-eye',
           onClick: () => {
             canvas.simplefog.toggle();
+            canvas.sight.update();
           },
           active: canvas.simplefog.visible,
           toggle: true,

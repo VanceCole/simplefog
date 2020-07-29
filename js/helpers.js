@@ -83,3 +83,14 @@ export function simplefogLog(string) {
   // eslint-disable-next-line no-console, no-constant-condition
   if (false) console.log(`Simplefog | ${string}`);
 }
+
+export function timer(name) {
+  const start = new Date();
+  return {
+    stop() {
+      const end = new Date();
+      const time = end.getTime() - start.getTime();
+      simplefogLog(`${name} rendered in ${time} ms`);
+    },
+  };
+}
