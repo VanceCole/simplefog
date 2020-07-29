@@ -17,5 +17,5 @@
   "manifest": "https://raw.githubusercontent.com/VanceCole/simplefog/master/module.json",
   "readme": "https://github.com/VanceCole/simplefog/blob/master/README.md",
   "changelog": "https://github.com/VanceCole/simplefog/blob/master/changelog.md",
-  "download": "https://github.com/VanceCole/simplefog/releases/download/latest/simplefog.zip"
+  "download": "https://github.com/VanceCole/simplefog/raw/master/releases/simplefog.zip"
 }
