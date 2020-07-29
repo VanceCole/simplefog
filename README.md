@@ -1,6 +1,7 @@
 # Simplefog
 Lets you draw fog of war manually.
 
+**Feature overview video**:
 [![Feature Overview](https://img.youtube.com/vi/i7iRUUvw2QA/0.jpg)](https://www.youtube.com/watch?v=i7iRUUvw2QA)
 
 # Features
@@ -27,7 +28,7 @@ Allows you to set various options which affect the entire layer for the current 
 - Apply a blur filter for soft edges to fog
 - Enable or disable the automatic vision feature
 - Save your settings as the new default when creating a scene
-![Scene Configuration Screenshot](docs/scene-options.png?raw=true "Scene Config")
+![Scene Configuration Screenshot](docs/simplefog-options.png?raw=true "Scene Config")
 
 # Known Bugs
 - Sometimes hex grid tool stops drawing certain hexes, releasing mouse button and drawing again fixes this as a workaround
