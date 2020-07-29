@@ -3,6 +3,7 @@ import SimplefogSightLayer from '../classes/SimplefogSightLayer.js';
 import config from './config.js';
 
 Hooks.once('init', () => {
+  // eslint-disable-next-line no-console
   console.log('simplefog | Initializing simplefog');
   // Register global module settings
   config.forEach((cfg) => {

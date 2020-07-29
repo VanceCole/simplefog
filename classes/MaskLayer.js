@@ -5,6 +5,8 @@
  * and replaying the mask / undo etc.
  */
 
+import { simplefogLog } from '../js/helpers.js';
+
 export default class MaskLayer extends CanvasLayer {
   constructor(layername) {
     super();
@@ -13,7 +15,6 @@ export default class MaskLayer extends CanvasLayer {
     this.pointer = 0;
     this.gridLayout = {};
     this.dragStart = { x: 0, y: 0 };
-    this.debug = true;
     // Not actually used, just to prevent foundry from complaining
     this.history = [];
   }
@@ -92,7 +93,7 @@ export default class MaskLayer extends CanvasLayer {
       start = 0;
     }
 
-    if (this.debug) console.log(`Rendering from: ${start} to ${stop}`);
+    simplefogLog(`Rendering from: ${start} to ${stop}`);
     // Render all ops starting from pointer
     for (let i = start; i < stop; i += 1) {
       for (let j = 0; j < history.events[i].length; j += 1) {
@@ -126,7 +127,7 @@ export default class MaskLayer extends CanvasLayer {
     history.pointer = history.events.length;
     await canvas.scene.unsetFlag(this.layername, 'history');
     await this.setSetting('history', history);
-    if (this.debug) console.log(`Pushed ${this.historyBuffer.length} updates.`);
+    simplefogLog(`Pushed ${this.historyBuffer.length} updates.`);
     // Clear the history buffer
     this.historyBuffer = [];
   }
@@ -151,7 +152,7 @@ export default class MaskLayer extends CanvasLayer {
    * @param steps {Integer} Number of steps to undo, default 1
    */
   async undo(steps = 1) {
-    if (this.debug) console.log(`Undoing ${steps} steps.`);
+    simplefogLog(`Undoing ${steps} steps.`);
     // Grab existing history
     // Todo: this could probably just grab and set the pointer for a slight performance improvement
     let history = this.getSetting('history');
