@@ -36,7 +36,6 @@ Allows you to set various options which affect the entire layer for the current 
 
 ## Future Features
 - More AutoVisibility options:
-  - Only hide for players and not GM option
   - Reveal based on center of token
   - Reveal only if entire token visible
   - Reveal if any part of token is visible

@@ -34,6 +34,7 @@ export default class SimplefogConfig extends FormApplication {
       blurRadius: canvas.scene.getFlag('simplefog', 'blurRadius'),
       blurQuality: canvas.scene.getFlag('simplefog', 'blurQuality'),
       autoVisibility: canvas.scene.getFlag('simplefog', 'autoVisibility'),
+      autoVisGM: canvas.scene.getFlag('simplefog', 'autoVisGM'),
       vThreshold: canvas.scene.getFlag('simplefog', 'vThreshold') * 100,
     };
   }

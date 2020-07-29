@@ -54,6 +54,10 @@
         <input type='checkbox' {{#if autoVisibility}}checked{{/if}} name='autoVisibility'/>
     </div>
     <div class="form-group">
+        <label for="autoVisGM">Enable for GM</label>
+        <input type='checkbox' {{#if autoVisGM}}checked{{/if}} name='autoVisGM'/>
+    </div>
+    <div class="form-group">
         <label for="vThreshold">Visibility Threshold</label>
         <input type="range" name="vThreshold" value="{{ vThreshold }}" min="0" max="100" step="1" data-dtype="Number"/>
         <span class="range-value">{{ vThreshold }}</span>

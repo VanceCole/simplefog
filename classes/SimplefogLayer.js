@@ -23,6 +23,7 @@ const DEFAULTS = {
   brushSize: 50,
   brushOpacity: 1,
   autoVisibility: false,
+  autoVisGM: false,
   vThreshold: 1,
 };
 

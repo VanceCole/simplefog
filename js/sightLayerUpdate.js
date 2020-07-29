@@ -49,6 +49,8 @@ export default function sightLayerUpdate() {
   if (!canvas.simplefog.visible) return;
   // Skip if autoVisibility not enabled for this scene
   if (!canvas.scene.getFlag('simplefog', 'autoVisibility')) return;
+  // Skip if user is GM and autoVisGM Disabled
+  if (game.user.isGM && !canvas.scene.getFlag('simplefog', 'autoVisGM')) return;
   const t = timer('AutoVisibility');
   // get mask data
   // Todo: kinda slow, probably a better way to do this
