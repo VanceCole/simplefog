@@ -21,7 +21,8 @@ Hooks.once('init', () => {
 
 Hooks.once('canvasInit', () => {
   // Add SimplefogLayer to canvas
-  canvas.simplefog = canvas.stage.addChildAt(new SimplefogLayer(), 14);
+  const layerct = canvas.stage.children.length;
+  canvas.simplefog = canvas.stage.addChildAt(new SimplefogLayer(), layerct);
 });
 
 Hooks.on('canvasInit', () => {
