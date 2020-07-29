@@ -4,11 +4,13 @@
  * checks on sight layer updates to hide and reveal placeables based
  * on opacity of simplefog layer mask
  */
+import { simplefogLog } from '../js/helpers.js';
 
 export default class SimplefogSightLayer extends SightLayer {
   update(updateSuper = true) {
     if (updateSuper) super.update();
     // Skip checking placeables if simplefog not visible anyway
+    if (!canvas.simplefog.visible) return;
     // Skip if autoVisibility not enabled for this scene
     if (!canvas.scene.getFlag('simplefog', 'autoVisibility')) return;
     const t = this.timer('AutoVisibility');
@@ -36,7 +38,7 @@ export default class SimplefogSightLayer extends SightLayer {
       stop() {
         const end = new Date();
         const time = end.getTime() - start.getTime();
-        console.log('Simplefog | ', name, 'rendered in', time, 'ms');
+        simplefogLog(`${name} rendered in ${time} ms`);
       },
     };
   }
@@ -73,9 +75,7 @@ export default class SimplefogSightLayer extends SightLayer {
     const pos = this.getCanvasCoords(placeable);
     const p = canvas.simplefog.getPixel(pos, mask);
     const pAvg = (p[0] + p[1] + p[2]) / 3;
-    console.log(`${pAvg / 255} / ${canvas.scene.getFlag('simplefog', 'vThreshold')}`);
     const v = ((pAvg / 255) < canvas.scene.getFlag('simplefog', 'vThreshold'));
-    console.log(v);
     // if this is a door, we set vis on it's control object instead
     if (placeable.data.door) placeable.doorControl.visible = v;
     else placeable.visible = v;

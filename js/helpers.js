@@ -80,6 +80,6 @@ export function doesArrayOfArraysContainArray(arrayOfArrays, array) {
 }
 
 export function simplefogLog(string) {
-  // eslint-disable-next-line no-console
-  console.log(`Simplefog | ${string}`);
+  // eslint-disable-next-line no-console, no-constant-condition
+  if (false) console.log(`Simplefog | ${string}`);
 }
