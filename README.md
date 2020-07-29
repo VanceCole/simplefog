@@ -1,10 +1,10 @@
 # Simplefog
 Lets you draw fog of war manually.
 
-**Feature overview video**:
+## Feature overview video:
 [![Feature Overview](https://img.youtube.com/vi/i7iRUUvw2QA/0.jpg)](https://www.youtube.com/watch?v=i7iRUUvw2QA)
 
-# Features
+## Features
 - Simplefog implements a manual fog of war layer above the core vision layer
   - Enable and disable the simplefog layer at any time, per scene
   - This allows you to use both Simplefog AND the core vision for line of sight, or alternatively use only one or the other, on a scene by scene basis
@@ -20,7 +20,7 @@ Lets you draw fog of war manually.
     - Automatically reveals any grid square you drag across, works for both Hex and Square grids
 ![Tools Palette](docs/simplefog-tools.jpg?raw=true "Tools Palette")
 
-# Scene Configuration
+## Scene Configuration
 Allows you to set various options which affect the entire layer for the current scene
 - Set the opacity of the entire fog layer for both players and GMs
 - Animate transitions in opacity, allowing for effects such as "Fade to Black"
@@ -30,11 +30,11 @@ Allows you to set various options which affect the entire layer for the current 
 - Save your settings as the new default when creating a scene
 ![Scene Configuration Screenshot](docs/simplefog-options.png?raw=true "Scene Config")
 
-# Known Bugs
+## Known Bugs
 - Sometimes hex grid tool stops drawing certain hexes, releasing mouse button and drawing again fixes this as a workaround
 - Right click to cancel during draw for ellipse / box tool does not respond to event
 
-# Future Features
+## Future Features
 - More AutoVisibility options:
   - Only hide for players and not GM option
   - Reveal based on center of token
@@ -46,6 +46,7 @@ Allows you to set various options which affect the entire layer for the current 
 - Localizations
 - Sepia / monochrome filters
 - Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay
+- Hold shift when clicking trash icon to erase all fog instead of resetting to black
 
 # Bugs and Feature Requests
 Please ping me on discord @vance#1935
