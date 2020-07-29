@@ -35,6 +35,7 @@ function _getCanvasCoords(placeable) {
   * Checks mask opacity at location of placeable and sets visibility
   */
 function _setPlaceableVisibility(placeable, mask) {
+  if (placeable.observer) return;
   const pos = _getCanvasCoords(placeable);
   const p = canvas.simplefog.getPixel(pos, mask);
   const pAvg = (p[0] + p[1] + p[2]) / 3;
