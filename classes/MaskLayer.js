@@ -31,7 +31,7 @@ export default class MaskLayer extends CanvasLayer {
    * layer       - PIXI Sprite which holds all the mask elements
    * filters     - Holds filters such as blur applied to the layer
    * layer.mask  - PIXI Sprite wrapping the renderable mask
-   * masktexture - renderable texture that holds the actual mask data
+   * maskTexture - renderable texture that holds the actual mask data
    */
   async maskInit() {
     // Check if masklayer is flagged visible
@@ -54,11 +54,8 @@ export default class MaskLayer extends CanvasLayer {
     this.blur.quality = this.getSetting('blurQuality');
     this.filters = [this.blur];
 
-    // Create the mask elements
-    this.masktexture = PIXI.RenderTexture.create(
-      { width: canvas.dimensions.width, height: canvas.dimensions.height },
-    );
-    this.layer.mask = new PIXI.Sprite(this.masktexture);
+    this.maskTexture = this._getMaskTexture();
+    this.layer.mask = new PIXI.Sprite(this.maskTexture);
     this.addChild(this.layer.mask);
     this.setFill();
 
@@ -72,6 +69,21 @@ export default class MaskLayer extends CanvasLayer {
   /* -------------------------------------------- */
   /*  History & Buffer                            */
   /* -------------------------------------------- */
+
+  _getMaskTexture() {
+    const d = canvas.dimensions;
+    let res = 1.0;
+    if ((d.width * d.height) > (16000 ** 2)) res = 0.25;
+    else if ((d.width * d.height) > (8000 ** 2)) res = 0.5;
+
+    // Create the mask elements
+    const tex = PIXI.RenderTexture.create({
+      width: canvas.dimensions.width,
+      height: canvas.dimensions.height,
+      resolution: res,
+    });
+    return tex;
+  }
 
   /**
    * Renders the history stack to the mask
@@ -244,7 +256,7 @@ export default class MaskLayer extends CanvasLayer {
    * @param data {Object}       PIXI Object to be used as brush
    */
   composite(brush) {
-    canvas.app.renderer.render(brush, this.masktexture, false, null, false);
+    canvas.app.renderer.render(brush, this.maskTexture, false, null, false);
   }
 
   /**
@@ -286,7 +298,7 @@ export default class MaskLayer extends CanvasLayer {
    * Extracts pixel data of the mask layer to array
    */
   getMaskPixels() {
-    const tex = this.masktexture;
+    const tex = this.maskTexture;
     const pixels = canvas.app.renderer.plugins.extract.pixels(tex);
     return { pixels, tex };
   }
