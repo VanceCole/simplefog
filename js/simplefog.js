@@ -1,14 +1,14 @@
 import SimplefogLayer from '../classes/SimplefogLayer.js';
 import SimplefogSightLayer from '../classes/SimplefogSightLayer.js';
-import config from './config.js';
+// import config from './config.js';
 
 Hooks.once('init', () => {
   // eslint-disable-next-line no-console
   console.log('simplefog | Initializing simplefog');
   // Register global module settings
-  config.forEach((cfg) => {
-    game.settings.register('simplefog', cfg.name, cfg.data);
-  });
+  // config.forEach((cfg) => {
+  //   game.settings.register('simplefog', cfg.name, cfg.data);
+  // });
 });
 
 // Replace sight layer with our extended version that will check token visibility
