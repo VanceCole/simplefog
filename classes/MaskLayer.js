@@ -235,6 +235,7 @@ export default class MaskLayer extends CanvasLayer {
   renderBrush(data, save = true) {
     const brush = this.brush(data);
     this.composite(brush);
+    brush.destroy();
     if (save) this.historyBuffer.push(data);
   }
 
@@ -269,6 +270,7 @@ export default class MaskLayer extends CanvasLayer {
     fill.drawRect(0, 0, canvas.dimensions.width, canvas.dimensions.height);
     fill.endFill();
     this.composite(fill);
+    fill.destroy();
   }
 
   /**
