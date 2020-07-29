@@ -40,7 +40,6 @@ Allows you to set various options which affect the entire layer for the current 
   - Reveal based on center of token
   - Reveal only if entire token visible
   - Reveal if any part of token is visible
-- Opacity indactors on brush previews - red / green / grey for hide / show / 50% etc
 - Brush Smoothing / Interpolation
 - Image based fog import
 - Localizations
