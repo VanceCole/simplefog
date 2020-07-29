@@ -20,9 +20,25 @@ Hooks.once('init', () => {
 });
 
 Hooks.once('canvasInit', () => {
+  // Add SimplefogLayer to canvas
   canvas.simplefog = canvas.stage.addChildAt(new SimplefogLayer(), 14);
 });
 
 Hooks.on('canvasInit', () => {
   canvas.simplefog.init();
+});
+
+/*
+ * Apply compatibility patches
+ */
+Hooks.once('ready', () => {
+  if (game.modules.get('DancingLights')) {
+    // Dancing lights clobbers the patched update, so monkeypatch it again...
+    const origUpdate = canvas.sight.update;
+    canvas.sight.update = function update() {
+      origUpdate.bind(this)();
+      sightLayerUpdate();
+    };
+    canvas.sight.update();
+  }
 });
