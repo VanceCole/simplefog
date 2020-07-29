@@ -1,49 +1,50 @@
-# Allows manual drawing of fog of war
-Lets you draw fog of war manually
+# Simplefog
+Lets you draw fog of war manually.
 
-# todo
-- ~~Hide token/doors/other interactables under fog~~
-- ~~Brush sizes~~
-- ~~Brush/tool + - & .5~~
-- ~~Handle canvas resize~~
-- ~~Fog Color & Opacity~~
-- ~~Box Shape~~
-- ~~Circle Shape~~
-- ~~Poly Shape~~
-- ~~Undo~~
-- ~~refactor mask layer to its own class to be reusable~~
-- ~~Grid snap brush~~
-- ~~Hex grid snap brush~~
-- ~~Optimization~~
-- ~~Blur~~
-- ~~Mouse cursor tool indications~~
-- ~~Allow cancel of current drawing via right click while dragging~~
-- ~~Shift shape tool modifiers~~
-- ~~Blur filter should recalcuate pixel width to maintain consistency with zoom level~~
-- ~~Keybindings for changing brush size~~
-- ~~Allow saving current settings as new default~~
-- ~~Visibility options~~
-    - ~~Disable autoVis~~
-    - ~~Visibility threshold~~
-- ~~Refactor mouse events handlers~~
-- Documentation
+[![Feature Overview](https://img.youtube.com/vi/i7iRUUvw2QA/0.jpg)](https://www.youtube.com/watch?v=i7iRUUvw2QA)
 
-# bugs
-- sometimes hex grid tool stops drawing certain hexes
-- right click to cancel during draw for ellipse / box tool does not respond to event
-- ~~error when activating scene with no player token~~
-- ~~create a light, use mask brush tool, blank journal entries will be created~~
-- ~~preview shapes cannot be seen on full opacity black fog~~
-- ~~Switching scenes dupes mouse listeners~~
+# Features
+- Simplefog implements a manual fog of war layer above the core vision layer
+  - Enable and disable the simplefog layer at any time, per scene
+  - This allows you to use both Simplefog AND the core vision for line of sight, or alternatively use only one or the other, on a scene by scene basis
+- Tokens can be automatically hidden and revealed when underneath Simplefog with a configurable opacity threshold
+- Implements a history system so you can easily undo your actions
+- Various drawing tools for drawing and erasing fog of war manually
+  - Brush tool
+  - Rectangle & Ellipse tool
+    - Hold shift to force equal width & height while drawing
+  - Polygon Shape tool
+    - Click the orange handle to finish your drawing, or right click to cancel
+  - Grid tool
+    - Automatically reveals any grid square you drag across, works for both Hex and Square grids
+![Tools Palette](docs/simplefog-tools.jpg?raw=true "Tools Palette")
 
-# future features
-- AutoVisibility options:
+# Scene Configuration
+Allows you to set various options which affect the entire layer for the current scene
+- Set the opacity of the entire fog layer for both players and GMs
+- Animate transitions in opacity, allowing for effects such as "Fade to Black"
+- Change tint of the fog for both player and GM, for example to indicate a green poison cloud
+- Apply a blur filter for soft edges to fog
+- Enable or disable the automatic vision feature
+- Save your settings as the new default when creating a scene
+![Scene Configuration Screenshot](docs/scene-options.png?raw=true "Scene Config")
+
+# Known Bugs
+- Sometimes hex grid tool stops drawing certain hexes, releasing mouse button and drawing again fixes this as a workaround
+- Right click to cancel during draw for ellipse / box tool does not respond to event
+
+# Future Features
+- More AutoVisibility options:
+  - Only hide for players and not GM option
   - Reveal based on center of token
   - Reveal only if entire token visible
   - Reveal if any part of token is visible
 - Opacity indactors on brush previews - red / green / grey for hide / show / 50% etc
 - Brush Smoothing / Interpolation
 - Image based fog import
-- localizations
-- sepia / monochrome filters
+- Localizations
+- Sepia / monochrome filters
 - Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay
+
+# Bugs and Feature Requests
+Please ping me on discord @vance#1935
