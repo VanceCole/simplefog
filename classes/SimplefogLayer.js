@@ -103,7 +103,7 @@ export default class SimplefogLayer extends MaskLayer {
       // Check for custom default
       const def = game.user.getFlag(this.layername, key);
       // If user has custom default, set it for scene
-      if (def !== undefined) this.setSetting(key, def);
+      if (def !== undefined && game.user.isGM) this.setSetting(key, def);
       // Otherwise fall back to module default
       else this.setSetting(key, DEFAULTS[key]);
     });

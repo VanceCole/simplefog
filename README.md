@@ -12,6 +12,7 @@ A module for [FoundryVTT](https://foundryvtt.com) that lets you draw fog of war 
 - Implements a history system so you can easily undo your actions
 - Various drawing tools for drawing and erasing fog of war manually
   - Brush tool
+    - Hotkeys for quickly changing brush size [ ]
   - Rectangle & Ellipse tool
     - Hold shift to force equal width & height while drawing
   - Polygon Shape tool
@@ -33,6 +34,10 @@ Allows you to set various options which affect the entire layer for the current 
 ## Known Bugs
 - Sometimes hex grid tool stops drawing certain hexes, releasing mouse button and drawing again fixes this as a workaround
 - Right click to cancel during draw for ellipse / box tool does not respond to event
+- Currently incompatible with PF2e
+- Non-breaking error with Less Fog
+- Occasionally throws error for players that they cannot edit scene
+- 
 
 ## Future Features
 - More AutoVisibility options:
@@ -45,6 +50,7 @@ Allows you to set various options which affect the entire layer for the current 
 - Sepia / monochrome filters
 - Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay
 - Hold shift when clicking trash icon to erase all fog instead of resetting to black
+- Button to quickset vis to 100% opaque
 
 # Bugs and Feature Requests
 Please ping me on discord @vance#1935
