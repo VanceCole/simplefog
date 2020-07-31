@@ -19,10 +19,6 @@ export default class MaskLayer extends CanvasLayer {
     this.history = [];
     this.DEFAULTS = {
       visible: false,
-      history: {
-        events: [],
-        pointer: 0,
-      },
       blurQuality: 2,
       blurRadius: 5,
     };
@@ -129,9 +125,9 @@ export default class MaskLayer extends CanvasLayer {
    * @param start {Number}        The position in the history stack to stop rendering
    */
   renderStack(
-    history = this.getSetting('history'),
+    history = canvas.scene.getFlag(this.layername, 'history'),
     start = this.pointer,
-    stop = this.getSetting('history.pointer'),
+    stop = canvas.scene.getFlag(this.layername, 'history.pointer'),
   ) {
   // If history is blank, do nothing
     if (history === undefined) return;
@@ -166,8 +162,14 @@ export default class MaskLayer extends CanvasLayer {
   async commitHistory() {
   // Do nothing if no history to be committed, otherwise get history
     if (this.historyBuffer.length === 0) return;
-    const history = this.getSetting('history');
-
+    let history = canvas.scene.getFlag(this.layername, 'history');
+    // If history storage doesnt exist, create it
+    if (!history) {
+      history = {
+        events: [],
+        pointer: 0,
+      };
+    }
     // If pointer is less than history length (f.x. user undo), truncate history
     history.events = history.events.slice(0, history.pointer);
     // Push the new history buffer to the scene
@@ -190,7 +192,7 @@ export default class MaskLayer extends CanvasLayer {
     // If save, also unset history and reset pointer
     if (save) {
       canvas.scene.unsetFlag(this.layername, 'history');
-      this.setSetting('history', { events: [], pointer: 0 });
+      canvas.scene.setFlag(this.layername, 'history', { events: [], pointer: 0 });
       this.pointer = 0;
     }
   }
@@ -203,7 +205,7 @@ export default class MaskLayer extends CanvasLayer {
     simplefogLog(`Undoing ${steps} steps.`);
     // Grab existing history
     // Todo: this could probably just grab and set the pointer for a slight performance improvement
-    let history = this.getSetting('history');
+    let history = canvas.scene.getFlag(this.layername, 'history');
     if (!history) {
       history = {
         events: [],
@@ -215,7 +217,7 @@ export default class MaskLayer extends CanvasLayer {
     // Set new pointer & update history
     history.pointer = newpointer;
     await canvas.scene.unsetFlag(this.layername, 'history');
-    await this.setSetting('history', history);
+    await canvas.scene.getFlag(this.layername, 'history', history);
   }
 
   /* -------------------------------------------- */

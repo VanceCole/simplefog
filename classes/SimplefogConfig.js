@@ -25,9 +25,9 @@ export default class SimplefogConfig extends FormApplication {
   getData() {
   // Return data to the template
     return {
-      gmAlpha: canvas.simplefog.getSetting('gmAlpha') * 100,
+      gmAlpha: Math.round(canvas.simplefog.getSetting('gmAlpha') * 100),
       gmTint: hexToWeb(canvas.simplefog.getSetting('gmTint')),
-      playerAlpha: canvas.simplefog.getSetting('playerAlpha') * 100,
+      playerAlpha: Math.round(canvas.simplefog.getSetting('playerAlpha') * 100),
       playerTint: hexToWeb(canvas.simplefog.getSetting('playerTint')),
       transition: canvas.simplefog.getSetting('transition'),
       transitionSpeed: canvas.simplefog.getSetting('transitionSpeed'),
@@ -35,7 +35,7 @@ export default class SimplefogConfig extends FormApplication {
       blurQuality: canvas.simplefog.getSetting('blurQuality'),
       autoVisibility: canvas.simplefog.getSetting('autoVisibility'),
       autoVisGM: canvas.simplefog.getSetting('autoVisGM'),
-      vThreshold: canvas.simplefog.getSetting('vThreshold') * 100,
+      vThreshold: Math.round(canvas.simplefog.getSetting('vThreshold') * 100),
     };
   }
 
@@ -56,6 +56,7 @@ export default class SimplefogConfig extends FormApplication {
    */
   async _updateObject(event, formData) {
     Object.entries(formData).forEach(async ([key, val]) => {
+      console.log(val);
       // If setting is an opacity slider, convert from 1-100 to 0-1
       if (['gmAlpha', 'playerAlpha', 'vThreshold'].includes(key)) val /= 100;
       // If setting is a color value, convert webcolor to hex before saving

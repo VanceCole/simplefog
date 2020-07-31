@@ -106,9 +106,6 @@ export default class SimplefogLayer extends MaskLayer {
       // Otherwise fall back to module default
       else this.setSetting(key, this.DEFAULTS[key]);
     });
-    // These two make more sense per user, so set them on the game.user object instead of scene
-    if (!this.getUserSetting('brushOpacity')) this.setUserSetting('brushOpacity', this.DEFAULTS.brushOpacity);
-    if (!this.getUserSetting('brushSize')) this.setUserSetting('brushSize', this.DEFAULTS.brushSize);
   }
 
   /* -------------------------------------------- */
