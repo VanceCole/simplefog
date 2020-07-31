@@ -98,12 +98,13 @@ export default class SimplefogLayer extends MaskLayer {
 
     // Set default flags if they dont exist already
     Object.keys(DEFAULTS).forEach((key) => {
+      if (!game.user.isGM) return;
       // Check for existing scene specific setting
       if (this.getSetting(key) !== undefined) return;
       // Check for custom default
       const def = game.user.getFlag(this.layername, key);
       // If user has custom default, set it for scene
-      if (def !== undefined && game.user.isGM) this.setSetting(key, def);
+      if (def !== undefined) this.setSetting(key, def);
       // Otherwise fall back to module default
       else this.setSetting(key, DEFAULTS[key]);
     });
@@ -122,7 +123,9 @@ export default class SimplefogLayer extends MaskLayer {
    */
 
   getSetting(name) {
-    return canvas.scene.getFlag(this.layername, name);
+    let setting = canvas.scene.getFlag(this.layername, name);
+    if (setting === undefined) setting = DEFAULTS[name];
+    return setting;
   }
 
   async setSetting(name, value) {
