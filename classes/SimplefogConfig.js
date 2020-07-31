@@ -25,17 +25,17 @@ export default class SimplefogConfig extends FormApplication {
   getData() {
   // Return data to the template
     return {
-      gmAlpha: canvas.scene.getFlag('simplefog', 'gmAlpha') * 100,
-      gmTint: hexToWeb(canvas.scene.getFlag('simplefog', 'gmTint')),
-      playerAlpha: canvas.scene.getFlag('simplefog', 'playerAlpha') * 100,
-      playerTint: hexToWeb(canvas.scene.getFlag('simplefog', 'playerTint')),
-      transition: canvas.scene.getFlag('simplefog', 'transition'),
-      transitionSpeed: canvas.scene.getFlag('simplefog', 'transitionSpeed'),
-      blurRadius: canvas.scene.getFlag('simplefog', 'blurRadius'),
-      blurQuality: canvas.scene.getFlag('simplefog', 'blurQuality'),
-      autoVisibility: canvas.scene.getFlag('simplefog', 'autoVisibility'),
-      autoVisGM: canvas.scene.getFlag('simplefog', 'autoVisGM'),
-      vThreshold: canvas.scene.getFlag('simplefog', 'vThreshold') * 100,
+      gmAlpha: canvas.simplefog.getSetting('gmAlpha') * 100,
+      gmTint: hexToWeb(canvas.simplefog.getSetting('gmTint')),
+      playerAlpha: canvas.simplefog.getSetting('playerAlpha') * 100,
+      playerTint: hexToWeb(canvas.simplefog.getSetting('playerTint')),
+      transition: canvas.simplefog.getSetting('transition'),
+      transitionSpeed: canvas.simplefog.getSetting('transitionSpeed'),
+      blurRadius: canvas.simplefog.getSetting('blurRadius'),
+      blurQuality: canvas.simplefog.getSetting('blurQuality'),
+      autoVisibility: canvas.simplefog.getSetting('autoVisibility'),
+      autoVisGM: canvas.simplefog.getSetting('autoVisGM'),
+      vThreshold: canvas.simplefog.getSetting('vThreshold') * 100,
     };
   }
 
@@ -61,9 +61,11 @@ export default class SimplefogConfig extends FormApplication {
       // If setting is a color value, convert webcolor to hex before saving
       if (['gmTint', 'playerTint'].includes(key)) val = webToHex(val);
       // Save settings to scene
-      await canvas.scene.setFlag('simplefog', key, val);
+      await canvas.simplefog.setSetting(key, val);
       // If saveDefaults button clicked, also save to user's defaults
-      if (event.submitter?.name === 'saveDefaults') game.user.setFlag('simplefog', key, val);
+      if (event.submitter?.name === 'saveDefaults') {
+        canvas.simplefog.setUserSetting(key, val);
+      }
     });
 
     // If save button was clicked, close app

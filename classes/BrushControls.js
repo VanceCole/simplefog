@@ -25,8 +25,8 @@ export default class BrushControls extends FormApplication {
   getData() {
     // Return data to the template
     return {
-      brushSize: game.user.getFlag('simplefog', 'brushSize'),
-      brushOpacity: hexToPercent(game.user.getFlag('simplefog', 'brushOpacity')),
+      brushSize: canvas.simplefog.getUserSetting('brushSize'),
+      brushOpacity: hexToPercent(canvas.simplefog.getUserSetting('brushOpacity')),
     };
   }
 
@@ -46,8 +46,8 @@ export default class BrushControls extends FormApplication {
    * @private
    */
   async _updateObject(event, formData) {
-    game.user.setFlag('simplefog', 'brushSize', formData.brushSize);
-    await game.user.setFlag('simplefog', 'brushOpacity', percentToHex(formData.brushOpacity));
+    canvas.simplefog.setUserSetting('brushSize', formData.brushSize);
+    await canvas.simplefog.setUserSetting('brushOpacity', percentToHex(formData.brushOpacity));
     canvas.simplefog.setPreviewTint();
   }
 }

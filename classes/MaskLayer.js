@@ -101,6 +101,7 @@ export default class MaskLayer extends CanvasLayer {
 
   getSetting(name) {
     let setting = canvas.scene.getFlag(this.layername, name);
+    if (setting === undefined) setting = this.getUserSetting(name);
     if (setting === undefined) setting = this.DEFAULTS[name];
     return setting;
   }
@@ -137,6 +138,7 @@ export default class MaskLayer extends CanvasLayer {
     // If history is zero, reset scene fog
     if (history.events.length === 0) this.resetMask(false);
     if (start === undefined) start = 0;
+    if (stop === undefined) stop = history.events.length;
     // If pointer preceeds the stop, reset and start from 0
     if (stop <= this.pointer) {
       this.resetMask(false);
