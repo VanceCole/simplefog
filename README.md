@@ -51,6 +51,8 @@ Allows you to set various options which affect the entire layer for the current 
 - Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay
 - Hold shift when clicking trash icon to erase all fog instead of resetting to black
 - Button to quickset vis to 100% opaque
+- Add indicator icon of player controlled icons hidden under fog
+- Currently incompatible with the module "GM Scene Background" when a GM layer is active
 
 # Bugs and Feature Requests
 Please ping me on discord @vance#1935
