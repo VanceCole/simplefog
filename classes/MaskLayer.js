@@ -17,6 +17,15 @@ export default class MaskLayer extends CanvasLayer {
     this.dragStart = { x: 0, y: 0 };
     // Not actually used, just to prevent foundry from complaining
     this.history = [];
+    this.DEFAULTS = {
+      visible: false,
+      history: {
+        events: [],
+        pointer: 0,
+      },
+      blurQuality: 2,
+      blurRadius: 5,
+    };
   }
 
   /* -------------------------------------------- */
@@ -86,6 +95,33 @@ export default class MaskLayer extends CanvasLayer {
   }
 
   /**
+   * Gets and sets various layer wide properties
+   * Some properties have different values depending on if user is a GM or player
+   */
+
+  getSetting(name) {
+    let setting = canvas.scene.getFlag(this.layername, name);
+    if (setting === undefined) setting = this.DEFAULTS[name];
+    return setting;
+  }
+
+  async setSetting(name, value) {
+    const v = await canvas.scene.setFlag(this.layername, name, value);
+    return v;
+  }
+
+  getUserSetting(name) {
+    let setting = game.user.getFlag(this.layername, name);
+    if (setting === undefined) setting = this.DEFAULTS[name];
+    return setting;
+  }
+
+  async setUserSetting(name, value) {
+    const v = await game.user.setFlag(this.layername, name, value);
+    return v;
+  }
+
+  /**
    * Renders the history stack to the mask
    * @param history {Array}       A collection of history events
    * @param start {Number}        The position in the history stack to begin rendering from
@@ -126,14 +162,8 @@ export default class MaskLayer extends CanvasLayer {
   async commitHistory() {
   // Do nothing if no history to be committed, otherwise get history
     if (this.historyBuffer.length === 0) return;
-    let history = this.getSetting('history');
-    // If history storage doesnt exist, create it
-    if (!history) {
-      history = {
-        events: [],
-        pointer: 0,
-      };
-    }
+    const history = this.getSetting('history');
+
     // If pointer is less than history length (f.x. user undo), truncate history
     history.events = history.events.slice(0, history.pointer);
     // Push the new history buffer to the scene

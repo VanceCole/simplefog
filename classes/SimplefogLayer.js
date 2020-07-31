@@ -7,32 +7,30 @@ import MaskLayer from './MaskLayer.js';
 import { Layout } from '../libs/hexagons.js';
 import { hexObjsToArr, doesArrayOfArraysContainArray, hexToPercent } from '../js/helpers.js';
 
-const DEFAULTS = {
-  gmAlpha: 0.6,
-  gmTint: '0x000000',
-  playerAlpha: 1,
-  playerTint: '0x000000',
-  transition: true,
-  transitionSpeed: 800,
-  previewColor: 0x00FFFF,
-  handlefill: 0xff6400,
-  handlesize: 20,
-  previewAlpha: 0.4,
-  blurQuality: 2,
-  blurRadius: 5,
-  brushSize: 50,
-  brushOpacity: 1,
-  autoVisibility: false,
-  autoVisGM: false,
-  vThreshold: 1,
-};
-
 export default class SimplefogLayer extends MaskLayer {
   constructor() {
     super('simplefog');
     // Register event listerenrs
     this._registerMouseListeners();
     this._registerKeyboardListeners();
+
+    this.DEFAULTS = Object.assign(this.DEFAULTS, {
+      gmAlpha: 0.6,
+      gmTint: '0x000000',
+      playerAlpha: 1,
+      playerTint: '0x000000',
+      transition: true,
+      transitionSpeed: 800,
+      previewColor: '0x00FFFF',
+      handlefill: '0xff6400',
+      handlesize: 20,
+      previewAlpha: 0.4,
+      brushSize: 50,
+      brushOpacity: 1,
+      autoVisibility: false,
+      autoVisGM: false,
+      vThreshold: 1,
+    });
 
     // React to canvas zoom
     Hooks.on('canvasPan', (canvas, dimensions) => {
@@ -52,7 +50,7 @@ export default class SimplefogLayer extends MaskLayer {
       x: 0,
       y: 0,
       fill: 0xFFFFFF,
-      alpha: DEFAULTS.previewAlpha,
+      alpha: this.DEFAULTS.previewAlpha,
       width: 100,
       height: 100,
       visible: false,
@@ -63,7 +61,7 @@ export default class SimplefogLayer extends MaskLayer {
       x: 0,
       y: 0,
       fill: 0xFFFFFF,
-      alpha: DEFAULTS.previewAlpha,
+      alpha: this.DEFAULTS.previewAlpha,
       width: 100,
       height: 100,
       visible: false,
@@ -75,7 +73,7 @@ export default class SimplefogLayer extends MaskLayer {
       y: 0,
       vertices: [],
       fill: 0xFFFFFF,
-      alpha: DEFAULTS.previewAlpha,
+      alpha: this.DEFAULTS.previewAlpha,
       visible: false,
       zIndex: 10,
     });
@@ -83,10 +81,10 @@ export default class SimplefogLayer extends MaskLayer {
       shape: 'box',
       x: 0,
       y: 0,
-      fill: DEFAULTS.handlefill,
-      width: DEFAULTS.handlesize * 2,
-      height: DEFAULTS.handlesize * 2,
-      alpha: DEFAULTS.previewAlpha,
+      fill: this.DEFAULTS.handlefill,
+      width: this.DEFAULTS.handlesize * 2,
+      height: this.DEFAULTS.handlesize * 2,
+      alpha: this.DEFAULTS.previewAlpha,
       visible: false,
       zIndex: 15,
     });
@@ -97,41 +95,26 @@ export default class SimplefogLayer extends MaskLayer {
     this.addChild(this.shapeHandle);
 
     // Set default flags if they dont exist already
-    Object.keys(DEFAULTS).forEach((key) => {
+    Object.keys(this.DEFAULTS).forEach((key) => {
       if (!game.user.isGM) return;
       // Check for existing scene specific setting
       if (this.getSetting(key) !== undefined) return;
       // Check for custom default
-      const def = game.user.getFlag(this.layername, key);
+      const def = this.getUserSetting(key);
       // If user has custom default, set it for scene
       if (def !== undefined) this.setSetting(key, def);
       // Otherwise fall back to module default
-      else this.setSetting(key, DEFAULTS[key]);
+      else this.setSetting(key, this.DEFAULTS[key]);
     });
     // These two make more sense per user, so set them on the game.user object instead of scene
-    if (!game.user.getFlag(this.layername, 'brushOpacity')) game.user.setFlag(this.layername, 'brushOpacity', DEFAULTS.brushOpacity);
-    if (!game.user.getFlag(this.layername, 'brushSize')) game.user.setFlag(this.layername, 'brushSize', DEFAULTS.brushSize);
+    if (!this.getUserSetting('brushOpacity')) this.setUserSetting('brushOpacity', this.DEFAULTS.brushOpacity);
+    if (!this.getUserSetting('brushSize')) this.setUserSetting('brushSize', this.DEFAULTS.brushSize);
   }
 
   /* -------------------------------------------- */
   /*  Getters and setters for layer props         */
   /* -------------------------------------------- */
 
-  /**
-   * Gets and sets various layer wide properties
-   * Some properties have different values depending on if user is a GM or player
-   */
-
-  getSetting(name) {
-    let setting = canvas.scene.getFlag(this.layername, name);
-    if (setting === undefined) setting = DEFAULTS[name];
-    return setting;
-  }
-
-  async setSetting(name, value) {
-    const v = await canvas.scene.setFlag(this.layername, name, value);
-    return v;
-  }
 
   // Tint & Alpha have special cases because they can differ between GM & Players
   // And alpha can be animated for transition effects
@@ -155,8 +138,8 @@ export default class SimplefogLayer extends MaskLayer {
     if (game.user.isGM) alpha = this.getSetting('gmAlpha');
     else alpha = this.getSetting('playerAlpha');
     if (!alpha) {
-      if (game.user.isGM) alpha = DEFAULTS.gmAlpha;
-      else alpha = DEFAULTS.playerAlpha;
+      if (game.user.isGM) alpha = this.DEFAULTS.gmAlpha;
+      else alpha = this.DEFAULTS.playerAlpha;
     }
     return alpha;
   }
@@ -253,11 +236,11 @@ export default class SimplefogLayer extends MaskLayer {
       // Only react if simplefog layer is active
       if (ui.controls.activeControl !== this.layername) return;
       if (event.which === 219 && this.activeTool === 'brush') {
-        const s = game.user.getFlag(this.layername, 'brushSize');
+        const s = this.getUserSetting('brushSize');
         this.setBrushSize(s * 0.8);
       }
       if (event.which === 221 && this.activeTool === 'brush') {
-        const s = game.user.getFlag(this.layername, 'brushSize');
+        const s = this.getUserSetting('brushSize');
         this.setBrushSize(s * 1.25);
       }
       // React to ctrl+z
@@ -294,8 +277,8 @@ export default class SimplefogLayer extends MaskLayer {
   }
 
   setPreviewTint() {
-    const vt = canvas.scene.getFlag(this.layername, 'vThreshold');
-    const bo = hexToPercent(game.user.getFlag(this.layername, 'brushOpacity')) / 100;
+    const vt = this.getSetting('vThreshold');
+    const bo = hexToPercent(this.getUserSetting('brushOpacity')) / 100;
     let tint = 0xFF0000;
     if (bo < vt) tint = 0x00FF00;
     this.ellipsePreview.tint = tint;
@@ -308,7 +291,7 @@ export default class SimplefogLayer extends MaskLayer {
    * @param {Number}  Size in pixels
    */
   async setBrushSize(s) {
-    await game.user.setFlag(this.layername, 'brushSize', s);
+    await this.setUserSetting('brushSize', s);
     const p = { x: this.ellipsePreview.x, y: this.ellipsePreview.y };
     this._pointerMoveBrush(p);
   }
@@ -410,7 +393,7 @@ export default class SimplefogLayer extends MaskLayer {
   }
 
   _pointerMoveBrush(p) {
-    const size = game.user.getFlag(this.layername, 'brushSize');
+    const size = this.getUserSetting('brushSize');
     this.ellipsePreview.width = size * 2;
     this.ellipsePreview.height = size * 2;
     this.ellipsePreview.x = p.x;
@@ -422,9 +405,9 @@ export default class SimplefogLayer extends MaskLayer {
         shape: 'ellipse',
         x: p.x,
         y: p.y,
-        fill: game.user.getFlag(this.layername, 'brushOpacity'),
-        width: game.user.getFlag(this.layername, 'brushSize'),
-        height: game.user.getFlag(this.layername, 'brushSize'),
+        fill: this.getUserSetting('brushOpacity'),
+        width: this.getUserSetting('brushSize'),
+        height: this.getUserSetting('brushSize'),
         alpha: 1,
         visible: true,
       });
@@ -466,7 +449,7 @@ export default class SimplefogLayer extends MaskLayer {
       width: d.w,
       height: d.h,
       visible: true,
-      fill: game.user.getFlag(this.layername, 'brushOpacity'),
+      fill: this.getUserSetting('brushOpacity'),
       alpha: 1,
     });
     this.boxPreview.visible = false;
@@ -506,7 +489,7 @@ export default class SimplefogLayer extends MaskLayer {
       width: Math.abs(d.w),
       height: Math.abs(d.h),
       visible: true,
-      fill: game.user.getFlag(this.layername, 'brushOpacity'),
+      fill: this.getUserSetting('brushOpacity'),
       alpha: 1,
     });
     this.ellipsePreview.visible = false;
@@ -524,7 +507,7 @@ export default class SimplefogLayer extends MaskLayer {
       // Check if new point is close enough to start to close the shape
       const xo = Math.abs(this.shape[0].x - x);
       const yo = Math.abs(this.shape[0].y - y);
-      if (xo < DEFAULTS.handlesize && yo < DEFAULTS.handlesize) {
+      if (xo < this.DEFAULTS.handlesize && yo < this.DEFAULTS.handlesize) {
         const verts = hexObjsToArr(this.shape);
         // render the new shape to history
         this.renderBrush({
@@ -533,7 +516,7 @@ export default class SimplefogLayer extends MaskLayer {
           y: 0,
           vertices: verts,
           visible: true,
-          fill: game.user.getFlag(this.layername, 'brushOpacity'),
+          fill: this.getUserSetting('brushOpacity'),
           alpha: 1,
         });
         // Reset the preview shape
@@ -546,8 +529,8 @@ export default class SimplefogLayer extends MaskLayer {
     } else {
       // If this is the first vertex
       // Draw shape handle
-      this.shapeHandle.x = x - DEFAULTS.handlesize;
-      this.shapeHandle.y = y - DEFAULTS.handlesize;
+      this.shapeHandle.x = x - this.DEFAULTS.handlesize;
+      this.shapeHandle.y = y - this.DEFAULTS.handlesize;
       this.shapeHandle.visible = true;
     }
     // If intermediate vertex, add it to array and redraw the preview
@@ -591,7 +574,7 @@ export default class SimplefogLayer extends MaskLayer {
             width: grid,
             height: grid,
             visible: true,
-            fill: game.user.getFlag(this.layername, 'brushOpacity'),
+            fill: this.getUserSetting('brushOpacity'),
             alpha: 1,
           });
         }
@@ -622,7 +605,7 @@ export default class SimplefogLayer extends MaskLayer {
             x: 0,
             y: 0,
             visible: true,
-            fill: game.user.getFlag(this.layername, 'brushOpacity'),
+            fill: this.getUserSetting('brushOpacity'),
             alpha: 1,
           });
           // Flag cell as drawn in dupes
