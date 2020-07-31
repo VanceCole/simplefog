@@ -56,7 +56,6 @@ export default class SimplefogConfig extends FormApplication {
    */
   async _updateObject(event, formData) {
     Object.entries(formData).forEach(async ([key, val]) => {
-      console.log(val);
       // If setting is an opacity slider, convert from 1-100 to 0-1
       if (['gmAlpha', 'playerAlpha', 'vThreshold'].includes(key)) val /= 100;
       // If setting is a color value, convert webcolor to hex before saving
