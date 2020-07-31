@@ -36,7 +36,7 @@ Allows you to set various options which affect the entire layer for the current 
 - Right click to cancel during draw for ellipse / box tool does not respond to event
 - Currently incompatible with PF2e
 - Non-breaking error with Less Fog
-- Occasionally throws error for players that they cannot edit scene
+- ~~Occasionally throws error for players that they cannot edit scene~~
 - 
 
 ## Future Features

@@ -136,6 +136,8 @@ export default class MaskLayer extends CanvasLayer {
     if (history === undefined) return;
     // If history is zero, reset scene fog
     if (history.events.length === 0) this.resetMask(false);
+    if (start === undefined) start = 0;
+    // If pointer preceeds the stop, reset and start from 0
     if (stop <= this.pointer) {
       this.resetMask(false);
       start = 0;

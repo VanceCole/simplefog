@@ -1,3 +1,7 @@
+## 0.1.4
+* Fixes issue where players could receive warnings about not having permissions to edit scene
+* Fixes incompatibility with various modules and systems, if you still encounter problems please let me know
+
 ## 0.1.3
 * Fixes a rather nasty memory leak, thanks to @ruipin for pointing out the possibility for this to occur.
 * The simplefog renderable texture will now scale resolution to allow for very large (> 16000x16000) scenes to work properly, albeit at a slightly reduced fog quality

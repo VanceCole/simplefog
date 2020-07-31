@@ -6,13 +6,6 @@ Hooks.once('init', () => {
   // eslint-disable-next-line no-console
   console.log('simplefog | Initializing simplefog');
 
-  // Monkeypatch SightLayer to check simplefog vision on updates
-  const origUpdate = SightLayer.prototype.update;
-  SightLayer.prototype.update = function update() {
-    origUpdate.bind(this)();
-    sightLayerUpdate();
-  };
-
   // Register global module settings
   // config.forEach((cfg) => {
   //   game.settings.register('simplefog', cfg.name, cfg.data);
@@ -33,13 +26,11 @@ Hooks.on('canvasInit', () => {
  * Apply compatibility patches
  */
 Hooks.once('ready', () => {
-  if (game.modules.get('DancingLights')) {
-    // Dancing lights clobbers the patched update, so monkeypatch it again...
-    const origUpdate = canvas.sight.update;
-    canvas.sight.update = function update() {
-      origUpdate.bind(this)();
-      sightLayerUpdate();
-    };
-    canvas.sight.update();
-  }
+  // Monkeypatch SightLayer to check simplefog vision on updates
+  const origUpdate = canvas.sight.update;
+  canvas.sight.update = function update() {
+    origUpdate.bind(this)();
+    sightLayerUpdate();
+  };
+  canvas.sight.update();
 });

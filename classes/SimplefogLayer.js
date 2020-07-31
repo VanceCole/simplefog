@@ -115,7 +115,6 @@ export default class SimplefogLayer extends MaskLayer {
   /*  Getters and setters for layer props         */
   /* -------------------------------------------- */
 
-
   // Tint & Alpha have special cases because they can differ between GM & Players
   // And alpha can be animated for transition effects
   getTint() {
