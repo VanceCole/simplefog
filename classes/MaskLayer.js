@@ -331,27 +331,6 @@ export default class MaskLayer extends CanvasLayer {
   }
 
   /**
-   * Extracts pixel data of the mask layer to array
-   */
-  getMaskPixels() {
-    const tex = this.maskTexture;
-    const pixels = canvas.app.renderer.plugins.extract.pixels(tex);
-    return { pixels, tex };
-  }
-
-  /**
-   * Gets the RGBA value of a given point from a mask object
-   * @param point {Object} { x: 0, y: 0 }
-   * @param mask  {Object} { pixelarray, texture} - see getMaskPixels()
-   */
-  getPixel(point, mask) {
-    // point = this.worldTransform.applyInverse(point, { x: 0, y: 0 });
-    const num = point.x + point.y * mask.tex.width;
-    const px = mask.pixels;
-    return [px[num * 4], px[num * 4 + 1], px[num * 4 + 2], px[num * 4 + 3]];
-  }
-
-  /**
    * Actions upon layer becoming active
    */
   activate() {

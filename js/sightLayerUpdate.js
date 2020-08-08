@@ -4,7 +4,7 @@
  * checks on sight layer updates to hide and reveal placeables based
  * on opacity of simplefog layer mask
  */
-import { timer } from './helpers.js';
+import { timer, readPixel } from './helpers.js';
 
 /*
   * The token's worldTransform is not updated yet when this is called
@@ -34,10 +34,10 @@ function _getCanvasCoords(placeable) {
 /*
   * Checks mask opacity at location of placeable and sets visibility
   */
-function _setPlaceableVisibility(placeable, mask) {
-  if (placeable.observer) return;
+function _setPlaceableVisibility(placeable) {
+  if (placeable.observer && !game.user.isGM) return;
   const pos = _getCanvasCoords(placeable);
-  const p = canvas.simplefog.getPixel(pos, mask);
+  const p = readPixel(canvas.simplefog.maskTexture, pos.x, pos.y);
   const pAvg = (p[0] + p[1] + p[2]) / 3;
   const v = ((pAvg / 255) < canvas.scene.getFlag('simplefog', 'vThreshold'));
   // if this is a door, we set vis on it's control object instead
@@ -52,20 +52,17 @@ export default function sightLayerUpdate() {
   if (!canvas.scene.getFlag('simplefog', 'autoVisibility')) return;
   // Skip if user is GM and autoVisGM Disabled
   if (game.user.isGM && !canvas.scene.getFlag('simplefog', 'autoVisGM')) return;
-  const t = timer('AutoVisibility');
-  // get mask data
-  // Todo: kinda slow, probably a better way to do this
-  const mask = canvas.simplefog.getMaskPixels();
+  const t = timer('AutoVisibility rendered');
   // loop through placeables
   canvas.tokens.placeables.forEach((placeable) => {
-    _setPlaceableVisibility(placeable, mask);
+    _setPlaceableVisibility(placeable);
   });
   canvas.notes.placeables.forEach((placeable) => {
-    _setPlaceableVisibility(placeable, mask);
+    _setPlaceableVisibility(placeable);
   });
   canvas.walls.placeables.forEach((placeable) => {
     if (placeable.data.door) {
-      _setPlaceableVisibility(placeable, mask);
+      _setPlaceableVisibility(placeable);
     }
   });
   t.stop();

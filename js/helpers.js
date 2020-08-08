@@ -81,7 +81,7 @@ export function doesArrayOfArraysContainArray(arrayOfArrays, array) {
 
 export function simplefogLog(string) {
   // eslint-disable-next-line no-console, no-constant-condition
-  if (true) console.log(`Simplefog | ${string}`);
+  if (CONFIG.debug.simplefog) console.log(`Simplefog | ${string}`);
 }
 
 export function timer(name) {
@@ -90,7 +90,43 @@ export function timer(name) {
     stop() {
       const end = new Date();
       const time = end.getTime() - start.getTime();
-      simplefogLog(`${name} rendered in ${time} ms`);
+      simplefogLog(`${name} in ${time} ms`);
     },
   };
+}
+
+export function readPixel(target, x = 0, y = 0) {
+  const { renderer } = canvas.app;
+  let resolution;
+  let frame;
+  let renderTexture;
+  let generated = false;
+  if (target) {
+    if (target instanceof PIXI.RenderTexture) {
+      renderTexture = target;
+    } else {
+      renderTexture = renderer.generateTexture(target);
+      generated = true;
+    }
+  }
+  if (renderTexture) {
+    resolution = renderTexture.baseTexture.resolution;
+    frame = renderTexture.frame;
+    // bind the buffer
+    renderer.renderTexture.bind(renderTexture);
+  } else {
+    resolution = renderer.resolution;
+    frame = TEMP_RECT;
+    frame.width = renderer.width;
+    frame.height = renderer.height;
+    renderer.renderTexture.bind(null);
+  }
+  const pixel = new Uint8Array(4);
+  // read pixels to the array
+  const { gl } = renderer;
+  gl.readPixels(x * resolution, y * resolution, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+  if (generated) {
+    renderTexture.destroy(true);
+  }
+  return pixel;
 }
