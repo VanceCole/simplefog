@@ -79,9 +79,13 @@ export function doesArrayOfArraysContainArray(arrayOfArrays, array) {
   return false;
 }
 
-export function simplefogLog(string) {
-  // eslint-disable-next-line no-console, no-constant-condition
-  if (CONFIG.debug.simplefog) console.log(`Simplefog | ${string}`);
+export function simplefogLog(data) {
+  if (CONFIG.debug.simplefog) {
+    // eslint-disable-next-line no-console
+    if (typeof data === 'string') console.log(`Simplefog | ${data}`);
+    // eslint-disable-next-line no-console
+    else console.log(data);
+  }
 }
 
 export function timer(name) {

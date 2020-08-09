@@ -318,6 +318,9 @@ export default class SimplefogLayer extends MaskLayer {
     // Only react on left mouse button
     if (e.data.button === 0) {
       const p = e.data.getLocalPosition(canvas.app.stage);
+      // Round positions to nearest pixel
+      p.x = Math.round(p.x);
+      p.y = Math.round(p.y);
       this.op = true;
       // Check active tool
       switch (this.activeTool) {
@@ -347,6 +350,9 @@ export default class SimplefogLayer extends MaskLayer {
   _pointerMove(e) {
   // Get mouse position translated to canvas coords
     const p = e.data.getLocalPosition(canvas.app.stage);
+    // Round positions to nearest pixel
+    p.x = Math.round(p.x);
+    p.y = Math.round(p.y);
     switch (this.activeTool) {
       case 'brush': this._pointerMoveBrush(p, e);
         break;
@@ -366,6 +372,9 @@ export default class SimplefogLayer extends MaskLayer {
     if (e.data.button === 0) {
       // Translate click to canvas position
       const p = e.data.getLocalPosition(canvas.app.stage);
+      // Round positions to nearest pixel
+      p.x = Math.round(p.x);
+      p.y = Math.round(p.y);
       switch (this.op) {
         case 'box': this._pointerUpBox(p, e);
           break;

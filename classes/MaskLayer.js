@@ -281,6 +281,7 @@ export default class MaskLayer extends CanvasLayer {
    * @param save {Boolean}      If true, will add the operation to the history buffer
    */
   renderBrush(data, save = true) {
+    simplefogLog(data);
     const brush = this.brush(data);
     this.composite(brush);
     brush.destroy();
