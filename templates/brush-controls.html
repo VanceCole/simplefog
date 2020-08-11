@@ -1,17 +1,17 @@
 <div id="simplefog-brush-controls">
     <form id="simplefog-brush-controls-form">
         <div id="brush-size-container">
-            <h3 class="form-header">Brush Size</h3>
+            <h3 class="form-header">{{localize 'SIMPLEFOG.brushSize'}}</h3>
             <div class="form-group">
                 <input type="range" name="brushSize" value="{{ brushSize }}" min="10" max="500" step="10" data-dtype="Number"/>
             </div>
         </div>
         <div id="brush-opacity-container">
-            <h3 class="form-header">Brush Opacity</h3>
+            <h3 class="form-header">{{localize 'SIMPLEFOG.brushOpacity'}}</h3>
             <div class="form-group brush-opacity">
                 <input type="range" name="brushOpacity" value="{{ brushOpacity }}" min="0" max="100" step="1" data-dtype="Number"/>
-                <div class="label left-label">Reveal</div>
-                <div class="label right-label">Hide</div>
+                <div class="label left-label">{{localize 'SIMPLEFOG.reveal'}}</div>
+                <div class="label right-label">{{localize 'SIMPLEFOG.hide'}}</div>
             </div>
         </div>
     </form>

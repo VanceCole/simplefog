@@ -13,6 +13,13 @@
   "styles": [
     "css/brush-controls.css"
   ],
+  "languages": [
+		{
+			"lang": "en",
+			"name": "English",
+			"path": "lang/en.json"
+		}
+	],
   "url": "https://github.com/VanceCole/simplefog",
   "manifest": "https://raw.githubusercontent.com/VanceCole/simplefog/master/module.json",
   "readme": "https://github.com/VanceCole/simplefog/blob/master/README.md",

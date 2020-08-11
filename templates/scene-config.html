@@ -1,17 +1,17 @@
 <form>
-    <h3 class="form-header"><i class="fas fa-crown"></i> GM Fog Settings</h3>
+    <h3 class="form-header"><i class="fas fa-crown"></i> {{localize 'SIMPLEFOG.gmFogSettings'}}</h3>
     <div class="form-group">
-        <label for="gmTint">Color</label>
+        <label for="gmTint">{{localize 'SIMPLEFOG.color'}}</label>
         <input class="color" type="text" name="gmTint" value="{{ gmTint }}" data-dtype="String"/>
         <input type="color" value="{{ gmTint }}" data-edit="gmTint"/>
     </div>
     <div class="form-group">
-        <label for="gmAlpha">Opacity</label>
+        <label for="gmAlpha">{{localize 'SIMPLEFOG.opacity'}}</label>
         <input type="range" name="gmAlpha" value="{{ gmAlpha }}" min="0" max="100" step="1" data-dtype="Number"/>
         <span class="range-value">{{ gmAlpha }}</span>
     </div>
 
-    <h3 class="form-header"><i class="fas fa-users"></i> Player Fog Settings</h3>
+    <h3 class="form-header"><i class="fas fa-users"></i> {{localize 'SIMPLEFOG.playerFogSettings'}}</h3>
     <div class="form-group">
         <label for="playerTint">Color</label>
         <input class="color" type="text" name="playerTint" value="{{ playerTint }}" data-dtype="String"/>
@@ -23,51 +23,51 @@
         <span class="range-value">{{ playerAlpha }}</span>
     </div>
     <hr>
-    <h3 class="form-header"><i class="fas fa-filter"></i> Filter Settings</h3>
+    <h3 class="form-header"><i class="fas fa-filter"></i> {{localize 'SIMPLEFOG.filterSettings'}}</h3>
     <div class="form-group">
-        <label for="blur">Blur Radius</label>
+        <label for="blur">{{localize 'SIMPLEFOG.blurRadius'}}</label>
         <input type="range" name="blurRadius" value="{{ blurRadius }}" min="0" max="50" step="1" data-dtype="Number"/>
         <span class="range-value">{{ blurRadius }}</span>
     </div>
     <div class="form-group">
-        <label for="blurQuality">Blur Quality</label>
+        <label for="blurQuality">{{localize 'SIMPLEFOG.blurQuality'}}</label>
         <input type="range" name="blurQuality" value="{{ blurQuality }}" min="1" max="8" step="1" data-dtype="Number"/>
         <span class="range-value">{{ blurQuality }}</span>
-        <p class="notes">Higher blur quality improves the appearance of the blur effect, but may cause slower performance.</p>
+        <p class="notes">{{localize 'SIMPLEFOG.blurQualityDesc'}}</p>
     </div>
     <hr>
-    <h3 class="form-header"><i class="fas fa-adjust"></i> Transition Settings</h3>
+    <h3 class="form-header"><i class="fas fa-adjust"></i> {{localize 'SIMPLEFOG.transitionSettings'}}</h3>
     <div class="form-group">
-        <label for="transition">Enable Transitions</label>
+        <label for="transition">{{localize 'SIMPLEFOG.enableTransitions'}}</label>
         <input type='checkbox' {{#if transition}}checked{{/if}} name='transition'/>
     </div>
     <div class="form-group">
-        <label for="transitionSpeed">Transition Speed</label>
+        <label for="transitionSpeed">{{localize 'SIMPLEFOG.transitionSpeed'}}</label>
         <input type="range" name="transitionSpeed" value="{{ transitionSpeed }}" min="100" max="5000" step="100" data-dtype="Number"/>
         <span class="range-value">{{ transitionSpeed }}</span>
     </div>
     <hr>
-    <h3 class="form-header"><i class="fas fa-low-vision"></i> Visibility Settings</h3>
+    <h3 class="form-header"><i class="fas fa-low-vision"></i> {{localize 'SIMPLEFOG.visibilitySettings'}}</h3>
     <div class="form-group">
-        <label for="autoVisibility">Enable Automatic Visibility</label>
+        <label for="autoVisibility">{{localize 'SIMPLEFOG.enableAutovis'}}</label>
         <input type='checkbox' {{#if autoVisibility}}checked{{/if}} name='autoVisibility'/>
     </div>
     <div class="form-group">
-        <label for="autoVisGM">Enable for GM</label>
+        <label for="autoVisGM">{{localize 'SIMPLEFOG.enableForGM'}}</label>
         <input type='checkbox' {{#if autoVisGM}}checked{{/if}} name='autoVisGM'/>
     </div>
     <div class="form-group">
-        <label for="vThreshold">Visibility Threshold</label>
+        <label for="vThreshold">{{localize 'SIMPLEFOG.visThreshold'}}</label>
         <input type="range" name="vThreshold" value="{{ vThreshold }}" min="0" max="100" step="1" data-dtype="Number"/>
         <span class="range-value">{{ vThreshold }}</span>
     </div>
     <hr>
     <footer class="sheet-footer flexrow">
         <button type="submit" name="saveDefaults">
-            <i class="fas fa-save"></i> Save current settings as default
+            <i class="fas fa-save"></i> {{localize 'SIMPLEFOG.saveAsDef'}}
         </button>
         <button type="submit" name="submit">
-            <i class="fa fa-check"></i> OK
+            <i class="fa fa-check"></i> {{localize 'SIMPLEFOG.ok'}}
         </button>
     </footer>
 </form>

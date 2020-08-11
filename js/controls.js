@@ -8,13 +8,13 @@ Hooks.on('getSceneControlButtons', (controls) => {
   if (game.user.isGM) {
     controls.push({
       name: 'simplefog',
-      title: 'Simple Fog',
+      title: game.i18n.localize('SIMPLEFOG.sf'),
       icon: 'fas fa-cloud',
       layer: 'SimplefogLayer',
       tools: [
         {
           name: 'simplefogtoggle',
-          title: 'Enable/Disable Simple Fog',
+          title: game.i18n.localize('SIMPLEFOG.onoff'),
           icon: 'fas fa-eye',
           onClick: () => {
             canvas.simplefog.toggle();
@@ -25,27 +25,27 @@ Hooks.on('getSceneControlButtons', (controls) => {
         },
         {
           name: 'brush',
-          title: 'Brush Tool',
+          title: game.i18n.localize('SIMPLEFOG.brushTool'),
           icon: 'fas fa-paint-brush',
         },
         {
           name: 'grid',
-          title: 'Grid Tool',
+          title: game.i18n.localize('SIMPLEFOG.gridTool'),
           icon: 'fas fa-border-none',
         },
         {
           name: 'shape',
-          title: 'Shape Tool',
+          title: game.i18n.localize('SIMPLEFOG.shapeTool'),
           icon: 'fas fa-draw-polygon',
         },
         {
           name: 'box',
-          title: 'Box Tool',
+          title: game.i18n.localize('SIMPLEFOG.boxTool'),
           icon: 'far fa-square',
         },
         {
           name: 'ellipse',
-          title: 'Ellipse Tool',
+          title: game.i18n.localize('SIMPLEFOG.ellipseTool'),
           icon: 'far fa-circle',
         },
         // {
@@ -55,7 +55,7 @@ Hooks.on('getSceneControlButtons', (controls) => {
         // },
         {
           name: 'sceneConfig',
-          title: 'Scene Configuration',
+          title: game.i18n.localize('SIMPLEFOG.sceneConfig'),
           icon: 'fas fa-cog',
           onClick: () => {
             new SimplefogConfig().render(true);
@@ -64,12 +64,12 @@ Hooks.on('getSceneControlButtons', (controls) => {
         },
         {
           name: 'clearfog',
-          title: 'Clear Simple Fog',
+          title: game.i18n.localize('SIMPLEFOG.reset'),
           icon: 'fas fa-trash',
           onClick: () => {
             Dialog.confirm({
-              title: 'Reset Simple Fog',
-              content: 'Are you sure? Fog of war will be reset.',
+              title: game.i18n.localize('SIMPLEFOG.reset'),
+              content: game.i18n.localize('SIMPLEFOG.confirmReset'),
               yes: () => {
                 canvas.simplefog.resetMask();
               },
