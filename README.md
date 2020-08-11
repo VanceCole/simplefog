@@ -34,10 +34,6 @@ Allows you to set various options which affect the entire layer for the current 
 ## Known Bugs
 - Sometimes hex grid tool stops drawing certain hexes, releasing mouse button and drawing again fixes this as a workaround
 - Right click to cancel during draw for ellipse / box tool does not respond to event
-- Currently incompatible with PF2e
-- Non-breaking error with Less Fog
-- ~~Occasionally throws error for players that they cannot edit scene~~
-- 
 
 ## Future Features
 - More AutoVisibility options:
