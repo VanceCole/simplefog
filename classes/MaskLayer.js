@@ -217,7 +217,7 @@ export default class MaskLayer extends CanvasLayer {
     // Set new pointer & update history
     history.pointer = newpointer;
     await canvas.scene.unsetFlag(this.layername, 'history');
-    await canvas.scene.getFlag(this.layername, 'history', history);
+    await canvas.scene.setFlag(this.layername, 'history', history);
   }
 
   /* -------------------------------------------- */
@@ -281,7 +281,6 @@ export default class MaskLayer extends CanvasLayer {
    * @param save {Boolean}      If true, will add the operation to the history buffer
    */
   renderBrush(data, save = true) {
-    simplefogLog(data);
     const brush = this.brush(data);
     this.composite(brush);
     brush.destroy();
