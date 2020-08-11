@@ -1,3 +1,7 @@
+## 0.1.5
+* Significantly optimized the autovisibility feature which should make it useable on any size map with little performance impact
+* Improvements to the fog storage data which should reduce the impact on scene database file size
+
 ## 0.1.4
 * Fixes issue where players could receive warnings about not having permissions to edit scene
 * Fixes incompatibility with various modules and systems, if you still encounter problems please let me know
