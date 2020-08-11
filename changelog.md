@@ -1,3 +1,6 @@
+## 0.1.6
+* Adds localization support
+
 ## 0.1.5
 * Significantly optimized the autovisibility feature which should make it useable on any size map with little performance impact
 * Improvements to the fog storage data which should reduce the impact on scene database file size

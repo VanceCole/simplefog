@@ -42,7 +42,6 @@ Allows you to set various options which affect the entire layer for the current 
   - Reveal if any part of token is visible
 - Brush Smoothing / Interpolation
 - Image based fog import
-- Localizations
 - Sepia / monochrome filters
 - Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay
 - Hold shift when clicking trash icon to erase all fog instead of resetting to black

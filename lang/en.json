@@ -28,7 +28,6 @@
   "SIMPLEFOG.boxTool": "Box Tool",
   "SIMPLEFOG.ellipseTool": "Ellipse Tool",
   "SIMPLEFOG.sceneConfig": "Scene Configuration",
-  "SIMPLEFOG.clear": "Clear Simple Fog",
   "SIMPLEFOG.reset": "Reset Simple Fog",
   "SIMPLEFOG.confirmReset": "Are you sure? Fog of war will be reset."
 }

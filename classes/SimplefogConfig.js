@@ -43,11 +43,6 @@ export default class SimplefogConfig extends FormApplication {
   /*  Event Listeners and Handlers                */
   /* -------------------------------------------- */
 
-  /** @override */
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
-
   /**
    * This method is called upon form submission after form data is validated
    * @param event {Event}       The initial triggering submission event
