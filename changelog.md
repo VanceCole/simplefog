@@ -1,5 +1,6 @@
 ## 0.1.6
 * Adds localization support
+* Fixes bug where undo was not working correctly
 
 ## 0.1.5
 * Significantly optimized the autovisibility feature which should make it useable on any size map with little performance impact
