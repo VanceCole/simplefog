@@ -315,6 +315,8 @@ export default class SimplefogLayer extends MaskLayer {
    * Mouse handlers for canvas layer interactions
    */
   _pointerDown(e) {
+    // Don't allow new action if history push still in progress
+    if (this.historyBuffer.length > 0) return;
     // Only react on left mouse button
     if (e.data.button === 0) {
       const p = e.data.getLocalPosition(canvas.app.stage);
