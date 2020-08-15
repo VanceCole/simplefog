@@ -629,8 +629,10 @@ export default class SimplefogLayer extends MaskLayer {
     let h = p.y - this.dragStart.y;
     let w = p.x - this.dragStart.x;
     if (e.data.originalEvent.shiftKey) {
-      if (h > w) w = h;
-      else h = w;
+      const ws = Math.sign(w);
+      const hs = Math.sign(h);
+      if (Math.abs(h) > Math.abs(w)) w = Math.abs(h) * ws;
+      else h = Math.abs(w) * hs;
     }
     return { w, h };
   }
