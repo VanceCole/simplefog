@@ -1,3 +1,7 @@
+## 0.1.7
+* Fixes issue where brush tool labels were reversed
+* Fixes issue where quickly clicking brush tool could cause a race condition resulting in fog being reset 
+
 ## 0.1.6
 * Adds localization support
 * Fixes bug where undo was not working correctly
