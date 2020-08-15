@@ -1,6 +1,6 @@
 {
-	"SIMPLEFOG.brushOpacity": "Brush Size",
-	"SIMPLEFOG.brushSize": "Brush Opacity",
+	"SIMPLEFOG.brushOpacity": "Brush Opacity",
+	"SIMPLEFOG.brushSize": "Brush Size",
 	"SIMPLEFOG.hide": "Hide",
   "SIMPLEFOG.reveal": "Reveal",
   "SIMPLEFOG.gmFogSettings": "GM Fog Settings",

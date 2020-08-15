@@ -31,10 +31,6 @@ Allows you to set various options which affect the entire layer for the current 
 - Save your settings as the new default when creating a scene
 ![Scene Configuration Screenshot](docs/simplefog-options.png?raw=true "Scene Config")
 
-## Known Bugs
-- Sometimes hex grid tool stops drawing certain hexes, releasing mouse button and drawing again fixes this as a workaround
-- Right click to cancel during draw for ellipse / box tool does not respond to event
-
 ## Future Features
 - More AutoVisibility options:
   - Reveal based on center of token
