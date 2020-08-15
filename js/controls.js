@@ -84,12 +84,6 @@ Hooks.on('getSceneControlButtons', (controls) => {
   }
 });
 
-function setBrushControlPos() {
-  const h = $('#navigation').height();
-  const bc = $('#simplefog-brush-controls');
-  bc.css({ top: `${h + 30}px` });
-}
-
 /**
  * Handles adding the custom brush controls pallet
  * and switching active brush flag
@@ -110,9 +104,13 @@ Hooks.on('renderSceneControls', (controls) => {
   }
 });
 
-Hooks.on('renderBrushControls', () => {
-  setBrushControlPos();
-});
-Hooks.on('renderSceneNavigation', () => {
-  setBrushControlPos();
-});
+function setBrushControlPos() {
+  const bc = $('#simplefog-brush-controls');
+  if (bc) {
+    const h = $('#navigation').height();
+    bc.css({ top: `${h + 30}px` });
+  }
+}
+
+Hooks.on('renderBrushControls', setBrushControlPos);
+Hooks.on('renderSceneNavigation', setBrushControlPos);
