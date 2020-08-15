@@ -12,7 +12,6 @@ export default class BrushControls extends FormApplication {
       template: 'modules/simplefog/templates/brush-controls.html',
       id: 'filter-config',
       title: game.i18n.localize('Simplefog Options'),
-      parent: '#controls',
     });
   }
 

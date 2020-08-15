@@ -1,3 +1,7 @@
+## 0.1.8
+* Fixes issue where shift + negative rect brush direction did not work properly
+* Fixes issue where brush controls could become hidden under long lists of active scenes
+
 ## 0.1.7
 * Fixes issue where brush tool labels were reversed
 * Fixes issue where quickly clicking brush tool could cause a race condition resulting in fog being reset 
