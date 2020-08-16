@@ -104,6 +104,9 @@ Hooks.on('renderSceneControls', (controls) => {
   }
 });
 
+/**
+ * Sets Y position of the brush controls to account for scene navigation buttons
+ */
 function setBrushControlPos() {
   const bc = $('#simplefog-brush-controls');
   if (bc) {
@@ -112,5 +115,6 @@ function setBrushControlPos() {
   }
 }
 
+// Reset position when brush controls are rendered or sceneNavigation changes
 Hooks.on('renderBrushControls', setBrushControlPos);
 Hooks.on('renderSceneNavigation', setBrushControlPos);

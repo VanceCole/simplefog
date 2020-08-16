@@ -589,11 +589,9 @@ export default class SimplefogLayer extends MaskLayer {
       // Hex Grid
     } else if ([2, 3, 4, 5].includes(gridType)) {
       // Convert pixel coord to hex coord
-      const qr = this.gridLayout.pixelToHex(p);
-      const gridq = Math.ceil(qr.q - 0.5);
-      const gridr = Math.ceil(qr.r - 0.5);
+      const qr = this.gridLayout.pixelToHex(p).round();
       // Get current grid coord verts
-      const vertices = this.gridLayout.polygonCorners({ q: gridq, r: gridr });
+      const vertices = this.gridLayout.polygonCorners({ q: qr.q, r: qr.r });
       // Convert to array of individual verts
       const vertexArray = hexObjsToArr(vertices);
       // Update the preview shape
@@ -604,7 +602,7 @@ export default class SimplefogLayer extends MaskLayer {
       // If drag operation has started
       if (this.op) {
         // Check if this grid cell was already drawn
-        if (!doesArrayOfArraysContainArray(this.dupes, [gridq, gridr])) {
+        if (!doesArrayOfArraysContainArray(this.dupes, [qr.q, qr.r])) {
           // Get the vert coords for the hex
           this.renderBrush({
             shape: 'polygon',
@@ -616,7 +614,7 @@ export default class SimplefogLayer extends MaskLayer {
             alpha: 1,
           });
           // Flag cell as drawn in dupes
-          this.dupes.push([gridr, gridq]);
+          this.dupes.push([qr.q, qr.r]);
         }
       }
     }
