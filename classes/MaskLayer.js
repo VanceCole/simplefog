@@ -17,6 +17,12 @@ export default class MaskLayer extends CanvasLayer {
     this.dragStart = { x: 0, y: 0 };
     // Not actually used, just to prevent foundry from complaining
     this.history = [];
+    this.BRUSH_TYPES = {
+      ELLIPSE: 0,
+      BOX: 1,
+      ROUNDED_RECT: 2,
+      POLYGON: 3,
+    };
     this.DEFAULTS = {
       visible: false,
       blurQuality: 2,
@@ -257,9 +263,6 @@ export default class MaskLayer extends CanvasLayer {
         brush.drawRoundedRect(0, 0, data.width, data.height, 10);
         break;
       case 'polygon':
-        brush.drawPolygon(data.vertices);
-        break;
-      case 'shape':
         brush.drawPolygon(data.vertices);
         break;
       default:

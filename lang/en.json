@@ -24,7 +24,7 @@
   "SIMPLEFOG.onoff": "Enable/Disable Simple Fog",
   "SIMPLEFOG.brushTool": "Brush Tool",
   "SIMPLEFOG.gridTool": "Grid Tool",
-  "SIMPLEFOG.shapeTool": "Shape Tool",
+  "SIMPLEFOG.polygonTool": "Polygon Tool",
   "SIMPLEFOG.boxTool": "Box Tool",
   "SIMPLEFOG.ellipseTool": "Ellipse Tool",
   "SIMPLEFOG.sceneConfig": "Scene Configuration",

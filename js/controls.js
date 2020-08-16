@@ -34,8 +34,8 @@ Hooks.on('getSceneControlButtons', (controls) => {
           icon: 'fas fa-border-none',
         },
         {
-          name: 'shape',
-          title: game.i18n.localize('SIMPLEFOG.shapeTool'),
+          name: 'polygon',
+          title: game.i18n.localize('SIMPLEFOG.polygonTool'),
           icon: 'fas fa-draw-polygon',
         },
         {

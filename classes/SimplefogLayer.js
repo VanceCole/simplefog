@@ -67,8 +67,8 @@ export default class SimplefogLayer extends MaskLayer {
       visible: false,
       zIndex: 10,
     });
-    this.shapePreview = this.brush({
-      shape: 'shape',
+    this.polygonPreview = this.brush({
+      shape: 'polygon',
       x: 0,
       y: 0,
       vertices: [],
@@ -77,7 +77,7 @@ export default class SimplefogLayer extends MaskLayer {
       visible: false,
       zIndex: 10,
     });
-    this.shapeHandle = this.brush({
+    this.polygonHandle = this.brush({
       shape: 'box',
       x: 0,
       y: 0,
@@ -91,8 +91,8 @@ export default class SimplefogLayer extends MaskLayer {
     // Add preview brushes to layer
     this.addChild(this.boxPreview);
     this.addChild(this.ellipsePreview);
-    this.addChild(this.shapePreview);
-    this.addChild(this.shapeHandle);
+    this.addChild(this.polygonPreview);
+    this.addChild(this.polygonHandle);
 
     // Set default flags if they dont exist already
     Object.keys(this.DEFAULTS).forEach((key) => {
@@ -267,7 +267,7 @@ export default class SimplefogLayer extends MaskLayer {
         this.boxPreview.visible = true;
       } else if ([2, 3, 4, 5].includes(canvas.scene.data.gridType)) {
         this._initGrid();
-        this.shapePreview.visible = true;
+        this.polygonPreview.visible = true;
       }
     }
   }
@@ -279,7 +279,7 @@ export default class SimplefogLayer extends MaskLayer {
     if (bo < vt) tint = 0x00FF00;
     this.ellipsePreview.tint = tint;
     this.boxPreview.tint = tint;
-    this.shapePreview.tint = tint;
+    this.polygonPreview.tint = tint;
   }
 
   /**
@@ -301,10 +301,10 @@ export default class SimplefogLayer extends MaskLayer {
     // Ellipse Preview
     this.ellipsePreview.visible = false;
     // Shape preview
-    this.shapePreview.clear();
-    this.shapePreview.visible = false;
-    this.shapeHandle.visible = false;
-    this.shape = [];
+    this.polygonPreview.clear();
+    this.polygonPreview.visible = false;
+    this.polygonHandle.visible = false;
+    this.polygon = [];
     // Cancel op flag
     this.op = false;
     // Clear history buffer
@@ -334,7 +334,7 @@ export default class SimplefogLayer extends MaskLayer {
           break;
         case 'ellipse': this._pointerDownEllipse(p, e);
           break;
-        case 'shape': this._pointerDownShape(p, e);
+        case 'polygon': this._pointerDownPolygon(p, e);
           break;
         default: // Do nothing
           break;
@@ -343,7 +343,7 @@ export default class SimplefogLayer extends MaskLayer {
       this._pointerMove(e);
     } else if (e.data.button === 2) {
     // Todo: Not sure why this doesnt trigger when drawing ellipse & box
-      if (['shape', 'box', 'ellipse'].includes(this.activeTool)) {
+      if (['polygon', 'box', 'ellipse'].includes(this.activeTool)) {
         this.clearActiveTool();
       }
     }
@@ -503,22 +503,22 @@ export default class SimplefogLayer extends MaskLayer {
   }
 
   /*
-   * Shape Tool
+   * Polygon Tool
    */
-  _pointerDownShape(p) {
-    if (!this.shape) this.shape = [];
+  _pointerDownPolygon(p) {
+    if (!this.polygon) this.polygon = [];
     const x = Math.floor(p.x);
     const y = Math.floor(p.y);
     // If this is not the first vertex...
-    if (this.shape.length) {
-      // Check if new point is close enough to start to close the shape
-      const xo = Math.abs(this.shape[0].x - x);
-      const yo = Math.abs(this.shape[0].y - y);
+    if (this.polygon.length) {
+      // Check if new point is close enough to start to close the polygon
+      const xo = Math.abs(this.polygon[0].x - x);
+      const yo = Math.abs(this.polygon[0].y - y);
       if (xo < this.DEFAULTS.handlesize && yo < this.DEFAULTS.handlesize) {
-        const verts = hexObjsToArr(this.shape);
+        const verts = hexObjsToArr(this.polygon);
         // render the new shape to history
         this.renderBrush({
-          shape: 'shape',
+          shape: 'polygon',
           x: 0,
           y: 0,
           vertices: verts,
@@ -527,26 +527,26 @@ export default class SimplefogLayer extends MaskLayer {
           alpha: 1,
         });
         // Reset the preview shape
-        this.shapePreview.clear();
-        this.shapePreview.visible = false;
-        this.shapeHandle.visible = false;
-        this.shape = [];
+        this.polygonPreview.clear();
+        this.polygonPreview.visible = false;
+        this.polygonHandle.visible = false;
+        this.polygon = [];
         return;
       }
     } else {
       // If this is the first vertex
       // Draw shape handle
-      this.shapeHandle.x = x - this.DEFAULTS.handlesize;
-      this.shapeHandle.y = y - this.DEFAULTS.handlesize;
-      this.shapeHandle.visible = true;
+      this.polygonHandle.x = x - this.DEFAULTS.handlesize;
+      this.polygonHandle.y = y - this.DEFAULTS.handlesize;
+      this.polygonHandle.visible = true;
     }
     // If intermediate vertex, add it to array and redraw the preview
-    this.shape.push({ x, y });
-    this.shapePreview.clear();
-    this.shapePreview.beginFill(0xFFFFFF);
-    this.shapePreview.drawPolygon(hexObjsToArr(this.shape));
-    this.shapePreview.endFill();
-    this.shapePreview.visible = true;
+    this.polygon.push({ x, y });
+    this.polygonPreview.clear();
+    this.polygonPreview.beginFill(0xFFFFFF);
+    this.polygonPreview.drawPolygon(hexObjsToArr(this.polygon));
+    this.polygonPreview.endFill();
+    this.polygonPreview.visible = true;
   }
 
   /**
@@ -595,10 +595,10 @@ export default class SimplefogLayer extends MaskLayer {
       // Convert to array of individual verts
       const vertexArray = hexObjsToArr(vertices);
       // Update the preview shape
-      this.shapePreview.clear();
-      this.shapePreview.beginFill(0xFFFFFF);
-      this.shapePreview.drawPolygon(vertexArray);
-      this.shapePreview.endFill();
+      this.polygonPreview.clear();
+      this.polygonPreview.beginFill(0xFFFFFF);
+      this.polygonPreview.drawPolygon(vertexArray);
+      this.polygonPreview.endFill();
       // If drag operation has started
       if (this.op) {
         // Check if this grid cell was already drawn
