@@ -250,6 +250,7 @@ export default class MaskLayer extends CanvasLayer {
   brush(data) {
   // Get new graphic & begin filling
     const alpha = (typeof data.alpha === 'undefined') ? 1 : data.alpha;
+    const visible = (typeof data.visible === 'undefined') ? true : data.visible;
     const brush = new PIXI.Graphics();
     brush.beginFill(data.fill);
     // Draw the shape depending on type of brush
@@ -272,7 +273,7 @@ export default class MaskLayer extends CanvasLayer {
     // End fill and set the basic props
     brush.endFill();
     brush.alpha = alpha;
-    brush.visible = true;
+    brush.visible = visible;
     brush.x = data.x;
     brush.y = data.y;
     brush.zIndex = data.zIndex;
