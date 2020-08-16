@@ -88,17 +88,6 @@ export function simplefogLog(data, force = false) {
   }
 }
 
-export function timer(name) {
-  const start = new Date();
-  return {
-    stop() {
-      const end = new Date();
-      const time = end.getTime() - start.getTime();
-      simplefogLog(`${name} in ${time} ms`);
-    },
-  };
-}
-
 export function readPixel(target, x = 0, y = 0) {
   const { renderer } = canvas.app;
   let resolution;
