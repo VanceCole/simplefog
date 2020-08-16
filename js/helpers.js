@@ -79,8 +79,8 @@ export function doesArrayOfArraysContainArray(arrayOfArrays, array) {
   return false;
 }
 
-export function simplefogLog(data) {
-  if (CONFIG.debug.simplefog) {
+export function simplefogLog(data, force = false) {
+  if (CONFIG.debug.simplefog || force) {
     // eslint-disable-next-line no-console
     if (typeof data === 'string') console.log(`Simplefog | ${data}`);
     // eslint-disable-next-line no-console
