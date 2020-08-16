@@ -11,7 +11,7 @@ export default class Migrations {
   /*
    * Tidys up some messy data storage from early versions
    * - Converts string based shape names to integers
-   * - Rounds any decimal x / y values
+   * - Rounds any decimal x / y / height / width values
    * - Deletes any unnecessary visible & alpha props
    */
   migration1() {

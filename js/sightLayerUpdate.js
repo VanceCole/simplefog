@@ -4,7 +4,7 @@
  * checks on sight layer updates to hide and reveal placeables based
  * on opacity of simplefog layer mask
  */
-import { timer, readPixel } from './helpers.js';
+import { readPixel } from './helpers.js';
 
 /*
   * The token's worldTransform is not updated yet when this is called
@@ -52,7 +52,6 @@ export default function sightLayerUpdate() {
   if (!canvas.scene.getFlag('simplefog', 'autoVisibility')) return;
   // Skip if user is GM and autoVisGM Disabled
   if (game.user.isGM && !canvas.scene.getFlag('simplefog', 'autoVisGM')) return;
-  const t = timer('AutoVisibility rendered');
   // loop through placeables
   canvas.tokens.placeables.forEach((placeable) => {
     _setPlaceableVisibility(placeable);
@@ -65,5 +64,4 @@ export default function sightLayerUpdate() {
       _setPlaceableVisibility(placeable);
     }
   });
-  t.stop();
 }
