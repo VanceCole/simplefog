@@ -1,11 +1,14 @@
+/*
+ * Provides for the ability to check and run migration code for changes to data
+ */
 import { simplefogLog } from '../js/helpers.js';
 
 export default class Migrations {
   check() {
-    simplefogLog('Checking migrations');
-    const migrationVersion = game.settings.get('simplefog', 'migrationVersion');
     if (!game.user.isGM) return;
-    if (migrationVersion < 1) this.migration1();
+    simplefogLog('Checking migrations');
+    const ver = game.settings.get('simplefog', 'migrationVersion');
+    if (ver < 1) this.migration1();
   }
 
   /*

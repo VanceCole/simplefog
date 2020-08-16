@@ -2,6 +2,7 @@
 * Fixes issue where shift + negative rect brush direction did not work properly
 * Fixes issue where brush controls could become hidden under long lists of active scenes
 * Fixes issue where hex grid detection was slightly inaccurate near corners
+* Implements more efficient data storage which should reduce size of db data
 
 ## 0.1.7
 * Fixes issue where brush tool labels were reversed
