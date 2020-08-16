@@ -46,7 +46,7 @@ export default class SimplefogLayer extends MaskLayer {
     this.maskInit();
     // Preview brush objects
     this.boxPreview = this.brush({
-      shape: 'box',
+      shape: this.BRUSH_TYPES.BOX,
       x: 0,
       y: 0,
       fill: 0xFFFFFF,
@@ -57,7 +57,7 @@ export default class SimplefogLayer extends MaskLayer {
       zIndex: 10,
     });
     this.ellipsePreview = this.brush({
-      shape: 'ellipse',
+      shape: this.BRUSH_TYPES.ELLIPSE,
       x: 0,
       y: 0,
       fill: 0xFFFFFF,
@@ -68,7 +68,7 @@ export default class SimplefogLayer extends MaskLayer {
       zIndex: 10,
     });
     this.polygonPreview = this.brush({
-      shape: 'polygon',
+      shape: this.BRUSH_TYPES.POLYGON,
       x: 0,
       y: 0,
       vertices: [],
@@ -78,7 +78,7 @@ export default class SimplefogLayer extends MaskLayer {
       zIndex: 10,
     });
     this.polygonHandle = this.brush({
-      shape: 'box',
+      shape: this.BRUSH_TYPES.BOX,
       x: 0,
       y: 0,
       fill: this.DEFAULTS.handlefill,
@@ -409,14 +409,12 @@ export default class SimplefogLayer extends MaskLayer {
     if (this.op) {
       // Send brush movement events to renderbrush to be drawn and added to history stack
       this.renderBrush({
-        shape: 'ellipse',
+        shape: this.BRUSH_TYPES.ELLIPSE,
         x: p.x,
         y: p.y,
         fill: this.getUserSetting('brushOpacity'),
         width: this.getUserSetting('brushSize'),
         height: this.getUserSetting('brushSize'),
-        alpha: 1,
-        visible: true,
       });
     }
   }
@@ -450,14 +448,12 @@ export default class SimplefogLayer extends MaskLayer {
     // update the preview shape
     const d = this._getDragBounds(p, e);
     this.renderBrush({
-      shape: 'box',
+      shape: this.BRUSH_TYPES.BOX,
       x: this.dragStart.x,
       y: this.dragStart.y,
       width: d.w,
       height: d.h,
-      visible: true,
       fill: this.getUserSetting('brushOpacity'),
-      alpha: 1,
     });
     this.boxPreview.visible = false;
   }
@@ -490,14 +486,12 @@ export default class SimplefogLayer extends MaskLayer {
   _pointerUpEllipse(p, e) {
     const d = this._getDragBounds(p, e);
     this.renderBrush({
-      shape: 'ellipse',
+      shape: this.BRUSH_TYPES.ELLIPSE,
       x: this.dragStart.x,
       y: this.dragStart.y,
       width: Math.abs(d.w),
       height: Math.abs(d.h),
-      visible: true,
       fill: this.getUserSetting('brushOpacity'),
-      alpha: 1,
     });
     this.ellipsePreview.visible = false;
   }
@@ -518,13 +512,11 @@ export default class SimplefogLayer extends MaskLayer {
         const verts = hexObjsToArr(this.polygon);
         // render the new shape to history
         this.renderBrush({
-          shape: 'polygon',
+          shape: this.BRUSH_TYPES.POLYGON,
           x: 0,
           y: 0,
           vertices: verts,
-          visible: true,
           fill: this.getUserSetting('brushOpacity'),
-          alpha: 1,
         });
         // Reset the preview shape
         this.polygonPreview.clear();
@@ -575,14 +567,12 @@ export default class SimplefogLayer extends MaskLayer {
           // Flag cell as drawn in dupes
           this.dupes[gridx][gridy] = 1;
           this.renderBrush({
-            shape: 'box',
+            shape: this.BRUSH_TYPES.BOX,
             x,
             y,
             width: grid,
             height: grid,
-            visible: true,
             fill: this.getUserSetting('brushOpacity'),
-            alpha: 1,
           });
         }
       }
@@ -605,13 +595,11 @@ export default class SimplefogLayer extends MaskLayer {
         if (!doesArrayOfArraysContainArray(this.dupes, [qr.q, qr.r])) {
           // Get the vert coords for the hex
           this.renderBrush({
-            shape: 'polygon',
+            shape: this.BRUSH_TYPES.POLYGON,
             vertices: vertexArray,
             x: 0,
             y: 0,
-            visible: true,
             fill: this.getUserSetting('brushOpacity'),
-            alpha: 1,
           });
           // Flag cell as drawn in dupes
           this.dupes.push([qr.q, qr.r]);

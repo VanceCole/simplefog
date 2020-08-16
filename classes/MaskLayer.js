@@ -249,20 +249,21 @@ export default class MaskLayer extends CanvasLayer {
    */
   brush(data) {
   // Get new graphic & begin filling
+    const alpha = (typeof data.alpha === 'undefined') ? 1 : data.alpha;
     const brush = new PIXI.Graphics();
     brush.beginFill(data.fill);
     // Draw the shape depending on type of brush
     switch (data.shape) {
-      case 'ellipse':
+      case this.BRUSH_TYPES.ELLIPSE:
         brush.drawEllipse(0, 0, data.width, data.height);
         break;
-      case 'box':
+      case this.BRUSH_TYPES.BOX:
         brush.drawRect(0, 0, data.width, data.height);
         break;
-      case 'roundedRect':
+      case this.BRUSH_TYPES.ROUNDED_RECT:
         brush.drawRoundedRect(0, 0, data.width, data.height, 10);
         break;
-      case 'polygon':
+      case this.BRUSH_TYPES.POLYGON:
         brush.drawPolygon(data.vertices);
         break;
       default:
@@ -270,8 +271,8 @@ export default class MaskLayer extends CanvasLayer {
     }
     // End fill and set the basic props
     brush.endFill();
-    brush.alpha = data.alpha;
-    brush.visible = data.visible;
+    brush.alpha = alpha;
+    brush.visible = true;
     brush.x = data.x;
     brush.y = data.y;
     brush.zIndex = data.zIndex;
