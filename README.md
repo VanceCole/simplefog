@@ -18,7 +18,7 @@ A module for [FoundryVTT](https://foundryvtt.com) that lets you draw fog of war 
   - Polygon Shape tool
     - Click the orange handle to finish your drawing, or right click to cancel
   - Grid tool
-    - Automatically reveals any grid square you drag across, works for both Hex and Square grids
+    - Reveals any grid square you drag across, works for both Hex and Square grids
 ![Tools Palette](docs/simplefog-tools.jpg?raw=true "Tools Palette")
 
 ## Scene Configuration
@@ -31,7 +31,7 @@ Allows you to set various options which affect the entire layer for the current 
 - Save your settings as the new default when creating a scene
 ![Scene Configuration Screenshot](docs/simplefog-options.png?raw=true "Scene Config")
 
-## Future Features
+## Planned Future Features
 - More AutoVisibility options:
   - Reveal based on center of token
   - Reveal only if entire token visible
@@ -41,7 +41,6 @@ Allows you to set various options which affect the entire layer for the current 
 - Sepia / monochrome filters
 - Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay
 - Hold shift when clicking trash icon to erase all fog instead of resetting to black
-- Button to quickset vis to 100% opaque
 - Add indicator icon of player controlled icons hidden under fog
 - Currently incompatible with the module "GM Scene Background" when a GM layer is active
 
