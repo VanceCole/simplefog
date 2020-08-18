@@ -1,8 +1,5 @@
-/* SimplefogSightLayer extends SightLayer
- *
- * Extends foundry's default sightlayer to perform custom visibility
- * checks on sight layer updates to hide and reveal placeables based
- * on opacity of simplefog layer mask
+/*
+ * Monkeypatch for core canvas.sight.update() that implements autovisibility
  */
 import { readPixel } from './helpers.js';
 
@@ -45,6 +42,9 @@ function _setPlaceableVisibility(placeable) {
   else placeable.visible = v;
 }
 
+/*
+  * Extends canvas.sight.update() to set visibility for placeables based on simplefog
+  */
 export default function sightLayerUpdate() {
   // Skip checking placeables if simplefog not visible anyway
   if (!canvas.simplefog.visible) return;

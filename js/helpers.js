@@ -79,6 +79,11 @@ export function doesArrayOfArraysContainArray(arrayOfArrays, array) {
   return false;
 }
 
+/**
+ * Prints formatted console msg if string, otherwise dumps object
+ * @param data {String | Object} Output to be dumped
+ * @param force {Boolean}        Log output even if CONFIG.debug.simplefog = false
+ */
 export function simplefogLog(data, force = false) {
   if (CONFIG.debug.simplefog || force) {
     // eslint-disable-next-line no-console
@@ -88,6 +93,12 @@ export function simplefogLog(data, force = false) {
   }
 }
 
+/**
+ * Gets a single pixel of texture data from GPU
+ * @param target {Object} PIXI Object to read from
+ * @param x {Integer}     X Position to read
+ * @param y {Integer}     Y Position to read
+ */
 export function readPixel(target, x = 0, y = 0) {
   const { renderer } = canvas.app;
   let resolution;
