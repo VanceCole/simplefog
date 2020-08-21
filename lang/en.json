@@ -29,5 +29,6 @@
   "SIMPLEFOG.ellipseTool": "Ellipse Tool",
   "SIMPLEFOG.sceneConfig": "Scene Configuration",
   "SIMPLEFOG.reset": "Reset Simple Fog",
-  "SIMPLEFOG.confirmReset": "Are you sure? Fog of war will be reset."
+  "SIMPLEFOG.confirmReset": "Are you sure? Fog of war will be reset.",
+  "SIMPLEFOG.autoVisNotes": "When enabled, Automatic Visibility will show/hide tokens based on fog opacity level at their location based on the threshold setting. Brush color changes to green/red to indicate whether a token would be visible."
 }

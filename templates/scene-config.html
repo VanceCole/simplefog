@@ -48,6 +48,9 @@
     </div>
     <hr>
     <h3 class="form-header"><i class="fas fa-low-vision"></i> {{localize 'SIMPLEFOG.visibilitySettings'}}</h3>
+    <p class="notes">
+        {{ localize 'SIMPLEFOG.autoVisNotes' }}
+    </p>
     <div class="form-group">
         <label for="autoVisibility">{{localize 'SIMPLEFOG.enableAutovis'}}</label>
         <input type='checkbox' {{#if autoVisibility}}checked{{/if}} name='autoVisibility'/>
