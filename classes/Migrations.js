@@ -1,6 +1,7 @@
 /*
  * Provides for the ability to check and run migration code for changes to data
  */
+/* eslint-disable max-len */
 import { simplefogLog } from '../js/helpers.js';
 
 export default class Migrations {
@@ -17,7 +18,7 @@ export default class Migrations {
    * - Rounds any decimal x / y / height / width values
    * - Deletes any unnecessary visible & alpha props
    */
-  migration1() {
+  static migration1() {
     simplefogLog('Performing migration #1', true);
     game.scenes.forEach(async (s) => {
       // Check if scene has simplefog history

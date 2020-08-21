@@ -6,19 +6,22 @@ module.exports = {
   extends: [
     'airbnb-base',
   ],
+  parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 11,
     sourceType: 'module',
   },
   rules: {
-    'linebreak-style': 'off',
-    'no-undef': 'off',
+    // Required for Foundry compatibility
     'no-underscore-dangle': 'off',
-    'no-case-declarations': 'off',
-    'max-len': 'off',
-    'no-mixed-operators': 'off',
-    'class-methods-use-this': 'off',
+    'no-undef': 'off',
     'import/extensions': 'off',
+    'class-methods-use-this': ['error', {
+      exceptMethods: ['getData', '_updateObject'],
+    }],
+    // Personal Preference
+    'linebreak-style': 'off',
+    'no-mixed-operators': 'off',
     'no-param-reassign': 'off',
   },
 };

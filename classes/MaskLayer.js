@@ -51,7 +51,7 @@ export default class MaskLayer extends CanvasLayer {
     this.visible = v;
 
     // The layer is the primary sprite to be displayed
-    this.layer = this.getCanvasSprite();
+    this.layer = MaskLayer.getCanvasSprite();
     this.addChild(this.layer);
     this.setTint(this.getTint());
     this.setAlpha(this.getAlpha(), true);
@@ -65,7 +65,7 @@ export default class MaskLayer extends CanvasLayer {
     this.blur.quality = this.getSetting('blurQuality');
     this.filters = [this.blur];
 
-    this.maskTexture = this._getMaskTexture();
+    this.maskTexture = MaskLayer.getMaskTexture();
     this.layer.mask = new PIXI.Sprite(this.maskTexture);
     this.addChild(this.layer.mask);
     this.setFill();
@@ -81,7 +81,7 @@ export default class MaskLayer extends CanvasLayer {
   /*  History & Buffer                            */
   /* -------------------------------------------- */
 
-  _getMaskTexture() {
+  static getMaskTexture() {
     const d = canvas.dimensions;
     let res = 1.0;
     if ((d.width * d.height) > (16000 ** 2)) res = 0.25;
@@ -303,7 +303,7 @@ export default class MaskLayer extends CanvasLayer {
   /**
    * Returns a blank PIXI Sprite of canvas dimensions
    */
-  getCanvasSprite() {
+  static getCanvasSprite() {
     const sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
     const d = canvas.dimensions;
     sprite.width = d.width;

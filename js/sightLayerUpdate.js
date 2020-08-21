@@ -12,20 +12,13 @@ import { readPixel } from './helpers.js';
   * If there is a more straight forward way to do this it would be nice!
   */
 function _getCanvasCoords(placeable) {
-  let x;
-  let y;
-  // Check if placeable is a door
-  if (placeable.data.door) {
-    x = placeable.doorControl.x;
-    y = placeable.doorControl.y;
-  } else {
-    x = placeable.data.x;
-    y = placeable.data.y;
-  }
   const { grid } = canvas.scene.data;
-  x = Math.round(grid / 2 + x);
-  y = Math.round(grid / 2 + y);
-  return { x, y };
+  // Check if placeable is a door
+  const p = (placeable.data.door) ? placeable.doorControl : placeable.data;
+  return {
+    x: Math.round(grid / 2 + p.x),
+    y: Math.round(grid / 2 + p.y),
+  };
 }
 
 /*
