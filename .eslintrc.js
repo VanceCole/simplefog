@@ -1,8 +1,8 @@
 module.exports = {
   env: {
-    jquery: 'readonly',
-    browser: 'readonly',
-    es2020: 'readonly',
+    jquery: true,
+    browser: true,
+    es2020: true,
   },
   extends: [
     'airbnb-base',
@@ -23,6 +23,10 @@ module.exports = {
     'linebreak-style': 'off',
     'no-mixed-operators': 'off',
     'no-param-reassign': 'off',
+    'brace-style': [
+      'error',
+      'stroustrup',
+    ],
   },
   globals: {
     AudioHelper: 'readonly',
