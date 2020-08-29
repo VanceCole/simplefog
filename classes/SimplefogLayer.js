@@ -39,7 +39,7 @@ export default class SimplefogLayer extends MaskLayer {
     });
 
     // React to changes to current scene
-    Hooks.on('updateScene', (scene, data) => { this._updateScene(scene, data); });
+    Hooks.on('updateScene', (scene, data) => this._updateScene(scene, data));
   }
 
   async init() {
@@ -259,7 +259,8 @@ export default class SimplefogLayer extends MaskLayer {
     if (tool === 'brush') {
       this.ellipsePreview.visible = true;
       $('#simplefog-brush-controls #brush-size-container').show();
-    } else {
+    }
+    else {
       $('#simplefog-brush-controls #brush-size-container').hide();
     }
     if (tool === 'grid') {
@@ -267,7 +268,8 @@ export default class SimplefogLayer extends MaskLayer {
         this.boxPreview.width = canvas.scene.data.grid;
         this.boxPreview.height = canvas.scene.data.grid;
         this.boxPreview.visible = true;
-      } else if ([2, 3, 4, 5].includes(canvas.scene.data.gridType)) {
+      }
+      else if ([2, 3, 4, 5].includes(canvas.scene.data.gridType)) {
         this._initGrid();
         this.polygonPreview.visible = true;
       }
@@ -319,7 +321,7 @@ export default class SimplefogLayer extends MaskLayer {
   _pointerDown(e) {
     // Don't allow new action if history push still in progress
     if (this.historyBuffer.length > 0) return;
-    // Only react on left mouse button
+    // On left mouse button
     if (e.data.button === 0) {
       const p = e.data.getLocalPosition(canvas.app.stage);
       // Round positions to nearest pixel
@@ -343,7 +345,9 @@ export default class SimplefogLayer extends MaskLayer {
       }
       // Call _pointermove so single click will still draw brush if mouse does not move
       this._pointerMove(e);
-    } else if (e.data.button === 2) {
+    }
+    // On right button, cancel action
+    else if (e.data.button === 2) {
     // Todo: Not sure why this doesnt trigger when drawing ellipse & box
       if (['polygon', 'box', 'ellipse'].includes(this.activeTool)) {
         this.clearActiveTool();
@@ -527,8 +531,9 @@ export default class SimplefogLayer extends MaskLayer {
         this.polygon = [];
         return;
       }
-    } else {
-      // If this is the first vertex
+    }
+    // If this is first vertex...
+    else {
       // Draw shape handle
       this.polygonHandle.x = x - this.DEFAULTS.handlesize;
       this.polygonHandle.y = y - this.DEFAULTS.handlesize;
@@ -578,8 +583,9 @@ export default class SimplefogLayer extends MaskLayer {
           });
         }
       }
-      // Hex Grid
-    } else if ([2, 3, 4, 5].includes(gridType)) {
+    }
+    // Hex Grid
+    else if ([2, 3, 4, 5].includes(gridType)) {
       // Convert pixel coord to hex coord
       const qr = this.gridLayout.pixelToHex(p).round();
       // Get current grid coord verts
@@ -633,27 +639,45 @@ export default class SimplefogLayer extends MaskLayer {
     const { width, height } = canvas.dimensions;
     switch (canvas.scene.data.gridType) {
     // Square grid
-      case 1: this.dupes = new Array(Math.ceil(width / grid)).fill(0).map(() => new Array(Math.ceil(height / grid)).fill(0));
+      case 1:
+        this.dupes = new Array(Math.ceil(width / grid)).fill(0)
+          .map(() => new Array(Math.ceil(height / grid)).fill(0));
         break;
       // Pointy Hex Odd
       case 2:
         this.dupes = [];
-        this.gridLayout = new Layout(Layout.pointy, { x: grid / 2, y: grid / 2 }, { x: 0, y: grid / 2 });
+        this.gridLayout = new Layout(
+          Layout.pointy,
+          { x: grid / 2, y: grid / 2 },
+          { x: 0, y: grid / 2 },
+        );
         break;
       // Pointy Hex Even
       case 3:
         this.dupes = [];
-        this.gridLayout = new Layout(Layout.pointy, { x: grid / 2, y: grid / 2 }, { x: Math.sqrt(3) * grid / 4, y: grid / 2 });
+        this.gridLayout = new Layout(
+          Layout.pointy,
+          { x: grid / 2, y: grid / 2 },
+          { x: Math.sqrt(3) * grid / 4, y: grid / 2 },
+        );
         break;
       // Flat Hex Odd
       case 4:
         this.dupes = [];
-        this.gridLayout = new Layout(Layout.flat, { x: grid / 2, y: grid / 2 }, { x: grid / 2, y: 0 });
+        this.gridLayout = new Layout(
+          Layout.flat,
+          { x: grid / 2, y: grid / 2 },
+          { x: grid / 2, y: 0 },
+        );
         break;
       // Flat Hex Even
       case 5:
         this.dupes = [];
-        this.gridLayout = new Layout(Layout.flat, { x: grid / 2, y: grid / 2 }, { x: grid / 2, y: Math.sqrt(3) * grid / 4 });
+        this.gridLayout = new Layout(
+          Layout.flat,
+          { x: grid / 2, y: grid / 2 },
+          { x: grid / 2, y: Math.sqrt(3) * grid / 4 },
+        );
         break;
       default:
         break;

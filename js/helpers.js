@@ -102,28 +102,18 @@ export function simplefogLog(data, force = false) {
 export function readPixel(target, x = 0, y = 0) {
   const { renderer } = canvas.app;
   let resolution;
-  let frame;
   let renderTexture;
   let generated = false;
-  if (target) {
-    if (target instanceof PIXI.RenderTexture) {
-      renderTexture = target;
-    } else {
-      renderTexture = renderer.generateTexture(target);
-      generated = true;
-    }
+  if (target instanceof PIXI.RenderTexture) {
+    renderTexture = target;
+  }
+  else {
+    renderTexture = renderer.generateTexture(target);
+    generated = true;
   }
   if (renderTexture) {
     resolution = renderTexture.baseTexture.resolution;
-    frame = renderTexture.frame;
-    // bind the buffer
     renderer.renderTexture.bind(renderTexture);
-  } else {
-    resolution = renderer.resolution;
-    frame = TEMP_RECT;
-    frame.width = renderer.width;
-    frame.height = renderer.height;
-    renderer.renderTexture.bind(null);
   }
   const pixel = new Uint8Array(4);
   // read pixels to the array

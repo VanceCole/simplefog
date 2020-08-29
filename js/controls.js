@@ -89,13 +89,16 @@ Hooks.on('getSceneControlButtons', (controls) => {
  * and switching active brush flag
  */
 Hooks.on('renderSceneControls', (controls) => {
+  // Switching to layer
   if (controls.activeControl === 'simplefog') {
     // Open brush tools if not already open
     if (!$('#simplefog-brush-controls').length) new BrushControls().render(true);
     // Set active tool
     const tool = controls.controls.find((control) => control.name === 'simplefog').activeTool;
     canvas.simplefog.setActiveTool(tool);
-  } else {
+  }
+  // Switching away from layer
+  else {
     // Clear active tool
     canvas.simplefog.clearActiveTool();
     // Remove brush tools if open
