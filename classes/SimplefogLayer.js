@@ -231,6 +231,8 @@ export default class SimplefogLayer extends MaskLayer {
     $(document).keydown((event) => {
       // Only react if simplefog layer is active
       if (ui.controls.activeControl !== this.layername) return;
+      // Don't react if game body isn't target
+      if (!event.target.tagName === 'BODY') return;
       if (event.which === 219 && this.activeTool === 'brush') {
         const s = this.getUserSetting('brushSize');
         this.setBrushSize(s * 0.8);
