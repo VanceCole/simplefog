@@ -33,7 +33,7 @@ Hooks.once('ready', () => {
   // Monkeypatch SightLayer to check simplefog vision on updates
   const origUpdate = canvas.sight.update;
   canvas.sight.update = function update() {
-    origUpdate.bind(this)();
+    origUpdate.call(this);
     sightLayerUpdate();
   };
   canvas.sight.update();
