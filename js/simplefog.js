@@ -32,8 +32,8 @@ Hooks.once('ready', () => {
   new Migrations().check();
   // Monkeypatch SightLayer to check simplefog vision on updates
   const origUpdate = canvas.sight.update;
-  canvas.sight.update = function update() {
-    origUpdate.call(this);
+  canvas.sight.update = function update(...args) {
+    origUpdate.call(this, ...args);
     sightLayerUpdate();
   };
   canvas.sight.update();
