@@ -10,6 +10,7 @@ import { simplefogLog } from '../js/helpers.js';
 export default class MaskLayer extends CanvasLayer {
   constructor(layername) {
     super();
+    this.lock = false;
     this.layername = layername;
     this.historyBuffer = [];
     this.pointer = 0;
@@ -168,6 +169,8 @@ export default class MaskLayer extends CanvasLayer {
   async commitHistory() {
   // Do nothing if no history to be committed, otherwise get history
     if (this.historyBuffer.length === 0) return;
+    if (this.lock) return;
+    this.lock = true;
     let history = canvas.scene.getFlag(this.layername, 'history');
     // If history storage doesnt exist, create it
     if (!history) {
@@ -186,6 +189,7 @@ export default class MaskLayer extends CanvasLayer {
     simplefogLog(`Pushed ${this.historyBuffer.length} updates.`);
     // Clear the history buffer
     this.historyBuffer = [];
+    this.lock = false;
   }
 
   /**
