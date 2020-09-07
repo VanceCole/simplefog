@@ -77,7 +77,7 @@ Hooks.on('getSceneControlButtons', (controls) => {
                   callback: () => canvas.simplefog.resetMask(),
                 },
                 blank: {
-                  icon: '<i class="fas fa-trash"></i>',
+                  icon: '<i class="fas fa-eye"></i>',
                   label: 'Blank',
                   callback: () => canvas.simplefog.blankMask(),
                 },
