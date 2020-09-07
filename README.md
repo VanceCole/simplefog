@@ -21,6 +21,7 @@ Encounter Library did a review of Simplefog which explains how it works much bet
     - Click the orange handle to finish your drawing, or right click to cancel
   - Grid tool
     - Reveals any grid square you drag across, works for both Hex and Square grids
+
 ![Tools Palette](docs/simplefog-tools.jpg?raw=true "Tools Palette")
 
 ## Scene Configuration
@@ -31,6 +32,7 @@ Allows you to set various options which affect the entire layer for the current 
 - Apply a blur filter for soft edges to fog
 - Enable or disable the automatic vision feature
 - Save your settings as the new default when creating a scene
+
 ![Scene Configuration Screenshot](docs/simplefog-options.png?raw=true "Scene Config")
 
 ## Planned Future Features
