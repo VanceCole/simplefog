@@ -43,7 +43,6 @@ Allows you to set various options which affect the entire layer for the current 
 - Brush Smoothing / Interpolation
 - Image based fog import
 - Sepia / monochrome filters
-- Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay
 - Add indicator icon of player controlled icons hidden under fog
 - Currently incompatible with the module "GM Scene Background" when a GM layer is active
 
