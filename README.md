@@ -2,7 +2,8 @@
 A module for [FoundryVTT](https://foundryvtt.com) that lets you draw fog of war manually.
 
 ## Feature overview video
-[![Feature Overview](docs/video-screenshot.jpg?raw=true)](https://www.youtube.com/watch?v=i7iRUUvw2QA)
+[![Feature Overview](https://img.youtube.com/vi/gTt6FDQ7iQA/hqdefault.jpg)](https://www.youtube.com/watch?v=gTt6FDQ7iQA)
+Encounter Library did a review of Simplefog which explains how it works much better than I can, please check it out if you would like an idea how this module works.
 
 ## Features
 - Simplefog implements a manual fog of war layer above the core vision layer
