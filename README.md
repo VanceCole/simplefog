@@ -42,7 +42,6 @@ Allows you to set various options which affect the entire layer for the current 
 - Image based fog import
 - Sepia / monochrome filters
 - Allow revealing core dynamic fog to the "explored" state, while retaining active line of sight fog as underlay
-- Hold shift when clicking trash icon to erase all fog instead of resetting to black
 - Add indicator icon of player controlled icons hidden under fog
 - Currently incompatible with the module "GM Scene Background" when a GM layer is active
 
