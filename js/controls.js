@@ -67,14 +67,28 @@ Hooks.on('getSceneControlButtons', (controls) => {
           title: game.i18n.localize('SIMPLEFOG.reset'),
           icon: 'fas fa-trash',
           onClick: () => {
-            Dialog.confirm({
+            const dg = new Dialog({
               title: game.i18n.localize('SIMPLEFOG.reset'),
               content: game.i18n.localize('SIMPLEFOG.confirmReset'),
-              yes: () => {
-                canvas.simplefog.resetMask();
+              buttons: {
+                reset: {
+                  icon: '<i class="fas fa-trash"></i>',
+                  label: 'Reset',
+                  callback: () => canvas.simplefog.resetMask(),
+                },
+                blank: {
+                  icon: '<i class="fas fa-trash"></i>',
+                  label: 'Blank',
+                  callback: () => canvas.simplefog.blankMask(),
+                },
+                cancel: {
+                  icon: '<i class="fas fa-times"></i>',
+                  label: 'Cancel',
+                },
               },
-              defaultYes: true,
+              default: 'reset',
             });
+            dg.render(true);
           },
           button: true,
         },

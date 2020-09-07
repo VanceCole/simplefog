@@ -1,3 +1,9 @@
+## 0.1.9
+* Should fix the issue where fog would randomly reset under certain rare circumstances
+* Adds option to blank the fog when resetting (i.e. reset to completely revealed state)
+* Some more performance optimizations
+* Prevent [ ] from activating when focus is not game board
+
 ## 0.1.8
 * Fixes issue where shift + negative rect brush direction did not work properly
 * Fixes issue where brush controls could become hidden under long lists of active scenes

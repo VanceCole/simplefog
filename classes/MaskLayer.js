@@ -196,15 +196,32 @@ export default class MaskLayer extends CanvasLayer {
    * Resets the mask of the layer
    * @param save {Boolean} If true, also resets the layer history
    */
-  resetMask(save = true) {
+  async resetMask(save = true) {
   // Fill fog layer with solid
     this.setFill();
     // If save, also unset history and reset pointer
     if (save) {
-      canvas.scene.unsetFlag(this.layername, 'history');
-      canvas.scene.setFlag(this.layername, 'history', { events: [], pointer: 0 });
+      await canvas.scene.unsetFlag(this.layername, 'history');
+      await canvas.scene.setFlag(this.layername, 'history', { events: [], pointer: 0 });
       this.pointer = 0;
     }
+  }
+
+  /**
+   * Resets the mask of the layer
+   * @param save {Boolean} If true, also resets the layer history
+   */
+  async blankMask() {
+    await this.resetMask();
+    this.renderBrush({
+      shape: this.BRUSH_TYPES.BOX,
+      x: 0,
+      y: 0,
+      width: this.width,
+      height: this.height,
+      fill: 0x000000,
+    });
+    this.commitHistory();
   }
 
   /**
