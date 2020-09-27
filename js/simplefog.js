@@ -1,6 +1,6 @@
 import SimplefogLayer from '../classes/SimplefogLayer.js';
 import sightLayerUpdate from './sightLayerUpdate.js';
-import Migrations from '../classes/Migrations.js';
+import SimplefogMigrations from '../classes/SimplefogMigrations.js';
 import config from './config.js';
 import { simplefogLog } from './helpers.js';
 
@@ -29,7 +29,7 @@ Hooks.on('canvasInit', () => {
  */
 Hooks.once('ready', () => {
   // Check if any migrations need to be performed
-  new Migrations().check();
+  SimplefogMigrations.check();
   // Monkeypatch SightLayer to check simplefog vision on updates
   const origUpdate = canvas.sight.update;
   canvas.sight.update = function update(...args) {

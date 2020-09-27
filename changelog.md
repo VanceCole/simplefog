@@ -1,3 +1,7 @@
+## 0.1.10
+* Fixes issue where migrations caused error when trying to update old fog data
+* Fixes issue where grid drawing on hex grids would occassionally get stuck on certain coordinates
+
 ## 0.1.9
 * Should fix the issue where fog would randomly reset under certain rare circumstances
 * Adds option to blank the fog when resetting (i.e. reset to completely revealed state)

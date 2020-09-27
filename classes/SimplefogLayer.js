@@ -5,7 +5,7 @@
 
 import MaskLayer from './MaskLayer.js';
 import { Layout } from '../libs/hexagons.js';
-import { hexObjsToArr, doesArrayOfArraysContainArray, hexToPercent } from '../js/helpers.js';
+import { hexObjsToArr, hexToPercent } from '../js/helpers.js';
 
 export default class SimplefogLayer extends MaskLayer {
   constructor() {
@@ -565,14 +565,15 @@ export default class SimplefogLayer extends MaskLayer {
       const gridy = Math.floor(p.y / grid);
       const x = gridx * grid;
       const y = gridy * grid;
+      const coord = `${x},${y}`;
       this.boxPreview.x = x;
       this.boxPreview.y = y;
       this.boxPreview.width = grid;
       this.boxPreview.height = grid;
       if (this.op) {
-        if (!this.dupes[gridx][gridy]) {
+        if (!this.dupes.includes(coord)) {
           // Flag cell as drawn in dupes
-          this.dupes[gridx][gridy] = 1;
+          this.dupes.push(coord);
           this.renderBrush({
             shape: this.BRUSH_TYPES.BOX,
             x,
@@ -599,8 +600,9 @@ export default class SimplefogLayer extends MaskLayer {
       this.polygonPreview.endFill();
       // If drag operation has started
       if (this.op) {
+        const coord = `${qr.q},${qr.r}`;
         // Check if this grid cell was already drawn
-        if (!doesArrayOfArraysContainArray(this.dupes, [qr.q, qr.r])) {
+        if (!this.dupes.includes(coord)) {
           // Get the vert coords for the hex
           this.renderBrush({
             shape: this.BRUSH_TYPES.POLYGON,
@@ -610,7 +612,7 @@ export default class SimplefogLayer extends MaskLayer {
             fill: this.getUserSetting('brushOpacity'),
           });
           // Flag cell as drawn in dupes
-          this.dupes.push([qr.q, qr.r]);
+          this.dupes.push(`${qr.q},${qr.r}`);
         }
       }
     }
@@ -636,16 +638,11 @@ export default class SimplefogLayer extends MaskLayer {
    */
   _initGrid() {
     const { grid } = canvas.scene.data;
-    const { width, height } = canvas.dimensions;
+    this.dupes = [];
     switch (canvas.scene.data.gridType) {
     // Square grid
-      case 1:
-        this.dupes = new Array(Math.ceil(width / grid)).fill(0)
-          .map(() => new Array(Math.ceil(height / grid)).fill(0));
-        break;
       // Pointy Hex Odd
       case 2:
-        this.dupes = [];
         this.gridLayout = new Layout(
           Layout.pointy,
           { x: grid / 2, y: grid / 2 },
@@ -654,7 +651,6 @@ export default class SimplefogLayer extends MaskLayer {
         break;
       // Pointy Hex Even
       case 3:
-        this.dupes = [];
         this.gridLayout = new Layout(
           Layout.pointy,
           { x: grid / 2, y: grid / 2 },
@@ -663,7 +659,6 @@ export default class SimplefogLayer extends MaskLayer {
         break;
       // Flat Hex Odd
       case 4:
-        this.dupes = [];
         this.gridLayout = new Layout(
           Layout.flat,
           { x: grid / 2, y: grid / 2 },
@@ -672,7 +667,6 @@ export default class SimplefogLayer extends MaskLayer {
         break;
       // Flat Hex Even
       case 5:
-        this.dupes = [];
         this.gridLayout = new Layout(
           Layout.flat,
           { x: grid / 2, y: grid / 2 },

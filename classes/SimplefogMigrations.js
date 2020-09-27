@@ -4,12 +4,12 @@
 /* eslint-disable max-len */
 import { simplefogLog } from '../js/helpers.js';
 
-export default class Migrations {
-  check() {
+export default class SimplefogMigrations {
+  static check() {
     if (!game.user.isGM) return;
     simplefogLog('Checking migrations');
     const ver = game.settings.get('simplefog', 'migrationVersion');
-    if (ver < 1) this.migration1();
+    if (ver < 1) SimplefogMigrations.migration1();
   }
 
   /*
