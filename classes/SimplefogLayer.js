@@ -194,6 +194,7 @@ export default class SimplefogLayer extends MaskLayer {
     // React to composite history change
     if (hasProperty(data, `flags.${this.layername}.history`)) {
       canvas[this.layername].renderStack(data.flags[this.layername].history);
+      canvas.sight.update();
     }
     // React to autoVisibility setting changes
     if (

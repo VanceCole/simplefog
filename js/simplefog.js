@@ -31,10 +31,20 @@ Hooks.once('ready', () => {
   // Check if any migrations need to be performed
   SimplefogMigrations.check();
   // Monkeypatch SightLayer to check simplefog vision on updates
-  const origUpdate = canvas.sight.update;
-  canvas.sight.update = function update(...args) {
-    origUpdate.call(this, ...args);
-    sightLayerUpdate();
-  };
-  canvas.sight.update();
+  if (game.data.version.startsWith('0.6')) {
+    const origUpdate = canvas.sight.update;
+    canvas.sight.update = function update(...args) {
+      origUpdate.call(this, ...args);
+      sightLayerUpdate();
+    };
+    canvas.sight.update();
+  }
+  else {
+    const origUpdate = canvas.sight.refresh;
+    canvas.sight.refresh = function refresh(...args) {
+      origUpdate.call(this, ...args);
+      sightLayerUpdate();
+    };
+    canvas.sight.refresh();
+  }
 });

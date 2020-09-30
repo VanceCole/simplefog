@@ -59,7 +59,6 @@ export default class MaskLayer extends CanvasLayer {
 
     // Filters
     this.blur = new PIXI.filters.BlurFilter();
-    // this.blur.autoFit = false;
     this.blur.padding = 0;
     this.blur.repeatEdgePixels = true;
     this.blur.blur = this.getSetting('blurRadius');
