@@ -36,6 +36,7 @@ export default class SimplefogConfig extends FormApplication {
       autoVisibility: canvas.simplefog.getSetting('autoVisibility'),
       autoVisGM: canvas.simplefog.getSetting('autoVisGM'),
       vThreshold: Math.round(canvas.simplefog.getSetting('vThreshold') * 100),
+      fogTextureFilePath: canvas.simplefog.getSetting('fogTextureFilePath'),
     };
   }
 
@@ -71,6 +72,10 @@ export default class SimplefogConfig extends FormApplication {
     }
 
     // Update sight layer
-    canvas.sight.update();
+    if (isNewerVersion(game.data.version, '0.7.0')) {
+      canvas.sight.refresh();
+    } else {
+      canvas.sight.update();
+    }
   }
 }

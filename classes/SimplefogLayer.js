@@ -5,7 +5,7 @@
 
 import MaskLayer from './MaskLayer.js';
 import { Layout } from '../libs/hexagons.js';
-import { hexObjsToArr, hexToPercent } from '../js/helpers.js';
+import { hexObjsToArr, hexToPercent, simplefogLog } from '../js/helpers.js';
 
 export default class SimplefogLayer extends MaskLayer {
   constructor() {
@@ -17,6 +17,7 @@ export default class SimplefogLayer extends MaskLayer {
     this.DEFAULTS = Object.assign(this.DEFAULTS, {
       gmAlpha: 0.6,
       gmTint: '0x000000',
+      fogTextureFilePath: '',
       playerAlpha: 1,
       playerTint: '0x000000',
       transition: true,
@@ -112,7 +113,7 @@ export default class SimplefogLayer extends MaskLayer {
   /*  Getters and setters for layer props         */
   /* -------------------------------------------- */
 
-  // Tint & Alpha have special cases because they can differ between GM & Players
+  // Tint, Alpha, and TextureFilePath have special cases because they can differ between GM & Players
   // And alpha can be animated for transition effects
   getTint() {
     let tint;
@@ -140,6 +141,14 @@ export default class SimplefogLayer extends MaskLayer {
     return alpha;
   }
 
+  async setFogTexture(fogTextureFilePath = this.getSetting('fogTextureFilePath')) {
+    if (!fogTextureFilePath) return;
+
+    const texture = await loadTexture(fogTextureFilePath);
+
+    this.fogSprite.texture = texture;
+  }
+
   /**
    * Sets the scene's alpha for the primary layer.
    * @param alpha {Number} 0-1 opacity representation
@@ -147,10 +156,12 @@ export default class SimplefogLayer extends MaskLayer {
    */
   async setAlpha(alpha, skip = false) {
   // If skip is false, do not transition and just set alpha immediately
-    if (skip || !this.getSetting('transition')) this.layer.alpha = alpha;
+    if (skip || !this.getSetting('transition')) {
+      this.alpha = alpha;
+    }
     // Loop until transition is complete
     else {
-      const start = this.layer.alpha;
+      const start = this.alpha;
       const dist = start - alpha;
       const fps = 60;
       const speed = this.getSetting('transitionSpeed');
@@ -161,11 +172,11 @@ export default class SimplefogLayer extends MaskLayer {
         // Delay 1 frame before updating again
         // eslint-disable-next-line no-await-in-loop
         await new Promise((resolve) => setTimeout(resolve, frame));
-        this.layer.alpha -= rate;
+        this.alpha -= rate;
         f -= 1;
       }
       // Reset target alpha in case loop overshot a bit
-      this.layer.alpha = alpha;
+      this.alpha = alpha;
     }
   }
 
@@ -194,14 +205,14 @@ export default class SimplefogLayer extends MaskLayer {
     // React to composite history change
     if (hasProperty(data, `flags.${this.layername}.history`)) {
       canvas[this.layername].renderStack(data.flags[this.layername].history);
-      canvas.sight.update();
+      canvas.sight.refresh();
     }
     // React to autoVisibility setting changes
     if (
       hasProperty(data, `flags.${this.layername}.autoVisibility`)
       || hasProperty(data, `flags.${this.layername}.vThreshold`)
     ) {
-      canvas.sight.update();
+      canvas.sight.refresh();
     }
     // React to alpha/tint changes
     if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerAlpha`)) {
@@ -212,6 +223,11 @@ export default class SimplefogLayer extends MaskLayer {
     }
     if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerTint`)) canvas[this.layername].setTint(data.flags[this.layername].playerTint);
     if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmTint`)) canvas[this.layername].setTint(data.flags[this.layername].gmTint);
+    // React to texture changes
+    if (hasProperty(data, `flags.${this.layername}.fogTextureFilePath`)) {
+      simplefogLog('has fogTextureFilePath')
+      canvas[this.layername].setFogTexture(data.flags[this.layername].fogTextureFilePath);
+    }
   }
 
   /**
