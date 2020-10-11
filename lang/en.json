@@ -30,5 +30,8 @@
   "SIMPLEFOG.sceneConfig": "Scene Configuration",
   "SIMPLEFOG.reset": "Reset Simple Fog",
   "SIMPLEFOG.confirmReset": "Are you sure? Fog of war will be reset.",
-  "SIMPLEFOG.autoVisNotes": "When enabled, Automatic Visibility will show/hide tokens based on fog opacity level at their location based on the threshold setting. Brush color changes to green/red to indicate whether a token would be visible."
+  "SIMPLEFOG.autoVisNotes": "When enabled, Automatic Visibility will show/hide tokens based on fog opacity level at their location based on the threshold setting. Brush color changes to green/red to indicate whether a token would be visible.",
+  "SIMPLEFOG.fogImageSettings": "Image Settings",
+  "SIMPLEFOG.fogImage": "Fog Overlay Image",
+  "SIMPLEFOG.imageNotes": "Selected image will display on top of the fog tint color. This image should be the same height and width of the scene background image."
 }
