@@ -5,6 +5,10 @@ import BrushControls from '../classes/BrushControls.js';
  * Add control buttons
  */
 Hooks.on('getSceneControlButtons', (controls) => {
+  if (!canvas?.simplefog) {
+    return;
+  }
+
   if (game.user.isGM) {
     controls.push({
       name: 'simplefog',
@@ -103,6 +107,10 @@ Hooks.on('getSceneControlButtons', (controls) => {
  * and switching active brush flag
  */
 Hooks.on('renderSceneControls', (controls) => {
+  if (!canvas?.simplefog) {
+    return;
+  }
+  
   // Switching to layer
   if (controls.activeControl === 'simplefog') {
     // Open brush tools if not already open
