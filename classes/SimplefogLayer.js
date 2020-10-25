@@ -113,7 +113,7 @@ export default class SimplefogLayer extends MaskLayer {
   /*  Getters and setters for layer props         */
   /* -------------------------------------------- */
 
-  // Tint, Alpha, and TextureFilePath have special cases because they can differ between GM & Players
+  // Tint & Alpha have special cases because they can differ between GM & Players
   // And alpha can be animated for transition effects
   getTint() {
     let tint;
@@ -205,14 +205,22 @@ export default class SimplefogLayer extends MaskLayer {
     // React to composite history change
     if (hasProperty(data, `flags.${this.layername}.history`)) {
       canvas[this.layername].renderStack(data.flags[this.layername].history);
-      canvas.sight.refresh();
+      if (isNewerVersion(game.data.version, '0.7.0')) {
+        canvas.sight.refresh();
+      } else {
+        canvas.sight.update();
+      }
     }
     // React to autoVisibility setting changes
     if (
       hasProperty(data, `flags.${this.layername}.autoVisibility`)
       || hasProperty(data, `flags.${this.layername}.vThreshold`)
     ) {
-      canvas.sight.refresh();
+      if (isNewerVersion(game.data.version, '0.7.0')) {
+        canvas.sight.refresh();
+      } else {
+        canvas.sight.update();
+      }
     }
     // React to alpha/tint changes
     if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerAlpha`)) {
