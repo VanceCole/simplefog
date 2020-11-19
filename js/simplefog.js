@@ -18,10 +18,18 @@ Hooks.once('canvasInit', () => {
   // Add SimplefogLayer to canvas
   const layerct = canvas.stage.children.length;
   canvas.simplefog = canvas.stage.addChildAt(new SimplefogLayer(), layerct);
+  canvas.simplefog.draw();
 });
 
 Hooks.on('canvasInit', () => {
   canvas.simplefog.init();
+
+  let theLayers = Canvas.layers;
+  theLayers.simplefog = SimplefogLayer;
+
+  Object.defineProperty(Canvas, 'layers', {get: function() {
+      return theLayers
+  }})
 });
 
 /*
@@ -37,7 +45,7 @@ Hooks.once('ready', () => {
       origUpdate.call(this, ...args);
       sightLayerUpdate();
     };
-    canvas.sight.update();
+    canvas.sight.refresh();
   }
   else {
     const origUpdate = canvas.sight.refresh;

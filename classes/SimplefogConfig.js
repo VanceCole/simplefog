@@ -71,6 +71,6 @@ export default class SimplefogConfig extends FormApplication {
     }
 
     // Update sight layer
-    canvas.sight.update();
+    canvas.sight.refresh();
   }
 }

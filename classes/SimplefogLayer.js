@@ -35,7 +35,7 @@ export default class SimplefogLayer extends MaskLayer {
     // React to canvas zoom
     Hooks.on('canvasPan', (canvas, dimensions) => {
     // Scale blur filter radius to account for zooming
-      this.blur.blur = this.getSetting('blurRadius') * dimensions.scale;
+      //this.blur.blur = this.getSetting('blurRadius') * dimensions.scale;
     });
 
     // React to changes to current scene
@@ -194,14 +194,14 @@ export default class SimplefogLayer extends MaskLayer {
     // React to composite history change
     if (hasProperty(data, `flags.${this.layername}.history`)) {
       canvas[this.layername].renderStack(data.flags[this.layername].history);
-      canvas.sight.update();
+      canvas.sight.refresh();
     }
     // React to autoVisibility setting changes
     if (
       hasProperty(data, `flags.${this.layername}.autoVisibility`)
       || hasProperty(data, `flags.${this.layername}.vThreshold`)
     ) {
-      canvas.sight.update();
+      canvas.sight.refresh();
     }
     // React to alpha/tint changes
     if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerAlpha`)) {

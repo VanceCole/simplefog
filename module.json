@@ -2,8 +2,8 @@
   "name": "simplefog",
   "title": "Simplefog - Manual Fog of War",
   "description": "Simplefog allows you to draw fog of war manually, optionally automatically hiding and revealing tokens underneath based on opacity. It provides a number of tools to quickly draw and erase fog in various shapes - brush, rectangles, ellipses, polygons or to reveal tiles you click/drag on the grid.",
-  "author": "Vance Cole",
-  "version": "0.1.11",
+  "author": "Vance Cole and Chris Hampton (Updates)",
+  "version": "0.1.12",
   "minimumCoreVersion": "0.6.4",
   "compatibleCoreVersion": "0.7.3",
   "esmodules": [
@@ -20,9 +20,9 @@
 			"path": "lang/en.json"
 		}
 	],
-  "url": "https://github.com/VanceCole/simplefog",
-  "manifest": "https://raw.githubusercontent.com/VanceCole/simplefog/master/module.json",
-  "readme": "https://github.com/VanceCole/simplefog/blob/master/README.md",
-  "changelog": "https://github.com/VanceCole/simplefog/blob/master/changelog.md",
-  "download": "https://github.com/VanceCole/simplefog/releases/download/0.1.11/simplefog.zip"
+  "url": "https://github.com/crhampton1/simplefog",
+  "manifest": "https://raw.githubusercontent.com/crhampton1/simplefog/master/module.json",
+  "readme": "https://github.com/crhampton1/simplefog/blob/master/README.md",
+  "changelog": "https://github.com/crhampton1/simplefog/blob/master/changelog.md",
+  "download": "https://github.com/crhampton1/simplefog/releases/download/0.1.12/simplefog.zip"
 }
