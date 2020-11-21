@@ -72,6 +72,9 @@ export default class MaskLayer extends CanvasLayer {
     this.blur.quality = this.getSetting('blurQuality');
     this.filters = [this.blur];
 
+    //So you can hit escape on the keyboard and it will bring up the menu
+    this._controlled = {}
+
     this.maskTexture = MaskLayer.getMaskTexture();
     this.layer.mask = new PIXI.Sprite(this.maskTexture);
     this.addChild(this.layer.mask);
