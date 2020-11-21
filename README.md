@@ -1,6 +1,9 @@
 # Simplefog
 A module for [FoundryVTT](https://foundryvtt.com) that lets you draw fog of war manually.
 
+# Update
+It appears the original maintainer has abandoned the original project. I have taken it over and will continue to keep this running. This was under the MIT license and continues to be so.
+
 ## Feature overview video
 [![Feature Overview](https://img.youtube.com/vi/gTt6FDQ7iQA/hqdefault.jpg)](https://www.youtube.com/watch?v=gTt6FDQ7iQA)
 
