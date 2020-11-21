@@ -10,6 +10,7 @@ import { hexObjsToArr, hexToPercent } from '../js/helpers.js';
 export default class SimplefogLayer extends MaskLayer {
   constructor() {
     super('simplefog');
+
     // Register event listerenrs
     this._registerMouseListeners();
     this._registerKeyboardListeners();

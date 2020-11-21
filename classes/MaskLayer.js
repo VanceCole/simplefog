@@ -31,6 +31,13 @@ export default class MaskLayer extends CanvasLayer {
     };
   }
 
+      static get layerOptions() {
+    //@ts-ignore
+    return mergeObject(super.layerOptions, {
+        zIndex: 220, // Above imageFog
+    });
+}
+
   /* -------------------------------------------- */
   /*  Init                                        */
   /* -------------------------------------------- */
