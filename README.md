@@ -4,6 +4,12 @@ A module for [FoundryVTT](https://foundryvtt.com) that lets you draw fog of war 
 # Update
 It appears the original maintainer has abandoned the original project. I have taken it over and will continue to keep this running. This was under the MIT license and continues to be so.
 
+### Installation
+Use the following manifest URL to install this fork of the original module after you have uninstalled the original module.
+```
+https://raw.githubusercontent.com/League-of-Foundry-Developers/simplefog/master/module.json
+```
+
 ## Feature overview video
 [![Feature Overview](https://img.youtube.com/vi/gTt6FDQ7iQA/hqdefault.jpg)](https://www.youtube.com/watch?v=gTt6FDQ7iQA)
 
@@ -50,4 +56,4 @@ Allows you to set various options which affect the entire layer for the current 
 - Currently incompatible with the module "GM Scene Background" when a GM layer is active
 
 # Bugs and Feature Requests
-Please ping me on discord @vance#1935
+Please create a github issue on this repository.
