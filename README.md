@@ -4,6 +4,9 @@ A module for [FoundryVTT](https://foundryvtt.com) that lets you draw fog of war 
 # Update
 It appears the original maintainer has abandoned the original project. I have taken it over and will continue to keep this running. This was under the MIT license and continues to be so.
 
+# ChangeLog
+0.1.15 - Added the ability to optionally add an image over the fog!
+
 ### Installation
 Use the following manifest URL to install this fork of the original module after you have uninstalled the original module.
 ```
