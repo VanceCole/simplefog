@@ -30,11 +30,13 @@ Encounter Library did a review of Simplefog which explains how it works much bet
     - Click the orange handle to finish your drawing, or right click to cancel
   - Grid tool
     - Reveals any grid square you drag across, works for both Hex and Square grids
+- Add an image to the Simplefog layer which overlays the selected tint for both GMs and Players.
 
 ![Tools Palette](docs/simplefog-tools.jpg?raw=true "Tools Palette")
 
 ## Scene Configuration
 Allows you to set various options which affect the entire layer for the current scene
+- Set an image overlay for the fog on both player and GM screens.
 - Set the opacity of the entire fog layer for both players and GMs
 - Animate transitions in opacity, allowing for effects such as "Fade to Black"
 - Change tint of the fog for both player and GM, for example to indicate a green poison cloud
@@ -50,7 +52,6 @@ Allows you to set various options which affect the entire layer for the current 
   - Reveal only if entire token visible
   - Reveal if any part of token is visible
 - Brush Smoothing / Interpolation
-- Image based fog import
 - Sepia / monochrome filters
 - Add indicator icon of player controlled icons hidden under fog
 - Currently incompatible with the module "GM Scene Background" when a GM layer is active

@@ -73,7 +73,7 @@ export function simplefogLog(data, force = false) {
     // eslint-disable-next-line no-console
     if (typeof data === 'string') console.log(`Simplefog | ${data}`);
     // eslint-disable-next-line no-console
-    else console.log(data);
+    else console.log('Simplefog |', data);
   }
 }
 

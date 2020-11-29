@@ -51,8 +51,10 @@ export default class MaskLayer extends CanvasLayer {
    * filters     - Holds filters such as blur applied to the layer
    * layer.mask  - PIXI Sprite wrapping the renderable mask
    * maskTexture - renderable texture that holds the actual mask data
+   * fogSprite   - PIXI Sprite that holds the image applied over the fog color
    */
   async maskInit() {
+    const d = canvas.dimensions;
     // Check if masklayer is flagged visible
     let v = this.getSetting('visible');
     if (v === undefined) v = false;
@@ -70,21 +72,32 @@ export default class MaskLayer extends CanvasLayer {
     this.blur.repeatEdgePixels = true;
     this.blur.blur = this.getSetting('blurRadius');
     this.blur.quality = this.getSetting('blurQuality');
-    this.filters = [this.blur];
 
     //So you can hit escape on the keyboard and it will bring up the menu
     this._controlled = {}
 
     this.maskTexture = MaskLayer.getMaskTexture();
-    this.layer.mask = new PIXI.Sprite(this.maskTexture);
+    this.maskSprite = new PIXI.Sprite(this.maskTexture);
+
+    this.layer.mask = this.maskSprite;
     this.addChild(this.layer.mask);
     this.setFill();
+
+    this.layer.filters = [this.blur];
 
     // Allow zIndex prop to function for items on this layer
     this.sortableChildren = true;
 
     // Render initial history stack
     this.renderStack();
+
+    // apply Texture Sprite to fog layer after we renderStack to prevent revealing the map
+    this.fogSprite = this.addChild(new PIXI.Sprite());
+    this.fogSprite.position.set(d.sceneRect.x, d.sceneRect.y);
+    this.fogSprite.width = d.sceneRect.width;
+    this.fogSprite.height = d.sceneRect.height;
+    this.fogSprite.mask = this.maskSprite;
+    this.setFogTexture();
   }
 
   /* -------------------------------------------- */
