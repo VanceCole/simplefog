@@ -1,6 +1,5 @@
 ## 0.1.16
 * Added ability to set whether fog is automatically enabled. Look at the bottom of the settings panel. Make sure to "Set current setttings to default" so it uses those settings by default ever time you create a a new scene.
-* Added ability to set fog visibility to true on all loaded scenes.
 * Added Japanese localization. Thanks touge!
 
 ## 0.1.15 

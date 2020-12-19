@@ -8,7 +8,6 @@ This is a continuation of SimpleFog, created by Vance. This is now beinng mainta
 
 ## 0.1.16
 * Added ability to set whether fog is automatically enabled. Look at the bottom of the settings panel. Make sure to "Set current setttings to default" so it uses those settings by default ever time you create a a new scene.
-* Added ability to set fog visibility to true on all loaded scenes. (Click the trash can in simple fog controls).
 * Added Japanese localization. Thanks touge!
 
 ## 0.1.15 
