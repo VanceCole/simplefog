@@ -34,6 +34,7 @@ export default class SimplefogConfig extends FormApplication {
       blurRadius: canvas.simplefog.getSetting('blurRadius'),
       blurQuality: canvas.simplefog.getSetting('blurQuality'),
       autoVisibility: canvas.simplefog.getSetting('autoVisibility'),
+      autoFog: canvas.simplefog.getSetting('autoFog'),
       autoVisGM: canvas.simplefog.getSetting('autoVisGM'),
       vThreshold: Math.round(canvas.simplefog.getSetting('vThreshold') * 100),
       fogTextureFilePath: canvas.simplefog.getSetting('fogTextureFilePath'),

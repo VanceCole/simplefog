@@ -1,3 +1,14 @@
+## 0.1.16
+* Added ability to set whether fog is automatically enabled. Look at the bottom of the settings panel. Make sure to "Set current setttings to default" so it uses those settings by default ever time you create a a new scene.
+* Added ability to set fog visibility to true on all loaded scenes.
+* Added Japanese localization. Thanks touge!
+
+## 0.1.15 
+* Added the ability to optionally add an image over the fog!
+
+## 0.1.11 - 1.1.14
+* Compatibility fixes.
+
 ## 0.1.10
 * Fixes issue where migrations caused error when trying to update old fog data
 * Fixes issue where grid drawing on hex grids would occassionally get stuck on certain coordinates
