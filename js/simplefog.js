@@ -39,6 +39,6 @@ Hooks.once('ready', () => {
   // Check if any migrations need to be performed
   SimplefogMigrations.check();
 
-  Hooks.on('sightRefresh', sightLayerUpdate);
+  //ooks.on('sightRefresh', sightLayerUpdate);
   canvas.sight.refresh();
 });

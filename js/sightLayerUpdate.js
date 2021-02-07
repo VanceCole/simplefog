@@ -15,10 +15,19 @@ function _getCanvasCoords(placeable) {
   const { grid } = canvas.scene.data;
   // Check if placeable is a door
   const p = (placeable.data.door) ? placeable.doorControl : placeable.data;
-  return {
-    x: Math.round(grid / 2 + p.x),
-    y: Math.round(grid / 2 + p.y),
-  };
+
+  try {
+     return {
+      x: Math.round(grid / 2 + p.x),
+      y: Math.round(grid / 2 + p.y),
+    };
+  } catch (error) {
+    return {
+      x: Math.round(grid / 2 ),
+      y: Math.round(grid / 2 ),
+    };
+  }
+  
 }
 
 /*
