@@ -8,12 +8,12 @@
 #simplefog-brush-controls h3,
 #simplefog-brush-controls .label {
     color: #FFF;
-	text-shadow: 1px 1px 0 #000;
+    text-shadow: 1px 1px 0 #000;
 }
 
 #simplefog-brush-controls .label {
     position: absolute;
-    top: 14px;
+    top: 22px;
 }
 #simplefog-brush-controls .brush-opacity {
     position: relative;
@@ -23,4 +23,20 @@
 }
 #simplefog-brush-controls .left-label {
     left: 0;
+}
+
+/* Webkit browsers */
+#simplefog-brush-controls input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 24px;
+}
+
+/* Firefox */
+#simplefog-brush-controls input[type=range]::-moz-range-thumb {
+  height: 24px;
+}
+
+/* IE */
+#simplefog-brush-controls input[type=range]::-ms-thumb {
+  height: 24px;
 }
