@@ -53,7 +53,7 @@ export default class MaskLayer extends CanvasLayer {
    * maskTexture - renderable texture that holds the actual mask data
    * fogSprite   - PIXI Sprite that holds the image applied over the fog color
    */
-  async maskInit() {
+  maskInit() {
     const d = canvas.dimensions;
     // Check if masklayer is flagged visible
     let v = this.getSetting("visible");
@@ -62,7 +62,6 @@ export default class MaskLayer extends CanvasLayer {
 
     // The layer is the primary sprite to be displayed
     this.layer = MaskLayer.getCanvasSprite();
-    this.addChild(this.layer);
     this.setTint(this.getTint());
     this.setAlpha(this.getAlpha(), true);
 
@@ -80,7 +79,6 @@ export default class MaskLayer extends CanvasLayer {
     this.maskSprite = new PIXI.Sprite(this.maskTexture);
 
     this.layer.mask = this.maskSprite;
-    this.addChild(this.layer.mask);
     this.setFill();
 
     this.layer.filters = [this.blur];
@@ -92,7 +90,7 @@ export default class MaskLayer extends CanvasLayer {
     this.renderStack();
 
     // apply Texture Sprite to fog layer after we renderStack to prevent revealing the map
-    this.fogSprite = this.addChild(new PIXI.Sprite());
+    this.fogSprite = new PIXI.Sprite();
     this.fogSprite.position.set(d.sceneRect.x, d.sceneRect.y);
     this.fogSprite.width = d.sceneRect.width;
     this.fogSprite.height = d.sceneRect.height;
@@ -410,5 +408,9 @@ export default class MaskLayer extends CanvasLayer {
 
   async draw() {
     super.draw();
+    this.maskInit();
+    this.addChild(this.layer);
+    this.addChild(this.layer.mask);
+    this.addChild(this.fogSprite);
   }
 }
