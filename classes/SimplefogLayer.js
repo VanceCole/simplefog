@@ -42,10 +42,12 @@ export default class SimplefogLayer extends MaskLayer {
 
     // React to changes to current scene
     Hooks.on('updateScene', (scene, data) => this._updateScene(scene, data));
+
+    // Canvas expects the options.name property to be set
+    this.options = this.constructor.layerOptions;
   }
 
-  async init() {
-    this.maskInit();
+  init() {
     // Preview brush objects
     this.boxPreview = this.brush({
       shape: this.BRUSH_TYPES.BOX,
@@ -90,11 +92,7 @@ export default class SimplefogLayer extends MaskLayer {
       visible: false,
       zIndex: 15,
     });
-    // Add preview brushes to layer
-    this.addChild(this.boxPreview);
-    this.addChild(this.ellipsePreview);
-    this.addChild(this.polygonPreview);
-    this.addChild(this.polygonHandle);
+
 
     // Set default flags if they dont exist already
     Object.keys(this.DEFAULTS).forEach((key) => {
@@ -694,5 +692,14 @@ export default class SimplefogLayer extends MaskLayer {
       default:
         break;
     }
+  }
+
+  async draw() {
+    super.draw();
+    this.init();
+    this.addChild(this.boxPreview);
+    this.addChild(this.ellipsePreview);
+    this.addChild(this.polygonPreview);
+    this.addChild(this.polygonHandle);
   }
 }
