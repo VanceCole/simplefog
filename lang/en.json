@@ -18,6 +18,7 @@
   "SIMPLEFOG.enableAutovis": "Enable Automatic Visibility",
   "SIMPLEFOG.enableForGM": "Enable for GM",
   "SIMPLEFOG.enableAutoFog": "Enable fog Automatically for new scenes",
+  "SIMPLEFOG.enableHotkeys": "Enable hotkeys",
   "SIMPLEFOG.visThreshold": "Visibility Threshold",
   "SIMPLEFOG.saveAsDef": "Save current settings as default",
   "SIMPLEFOG.ok": "OK",
@@ -32,8 +33,9 @@
   "SIMPLEFOG.reset": "Reset Simple Fog",
   "SIMPLEFOG.confirmReset": "Are you sure? Fog of war will be reset.",
   "SIMPLEFOG.autoFogSettings": "AutoFog Settings",
+  "SIMPLEFOG.hotkeySettings": "Hotkey Settings",
   "SIMPLEFOG.autoFogNotes": "When enabled AND saved as default, fog will automatically render when you create a scene. Please check box and click 'Save current setings as defualt' in order to enable. Do the same to disable",
-
+  "SIMPLEFOG.hotkeyNotes": "When enabled, you will be able to quickly swap to the simplefog control by using Ctrl+S and toggle the opacity using the hotkey 'T'",
   "SIMPLEFOG.autoVisNotes": "When enabled, Automatic Visibility will show/hide tokens based on fog opacity level at their location based on the threshold setting. Brush color changes to green/red to indicate whether a token would be visible.",
   "SIMPLEFOG.fogImageSettings": "Image Settings",
   "SIMPLEFOG.fogImage": "Fog Overlay Image",

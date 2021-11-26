@@ -1,5 +1,6 @@
 import SimplefogConfig from '../classes/SimplefogConfig.js';
 import BrushControls from '../classes/BrushControls.js';
+import {addSimplefogControlToggleListener, addSimplefogOpacityToggleListener} from './helpers.js';
 
 /**
  * Add control buttons
@@ -136,3 +137,6 @@ function setBrushControlPos() {
 // Reset position when brush controls are rendered or sceneNavigation changes
 Hooks.on('renderBrushControls', setBrushControlPos);
 Hooks.on('renderSceneNavigation', setBrushControlPos);
+
+addSimplefogControlToggleListener();
+addSimplefogOpacityToggleListener();

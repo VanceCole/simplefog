@@ -84,10 +84,20 @@
       <p class="notes">
         {{ localize 'SIMPLEFOG.autoFogNotes' }}
     </p>
-            <div class="form-group">
+    <div class="form-group">
         <label for="autoFog">{{localize 'SIMPLEFOG.enableAutoFog'}}</label>
         <input type='checkbox' {{#if autoFog}}checked{{/if}} name='autoFog' />
     </div>
+
+    <h3 class="form-header"><i class="fas fa-low-vision"></i> {{localize 'SIMPLEFOG.hotkeySettings'}}</h3>
+      <p class="notes">
+        {{ localize 'SIMPLEFOG.hotkeyNotes' }}
+    </p>
+    <div class="form-group">
+        <label for="enableHotkeys">{{localize 'SIMPLEFOG.enableHotkeys'}}</label>
+        <input type='checkbox' {{#if enableHotkeys}}checked{{/if}} name='enableHotkeys' />
+    </div>
+
     <hr>
     <footer class="sheet-footer flexrow">
         <button type="submit" name="saveDefaults">
