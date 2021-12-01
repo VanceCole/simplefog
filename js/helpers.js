@@ -119,7 +119,7 @@ export function addSimplefogControlToggleListener() {
     let toolName = getNewToolName(controlName);
     
     $('li.scene-control[data-control=' + controlName + ']')?.click()
-    $('li.control-tool[data-tool=' + toolName + ']')?.click()
+    $('li.scene-control[data-control=' + controlName + '] li.control-tool[data-tool=' + toolName + ']')?.click()
   });
 }
 
