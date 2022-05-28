@@ -88,6 +88,16 @@
         <label for="autoFog">{{localize 'SIMPLEFOG.enableAutoFog'}}</label>
         <input type='checkbox' {{#if autoFog}}checked{{/if}} name='autoFog' />
     </div>
+
+    <h3 class="form-header"><i class="fas gears"></i> {{localize 'SIMPLEFOG.advancedSettings'}}</h3>
+    <div class="form-group">
+        <label for="configurableZindex">{{localize 'SIMPLEFOG.configurableZindex'}}</label>
+        <input type="range" name="layerZindex" value="{{ layerZindex }}" min="200" max="500" step="10"
+            data-dtype="Number" />
+        <span class="range-value">{{ layerZindex }}</span>
+        <p class="notes">{{localize 'SIMPLEFOG.configurableZindexNotes'}}</p>
+    </div>
+
     <hr>
     <footer class="sheet-footer flexrow">
         <button type="submit" name="saveDefaults">

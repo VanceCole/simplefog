@@ -37,7 +37,8 @@ export default class SimplefogConfig extends FormApplication {
       autoFog: canvas.simplefog.getSetting('autoFog'),
       autoVisGM: canvas.simplefog.getSetting('autoVisGM'),
       vThreshold: Math.round(canvas.simplefog.getSetting('vThreshold') * 100),
-      fogTextureFilePath: canvas.simplefog.getSetting('fogTextureFilePath'),
+      layerZindex: canvas.simplefog.getSetting('layerZindex'),
+
     };
   }
 
@@ -64,6 +65,8 @@ export default class SimplefogConfig extends FormApplication {
         canvas.simplefog.setUserSetting(key, val);
       }
     });
+
+    canvas.simplefog.zIndex = canvas.simplefog.getSetting('layerZindex');
 
     // If save button was clicked, close app
     if (event.submitter?.name === 'submit') {
