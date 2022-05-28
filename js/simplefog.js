@@ -15,14 +15,28 @@ Hooks.once('init', () => {
 });
 
 Hooks.once('canvasInit', () => {
-  canvas.simplefog = new SimplefogLayer();
-  canvas.stage.addChild(canvas.simplefog);
+  if (isNewerVersion(game.version, "9")) {
+    CONFIG.Canvas.layers["simplefog"] = {
+      layerClass: SimplefogLayer,
+      group: "effects"
+    };
+    Object.defineProperty(canvas, 'simplefog', {
+      value: new SimplefogLayer(),
+      configurable: true,
+      writable: true,
+      enumerable: false,
+    });
+    canvas.primary.addChild(canvas.simplefog);
+  } else {
+    canvas.simplefog = new SimplefogLayer();
+    canvas.stage.addChild(canvas.simplefog);
 
-  let theLayers = Canvas.layers;
-  theLayers.simplefog = SimplefogLayer;
-  Object.defineProperty(Canvas, 'layers', {get: function() {
-      return theLayers
-  }})
+    let theLayers = Canvas.layers;
+    theLayers.simplefog = SimplefogLayer;
+    Object.defineProperty(Canvas, 'layers', {get: function() {
+        return theLayers
+    }})
+  }
 });
 
 /*
