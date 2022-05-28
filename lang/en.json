@@ -33,6 +33,10 @@
   "SIMPLEFOG.confirmReset": "Are you sure? Fog of war will be reset.",
   "SIMPLEFOG.autoFogSettings": "AutoFog Settings",
   "SIMPLEFOG.autoFogNotes": "When enabled AND saved as default, fog will automatically render when you create a scene. Please check box and click 'Save current setings as defualt' in order to enable. Do the same to disable",
+  "SIMPLEFOG.confirmDisablingFogSettings": "Confirm Disabling of Simple Fog",
+  "SIMPLEFOG.confirmDisablingFogNotes": "When disabling Simple Fog for a scene, present a dialog to confirm disabling before doing so.",
+  "SIMPLEFOG.disableFog": "Disable Simple Fog",
+  "SIMPLEFOG.confirmDisableFog": "Are you sure?  Fog of war will be disabled.",
 
   "SIMPLEFOG.autoVisNotes": "When enabled, Automatic Visibility will show/hide tokens based on fog opacity level at their location based on the threshold setting. Brush color changes to green/red to indicate whether a token would be visible.",
   "SIMPLEFOG.fogImageSettings": "Image Settings",

@@ -88,6 +88,16 @@
         <label for="autoFog">{{localize 'SIMPLEFOG.enableAutoFog'}}</label>
         <input type='checkbox' {{#if autoFog}}checked{{/if}} name='autoFog' />
     </div>
+
+    <h3 class="form-header"><i class="fas fa-low-vision"></i> {{localize 'SIMPLEFOG.confirmDisablingFogSettings'}}</h3>
+      <p class="notes">
+        {{ localize 'SIMPLEFOG.confirmDisablingFogNotes' }}
+    </p>
+            <div class="form-group">
+        <label for="autoFog">{{localize 'SIMPLEFOG.confirmDisablingFog'}}</label>
+        <input type='checkbox' {{#if confirmDisablingFog}}checked{{/if}} name='confirmDisablingFog' />
+    </div>
+
     <hr>
     <footer class="sheet-footer flexrow">
         <button type="submit" name="saveDefaults">
