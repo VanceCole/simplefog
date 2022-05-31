@@ -36,13 +36,16 @@
   "SIMPLEFOG.confirmReset": "¿Está seguro? Se reiniciará la niebla de guerra",
   "SIMPLEFOG.autoFogSettings": "Ajustes de niebla automática",
   "SIMPLEFOG.autoFogNotes": "Cuando se activa y se guarda por defecto, la niebla se generará automáticamente cuando cree la escena. Por favor, active esta opción y pulse 'Guardar como por defecto los ajustes actuales' para habilitarlo. Realice el mismo proceso, pero al contrario, para deshabilitarlo",
+
   "SIMPLEFOG.advancedSettings": "Ajustes avanzados",
   "SIMPLEFOG.configurableZindex": "Índice Z de niebla simple",
   "SIMPLEFOG.configurableZindexNotes": "El índice z determina el orden en el que se representan varias capas dentro del lienzo de Foundry. Se representará un número más alto sobre las capas con números más bajos (y los objetos en esa capa). Esto permite el ajuste del índice z para permitir que Simple Fog se represente por encima o por debajo de otras capas; particularmente los agregados por otros módulos. Ir por debajo de 200 se entremezclará con las capas de Foundry, como la imagen de primer plano (200), tokens (100), etc. (Predeterminado: 220)",
+
   "SIMPLEFOG.confirmDisablingFogSettings": "Confirmar la desactivación de la niebla simple",
+  "SIMPLEFOG.confirmDisablingFog": "Habilite la confirmación para deshabilitar la niebla simple.",
   "SIMPLEFOG.confirmDisablingFogNotes": "Al deshabilitar niebla para una escena, presente un cuadro de diálogo para confirmar la desactivación antes de hacerlo.",
-  "SIMPLEFOG.disableFog": "Desactivar niebla",
   "SIMPLEFOG.confirmDisableFog": "¿Está seguro? La niebla de guerra se desactivará.",
+  "SIMPLEFOG.disableFog": "Desactivar niebla",
 
   "SIMPLEFOG.autoVisNotes": "Cuando se activa, la visibilidad automática mostrará/ocultará los iconos en base al nivel de opacidad de la niebla en su localización y el umbral que se especifique. El color del pincel cambia a verde/rojo para indicar si el token es visible",
   "SIMPLEFOG.fogImageSettings": "Ajuste de la imagen",
