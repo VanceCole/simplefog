@@ -1,6 +1,6 @@
 {
   "name": "simplefog",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "Simple fog of war for foundryvtt",
   "main": "foundry.js",
   "scripts": {
@@ -8,14 +8,32 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/VanceCole/simplefog.git"
+    "url": "git+github.com/League-of-Foundry-Developers/simplefog.git"
   },
-  "author": "Vance Cole",
-  "license": "ISC",
+  "author": [
+    {
+      "name": "The League of Extraordinary FVTT Developers",
+      "url": "https://github.com/League-of-Foundry-Developers",
+      "discord": "discordID#0001"
+    },
+    {
+      "name": "Vance Cole",
+      "url": "https://github.com/VanceCole"
+    },
+    {
+      "name": "Chris Hampton",
+      "url": "https://github.com/crhampton1"
+    },
+    {
+      "name": "UranusBytes",
+      "url": "https://github.com/UranusBytes"
+    }
+  ],
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/VanceCole/simple-fog/issues"
+    "url": "https://github.com/League-of-Foundry-Developers/simplefog/issues"
   },
-  "homepage": "https://github.com/VanceCole/simplefog#readme",
+  "homepage": "https://github.com/League-of-Foundry-Developers/simplefog#readme",
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "eslint": "^7.5.0",
@@ -23,5 +41,9 @@
     "eslint-plugin-import": "^2.22.0",
     "gulp": "^4.0.2"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": []
 }

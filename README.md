@@ -1,3 +1,7 @@
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/League-of-Foundry-Developers/simplefog) ![GitHub Releases](https://img.shields.io/github/downloads/League-of-Foundry-Developers/simplefog/latest/total) ![GitHub Releases](https://img.shields.io/github/downloads/League-of-Foundry-Developers/simplefog/total)
+
+![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fsimplefog&colorB=4aa94a) ![Foundry Version](https://img.shields.io/endpoint?url=https://foundryshields.com/version?url=https%3A%2F%2Fgithub.com%2FLeague-of-Foundry-Developers%2Fsimplefog%2Freleases%2Flatest%2Fdownload%2Fmodule.json) 
+
 # Simplefog
 A module for [FoundryVTT](https://foundryvtt.com) that lets you draw fog of war manually.
 
@@ -6,11 +10,37 @@ This is a continuation of SimpleFog, created by Vance. This is now beinng mainta
 
 # ChangeLog
 
+## 0.2.0: v9 Compatibility
+Date TBD
+* Integrate LoFD templates, github actions, etc...
+* Confirmation before toggle off #52
+* Migrate Simple Fog layer into the primary canvas group #51
+* Update description, tutorials, etc...
+
+Release ToDo:
+* Update dev dependencies in package.json
+* Update locks in package-lock.json
+* Check travis settings
+* Update Changelog
+* Triple check module.json
+
+
+## 0.1.18: Compatibility Updates!
+Jun 03, 2021
+* Merge pull request #32 from Azzurite/compatibility-0.8.6
+* Compatibility for core version 0.8.6
+
+## 0.1.17: Bug Fixes
+Feb 07, 2021
+* Removed a feature that I believe was causing some bugs. This feature hasn't been working correctly anyways since Foundry updated to new layer system.
+
 ## 0.1.16
+Dec 18, 2020
 * Added ability to set whether fog is automatically enabled. Look at the bottom of the settings panel. Make sure to "Set current setttings to default" so it uses those settings by default ever time you create a a new scene.
 * Added Japanese localization. Thanks touge!
 
-## 0.1.15 
+## 0.1.15: Image as Fog
+Nov 29, 2020
 * Added the ability to optionally add an image over the fog!
 
 ### Installation
