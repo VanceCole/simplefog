@@ -38,6 +38,7 @@ export default class SimplefogConfig extends FormApplication {
       autoVisGM: canvas.simplefog.getSetting('autoVisGM'),
       vThreshold: Math.round(canvas.simplefog.getSetting('vThreshold') * 100),
       fogTextureFilePath: canvas.simplefog.getSetting('fogTextureFilePath'),
+      confirmDisablingFog: canvas.simplefog.getSetting( 'confirmDisablingFog'),
     };
   }
 
