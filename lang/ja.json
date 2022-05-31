@@ -34,6 +34,9 @@
   "SIMPLEFOG.fogImageSettings": "画像設定",
   "SIMPLEFOG.fogImage": "霧を上書きする画像",
   "SIMPLEFOG.imageNotes": "指定した画像は霧の配色の上に表示されます。この画像はシーンの背景画像と同じ高さと幅を持つ必要があります。",
+  "SIMPLEFOG.advancedSettings": "高度な設定",
+  "SIMPLEFOG.configurableZindex": "シンプルフォグZインデックス",
+  "SIMPLEFOG.configurableZindexNotes": "z-indexは、Foundryキャンバス内でさまざまなレイヤーがレンダリングされる順序を決定します。 番号の小さいレイヤー（およびそのレイヤー上のオブジェクト）の上に、番号の大きいものがレンダリングされます。 これにより、z-indexを調整して、SimpleFogを他のレイヤーの上/下にレンダリングできるようになります。 特に他のモジュールによって追加されたもの。 200を下回ると、前景画像（200）、トークン（100）などのFoundryレイヤーと混ざり合います...（デフォルト：220）"
   "SIMPLEFOG.confirmDisablingFogSettings": "シンプルフォグの無効化を確認する",
   "SIMPLEFOG.confirmDisablingFogNotes": "シーンのシンプルフォグを無効にする場合は、無効にする前に無効を確認するダイアログを表示します。",
   "SIMPLEFOG.disableFog": "シンプルフォグを無効にする",

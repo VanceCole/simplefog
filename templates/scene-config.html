@@ -89,13 +89,18 @@
         <input type='checkbox' {{#if autoFog}}checked{{/if}} name='autoFog' />
     </div>
 
-    <h3 class="form-header"><i class="fas fa-low-vision"></i> {{localize 'SIMPLEFOG.confirmDisablingFogSettings'}}</h3>
-      <p class="notes">
-        {{ localize 'SIMPLEFOG.confirmDisablingFogNotes' }}
-    </p>
-            <div class="form-group">
+    <h3 class="form-header"><i class="fas gears"></i> {{localize 'SIMPLEFOG.advancedSettings'}}</h3>
+    <div class="form-group">
+        <label for="configurableZindex">{{localize 'SIMPLEFOG.configurableZindex'}}</label>
+        <input type="range" name="layerZindex" value="{{ layerZindex }}" min="0" max="500" step="10"
+            data-dtype="Number" />
+        <span class="range-value">{{ layerZindex }}</span>
+        <p class="notes">{{localize 'SIMPLEFOG.configurableZindexNotes'}}</p>
+    </div>
+    <div class="form-group">
         <label for="autoFog">{{localize 'SIMPLEFOG.confirmDisablingFog'}}</label>
         <input type='checkbox' {{#if confirmDisablingFog}}checked{{/if}} name='confirmDisablingFog' />
+        <p class="notes">{{ localize 'SIMPLEFOG.confirmDisablingFogNotes' }}</p>
     </div>
 
     <hr>
