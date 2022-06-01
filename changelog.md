@@ -1,3 +1,9 @@
+# Simplefog Change Log
+
+## 0.1.17: Bug Fixes
+Feb 07, 2021
+* Removed a feature that I believe was causing some bugs. This feature hasn't been working correctly anyways since Foundry updated to new layer system.
+
 ## 0.1.16
 * Added ability to set whether fog is automatically enabled. Look at the bottom of the settings panel. Make sure to "Set current setttings to default" so it uses those settings by default ever time you create a a new scene.
 * Added Japanese localization. Thanks touge!

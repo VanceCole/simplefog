@@ -14,34 +14,19 @@ This is a continuation of SimpleFog, created by Vance. This is now beinng mainta
 Date TBD
 * Integrate LoFD templates, github actions, etc...
 * Confirmation before toggle off #52
-* Migrate Simple Fog layer into the primary canvas group #51
-* Update description, tutorials, etc...
+* Migrate Simple Fog layer into the primary canvas group for v9 compatibility #51
+* Update description, cleanup, etc...
 
 Release ToDo:
-* Update dev dependencies in package.json
-* Update locks in package-lock.json
-* Check travis settings
-* Update Changelog
 * Triple check module.json
-
 
 ## 0.1.18: Compatibility Updates!
 Jun 03, 2021
 * Merge pull request #32 from Azzurite/compatibility-0.8.6
 * Compatibility for core version 0.8.6
 
-## 0.1.17: Bug Fixes
-Feb 07, 2021
-* Removed a feature that I believe was causing some bugs. This feature hasn't been working correctly anyways since Foundry updated to new layer system.
+[Full Change Log](changelog.md)
 
-## 0.1.16
-Dec 18, 2020
-* Added ability to set whether fog is automatically enabled. Look at the bottom of the settings panel. Make sure to "Set current setttings to default" so it uses those settings by default ever time you create a a new scene.
-* Added Japanese localization. Thanks touge!
-
-## 0.1.15: Image as Fog
-Nov 29, 2020
-* Added the ability to optionally add an image over the fog!
 
 ### Installation
 Use the following manifest URL to install this fork of the original module after you have uninstalled the original module.
