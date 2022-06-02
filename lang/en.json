@@ -18,6 +18,7 @@
   "SIMPLEFOG.enableAutovis": "Enable Automatic Visibility",
   "SIMPLEFOG.enableForGM": "Enable for GM",
   "SIMPLEFOG.enableAutoFog": "Enable fog Automatically for new scenes",
+  "SIMPLEFOG.enableHotkeys": "Enable hotkeys",
   "SIMPLEFOG.visThreshold": "Visibility Threshold",
   "SIMPLEFOG.saveAsDef": "Save current settings as default",
   "SIMPLEFOG.ok": "OK",
@@ -32,7 +33,18 @@
   "SIMPLEFOG.reset": "Reset Simple Fog",
   "SIMPLEFOG.confirmReset": "Are you sure? Fog of war will be reset.",
   "SIMPLEFOG.autoFogSettings": "AutoFog Settings",
+  "SIMPLEFOG.hotkeySettings": "Hotkey Settings",
   "SIMPLEFOG.autoFogNotes": "When enabled AND saved as default, fog will automatically render when you create a scene. Please check box and click 'Save current setings as defualt' in order to enable. Do the same to disable",
+
+  "SIMPLEFOG.hotkeyNotes": "When enabled, you will be able to quickly swap to the simplefog control by using Ctrl+S and toggle the opacity using the hotkey 'T'",
+
+  "SIMPLEFOG.advancedSettings": "Advanced Settings",
+  "SIMPLEFOG.configurableZindex": "Simple Fog Z-Index",
+  "SIMPLEFOG.configurableZindexNotes": "The z-index determines the order in which various layers are rendered within the Foundry canvas.  A higher number will be rendered on top of lower numbered layers (and the objects on that layer).  This allows for the adjustment of the z-index to allow for Simple Fog to be rendered above/below other layers; particularly ones added by other modules. Going below 200 will intermingle with Foundry layers such as the foreground image (200), tokens (100), etc...  (Default: 220)",
+  "SIMPLEFOG.confirmDisablingFogSettings": "Confirm Disabling of Simple Fog",
+  "SIMPLEFOG.confirmDisablingFogNotes": "When disabling Simple Fog for a scene, present a dialog to confirm disabling before doing so.",
+  "SIMPLEFOG.disableFog": "Disable Simple Fog",
+  "SIMPLEFOG.confirmDisableFog": "Are you sure?  Fog of war will be disabled.",
 
   "SIMPLEFOG.autoVisNotes": "When enabled, Automatic Visibility will show/hide tokens based on fog opacity level at their location based on the threshold setting. Brush color changes to green/red to indicate whether a token would be visible.",
   "SIMPLEFOG.fogImageSettings": "Image Settings",

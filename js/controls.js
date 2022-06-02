@@ -1,5 +1,6 @@
 import SimplefogConfig from '../classes/SimplefogConfig.js';
 import BrushControls from '../classes/BrushControls.js';
+import {addSimplefogControlToggleListener, addSimplefogOpacityToggleListener} from './helpers.js';
 
 /**
  * Add control buttons
@@ -17,8 +18,28 @@ Hooks.on('getSceneControlButtons', (controls) => {
         title: game.i18n.localize('SIMPLEFOG.onoff'),
         icon: 'fas fa-eye',
         onClick: () => {
-          canvas.simplefog.toggle();
-          canvas.sight.refresh();
+          if (canvas.simplefog.getSetting("confirmDisablingFog") && canvas.simplefog.getSetting("visible")) {
+            const dg = new Dialog({
+              title: game.i18n.localize('SIMPLEFOG.disableFog'),
+              content: game.i18n.localize('SIMPLEFOG.confirmDisableFog'),
+              buttons: {
+                reset: {
+                  icon: '<i class="fas fa-trash"></i>',
+                  label: 'Disable',
+                  callback: () => toggleSimpleFog(),
+                },
+                cancel: {
+                  icon: '<i class="fas fa-times"></i>',
+                  label: 'Cancel',
+                },
+              },
+              default: 'cancel',
+            });
+            dg.render(true);
+          //Original
+          } else {
+            toggleSimpleFog();
+          }
         },
         active: canvas.simplefog?.visible,
         toggle: true,
@@ -133,6 +154,17 @@ function setBrushControlPos() {
   }
 }
 
+/**
+ * Toggle Simple Fog
+ */
+function toggleSimpleFog() {
+  canvas.simplefog.toggle();
+  canvas.sight.refresh();
+}
+
 // Reset position when brush controls are rendered or sceneNavigation changes
 Hooks.on('renderBrushControls', setBrushControlPos);
 Hooks.on('renderSceneNavigation', setBrushControlPos);
+
+addSimplefogControlToggleListener();
+addSimplefogOpacityToggleListener();

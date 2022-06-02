@@ -34,7 +34,8 @@ export default class MaskLayer extends CanvasLayer {
   static get layerOptions() {
     //@ts-ignore
     return mergeObject(super.layerOptions, {
-      zIndex: 220, // Above imageFog
+      // Ugly hack - render at very high zindex and then re-render at layer init with layerZindex value
+      zIndex: 2147483647,
     });
   }
 
