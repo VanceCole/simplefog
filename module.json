@@ -2,10 +2,10 @@
   "name": "simplefog",
   "title": "Simplefog - Manual Fog of War",
   "description": "Simplefog allows you to draw fog of war manually, optionally automatically hiding and revealing tokens underneath based on opacity. It provides a number of tools to quickly draw and erase fog in various shapes - brush, rectangles, ellipses, polygons or to reveal tiles you click/drag on the grid.",
-  "author": "Vance Cole and Chris Hampton (Updates)",
-  "version": "0.1.18",
+  "author": "Vance Cole, Chris Hampton (Updates), and Jeremy (Updates)",
+  "version": "0.2.0",
   "minimumCoreVersion": "0.8.5",
-  "compatibleCoreVersion": "0.8.6",
+  "compatibleCoreVersion": "9.",
   "esmodules": [
     "js/simplefog.js",
     "js/controls.js"
@@ -23,6 +23,11 @@
 			"lang": "es",
 			"name": "Español",
 			"path": "lang/es.json"
+		},
+		{
+			"lang": "ja",
+			"name": "日本語 (Japanese)",
+			"path": "lang/ja.json"
 		}
 	],
   "url": "https://github.com/League-of-Foundry-Developers/simplefog",

@@ -87,17 +87,28 @@
     <div class="form-group">
         <label for="autoFog">{{localize 'SIMPLEFOG.enableAutoFog'}}</label>
         <input type='checkbox' {{#if autoFog}}checked{{/if}} name='autoFog' />
-    </div>
+    </div>    
 
-    <h3 class="form-header"><i class="fas fa-low-vision"></i> {{localize 'SIMPLEFOG.hotkeySettings'}}</h3>
-      <p class="notes">
-        {{ localize 'SIMPLEFOG.hotkeyNotes' }}
-    </p>
+      <h3 class="form-header"><i class="fas gears"></i> {{localize 'SIMPLEFOG.advancedSettings'}}</h3>
+    <div class="form-group">
+        <label for="configurableZindex">{{localize 'SIMPLEFOG.configurableZindex'}}</label>
+        <input type="range" name="layerZindex" value="{{ layerZindex }}" min="0" max="500" step="10"
+            data-dtype="Number" />
+        <span class="range-value">{{ layerZindex }}</span>
+        <p class="notes">{{localize 'SIMPLEFOG.configurableZindexNotes'}}</p>
+    </div>
+    <div class="form-group">
+        <label for="autoFog">{{localize 'SIMPLEFOG.confirmDisablingFog'}}</label>
+        <input type='checkbox' {{#if confirmDisablingFog}}checked{{/if}} name='confirmDisablingFog' />
+        <p class="notes">{{ localize 'SIMPLEFOG.confirmDisablingFogNotes' }}</p>
+    </div>
     <div class="form-group">
         <label for="enableHotkeys">{{localize 'SIMPLEFOG.enableHotkeys'}}</label>
         <input type='checkbox' {{#if enableHotkeys}}checked{{/if}} name='enableHotkeys' />
-    </div>
-
+<p class="notes">
+        {{ localize 'SIMPLEFOG.hotkeyNotes' }}
+    </p>
+  </div>
     <hr>
     <footer class="sheet-footer flexrow">
         <button type="submit" name="saveDefaults">

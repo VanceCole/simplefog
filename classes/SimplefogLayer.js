@@ -32,6 +32,7 @@ export default class SimplefogLayer extends MaskLayer {
       autoVisibility: false,
       autoVisGM: false,
       vThreshold: 1,
+      layerZindex: 220,
     });
 
     // React to canvas zoom
@@ -43,8 +44,10 @@ export default class SimplefogLayer extends MaskLayer {
     // React to changes to current scene
     Hooks.on('updateScene', (scene, data) => this._updateScene(scene, data));
 
+    console.log('Z Index-A: ' + this.getSetting('layerZindex') )
     // Canvas expects the options.name property to be set
     this.options = this.constructor.layerOptions;
+    console.log('Z Index-C: ' + this.getSetting('layerZindex') )
   }
 
   init() {
@@ -106,6 +109,9 @@ export default class SimplefogLayer extends MaskLayer {
       // Otherwise fall back to module default
       else this.setSetting(key, this.DEFAULTS[key]);
     });
+
+    // Re-render zindex
+    canvas.simplefog.zIndex = canvas.simplefog.getSetting('layerZindex');
   }
 
   /* -------------------------------------------- */
