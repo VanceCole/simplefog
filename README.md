@@ -5,13 +5,10 @@
 # Simplefog
 A module for [FoundryVTT](https://foundryvtt.com) that lets you draw fog of war manually.
 
-# Update
-This is a continuation of SimpleFog, created by Vance. This is now beinng maintained under this fork with his permission. This was under the MIT license and continues to be so.
-
 # ChangeLog
 
 ## 0.2.0: v9 Compatibility
-Date TBD
+June 3, 2021
 * Integrate LoFD templates, github actions, etc...
 * Confirmation before toggle off #52
 * Migrate Simple Fog layer into the primary canvas group for v9 compatibility #51
@@ -27,6 +24,8 @@ Jun 03, 2021
 
 [Full Change Log](changelog.md)
 
+# Origin
+This is a continuation of SimpleFog, created by Vance. This is now being maintained under this fork with his permission. This was under the MIT license and continues to be so.
 
 ### Installation
 Use the following manifest URL to install this fork of the original module after you have uninstalled the original module.
