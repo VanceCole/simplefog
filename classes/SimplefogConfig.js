@@ -1,6 +1,8 @@
 import { webToHex, hexToWeb } from '../js/helpers.js';
 
 export default class SimplefogConfig extends FormApplication {
+
+
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ['form'],
@@ -13,6 +15,7 @@ export default class SimplefogConfig extends FormApplication {
       template: 'modules/simplefog/templates/scene-config.html',
       id: 'simplefog-scene-config',
       title: game.i18n.localize('Simplefog Options'),
+
     });
   }
 
@@ -37,7 +40,18 @@ export default class SimplefogConfig extends FormApplication {
       autoFog: canvas.simplefog.getSetting('autoFog'),
       autoVisGM: canvas.simplefog.getSetting('autoVisGM'),
       vThreshold: Math.round(canvas.simplefog.getSetting('vThreshold') * 100),
+      layerZindex: canvas.simplefog.getSetting('layerZindex'),
       fogTextureFilePath: canvas.simplefog.getSetting('fogTextureFilePath'),
+      confirmDisablingFog: canvas.simplefog.getSetting( 'confirmDisablingFog'),
+      enableHotkeys: canvas.simplefog.getSetting('enableHotkeys'),
+      hotKeyTool: canvas.simplefog.getSetting('hotKeyTool'),
+      hotKeyToolOptions: {
+        brush: "Brush",
+        grid: "Grid",
+        polygon: "Polygon",
+        box: "Box",
+        ellipse: "Ellipse"
+      }
     };
   }
 
@@ -64,6 +78,8 @@ export default class SimplefogConfig extends FormApplication {
         canvas.simplefog.setUserSetting(key, val);
       }
     });
+
+    canvas.simplefog.zIndex = canvas.simplefog.getSetting('layerZindex');
 
     // If save button was clicked, close app
     if (event.submitter?.name === 'submit') {

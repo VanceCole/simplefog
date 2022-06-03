@@ -1,17 +1,31 @@
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/League-of-Foundry-Developers/simplefog) ![GitHub Releases](https://img.shields.io/github/downloads/League-of-Foundry-Developers/simplefog/latest/total) ![GitHub Releases](https://img.shields.io/github/downloads/League-of-Foundry-Developers/simplefog/total)
+
+![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fsimplefog&colorB=4aa94a) ![Foundry Version](https://img.shields.io/endpoint?url=https://foundryshields.com/version?url=https%3A%2F%2Fgithub.com%2FLeague-of-Foundry-Developers%2Fsimplefog%2Freleases%2Flatest%2Fdownload%2Fmodule.json) 
+
 # Simplefog
 A module for [FoundryVTT](https://foundryvtt.com) that lets you draw fog of war manually.
 
-# Update
-This is a continuation of SimpleFog, created by Vance. This is now beinng maintained under this fork with his permission. This was under the MIT license and continues to be so.
-
 # ChangeLog
 
-## 0.1.16
-* Added ability to set whether fog is automatically enabled. Look at the bottom of the settings panel. Make sure to "Set current setttings to default" so it uses those settings by default ever time you create a a new scene.
-* Added Japanese localization. Thanks touge!
+## 0.2.0: v9 Compatibility
+June 3, 2021
+* Integrate LoFD templates, github actions, etc...
+* Confirmation before toggle off #52
+* Migrate Simple Fog layer into the primary canvas group for v9 compatibility #51
+* Add in option for hotkey activation of Simple Fog #43 - Thanks @kenster421
+* Updates to japanese localizations #39 - Thanks @BrotherSharper
+* Make hotkey tool selectable
+* Update description, cleanup, etc...
 
-## 0.1.15 
-* Added the ability to optionally add an image over the fog!
+## 0.1.18: Compatibility Updates!
+Jun 03, 2021
+* Merge pull request #32 from Azzurite/compatibility-0.8.6
+* Compatibility for core version 0.8.6
+
+[Full Change Log](changelog.md)
+
+# Origin
+This is a continuation of SimpleFog, created by Vance. This is now being maintained under this fork with his permission. This was under the MIT license and continues to be so.
 
 ### Installation
 Use the following manifest URL to install this fork of the original module after you have uninstalled the original module.

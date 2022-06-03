@@ -1,5 +1,5 @@
 <form>
-    <h3>{{localize 'SIMPLEFOG.fogImageSettings'}}</h3>
+    <h3 class="form-header"><i class="fas fa-image"></i> {{localize 'SIMPLEFOG.fogImageSettings'}}</h3>
     <div class="form-group">
         <label for="fogTextureFilePath">{{localize 'SIMPLEFOG.fogImage'}}</label>
         <button type="button" class="file-picker" data-type="imagevideo" data-target="fogTextureFilePath" title="Browse Files" tabindex="-1">
@@ -10,7 +10,7 @@
     <p class="notes">
         {{ localize 'SIMPLEFOG.imageNotes' }}
     </p>
-    <hr />
+
     <h3 class="form-header"><i class="fas fa-crown"></i> {{localize 'SIMPLEFOG.gmFogSettings'}}</h3>
     <div class="form-group">
         <label for="gmTint">{{localize 'SIMPLEFOG.color'}}</label>
@@ -22,7 +22,7 @@
         <input type="range" name="gmAlpha" value="{{ gmAlpha }}" min="0" max="100" step="1" data-dtype="Number" />
         <span class="range-value">{{ gmAlpha }}</span>
     </div>
-    <hr />
+
     <h3 class="form-header"><i class="fas fa-users"></i> {{localize 'SIMPLEFOG.playerFogSettings'}}</h3>
     <div class="form-group">
         <label for="playerTint">Color</label>
@@ -35,7 +35,7 @@
             data-dtype="Number" />
         <span class="range-value">{{ playerAlpha }}</span>
     </div>
-    <hr>
+
     <h3 class="form-header"><i class="fas fa-filter"></i> {{localize 'SIMPLEFOG.filterSettings'}}</h3>
     <div class="form-group">
         <label for="blur">{{localize 'SIMPLEFOG.blurRadius'}}</label>
@@ -48,7 +48,7 @@
         <span class="range-value">{{ blurQuality }}</span>
         <p class="notes">{{localize 'SIMPLEFOG.blurQualityDesc'}}</p>
     </div>
-    <hr>
+
     <h3 class="form-header"><i class="fas fa-adjust"></i> {{localize 'SIMPLEFOG.transitionSettings'}}</h3>
     <div class="form-group">
         <label for="transition">{{localize 'SIMPLEFOG.enableTransitions'}}</label>
@@ -60,11 +60,8 @@
             data-dtype="Number" />
         <span class="range-value">{{ transitionSpeed }}</span>
     </div>
-    <hr>
     <h3 class="form-header"><i class="fas fa-low-vision"></i> {{localize 'SIMPLEFOG.visibilitySettings'}}</h3>
-    <p class="notes">
-        {{ localize 'SIMPLEFOG.autoVisNotes' }}
-    </p>
+    <p class="notes">{{ localize 'SIMPLEFOG.autoVisNotes' }}</p>
     <div class="form-group">
         <label for="autoVisibility">{{localize 'SIMPLEFOG.enableAutovis'}}</label>
         <input type='checkbox' {{#if autoVisibility}}checked{{/if}} name='autoVisibility' />
@@ -80,14 +77,43 @@
         <span class="range-value">{{ vThreshold }}</span>
     </div>
 
-    <h3 class="form-header"><i class="fas fa-low-vision"></i> {{localize 'SIMPLEFOG.autoFogSettings'}}</h3>
-      <p class="notes">
-        {{ localize 'SIMPLEFOG.autoFogNotes' }}
-    </p>
-            <div class="form-group">
+    <h3 class="form-header"><i class="fas fa-cloud-upload-alt"></i> {{localize 'SIMPLEFOG.autoFogSettings'}}</h3>
+    <div class="form-group">
         <label for="autoFog">{{localize 'SIMPLEFOG.enableAutoFog'}}</label>
         <input type='checkbox' {{#if autoFog}}checked{{/if}} name='autoFog' />
+        <p class="notes">{{ localize 'SIMPLEFOG.autoFogNotes' }}</p>
     </div>
+
+    <h3 class="form-header"><i class="fas fa-external-link-square-alt"></i> {{localize 'SIMPLEFOG.hotkeySettings'}}</h3>
+    <div class="form-group">
+        <label for="enableHotkeys">{{localize 'SIMPLEFOG.enableHotkeys'}}</label>
+        <input type='checkbox' {{#if enableHotkeys}}checked{{/if}} name='enableHotkeys' />
+        <p class="notes">{{ localize 'SIMPLEFOG.hotkeyNotes' }}</p>
+    </div>
+    <div class="form-group">
+        <label for="hotKeyTool">{{localize 'SIMPLEFOG.hotKeyToolDesc'}}</label>
+        <select name="hotKeyTool">
+            {{selectOptions hotKeyToolOptions selected=hotKeyTool}}
+        </select>
+        <p class="notes">{{ localize 'SIMPLEFOG.hotKeyToolNotes' }}</p>
+    </div>
+
+    <h3 class="form-header"><i class="fas fas fa-exclamation-triangle"></i> {{localize 'SIMPLEFOG.confirmDisablingFogSettings'}}</h3>
+     <div class="form-group">
+        <label for="autoFog">{{localize 'SIMPLEFOG.confirmDisablingFog'}}</label>
+        <input type='checkbox' {{#if confirmDisablingFog}}checked{{/if}} name='confirmDisablingFog' />
+        <p class="notes">{{ localize 'SIMPLEFOG.confirmDisablingFogNotes' }}</p>
+    </div>
+
+    <h3 class="form-header"><i class="fas fa-atom"></i> {{localize 'SIMPLEFOG.advancedSettings'}}</h3>
+    <div class="form-group">
+        <label for="configurableZindex">{{localize 'SIMPLEFOG.configurableZindex'}}</label>
+        <input type="range" name="layerZindex" value="{{ layerZindex }}" min="0" max="500" step="10"
+            data-dtype="Number" />
+        <span class="range-value">{{ layerZindex }}</span>
+        <p class="notes">{{localize 'SIMPLEFOG.configurableZindexNotes'}}</p>
+    </div>
+
     <hr>
     <footer class="sheet-footer flexrow">
         <button type="submit" name="saveDefaults">
