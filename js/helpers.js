@@ -116,7 +116,10 @@ export function addSimplefogControlToggleListener() {
     }
     
     let controlName = getNewControlName();
-    let toolName = getNewToolName(controlName);
+    let toolName = canvas.simplefog.getSetting('hotKeyTool');
+
+    console.log('Control Name: ' + controlName)
+    console.log('Tool Name: ' + toolName)
     
     $('li.scene-control[data-control=' + controlName + ']')?.click();
     setTimeout(function(){$('ol.sub-controls.active li.control-tool[data-tool=' + toolName + ']')?.click();}, 500);
@@ -174,14 +177,6 @@ function isActiveControl() {
  */
 function getActiveControlName() {
   return ui.controls.activeControl;
-}
-
-/**
- * @param {string} controlName 
- * @returns string
- */
-function getNewToolName(controlName) {
-  return controlName === 'simplefog' ? 'grid' : 'select';
 }
 
 export function addSimplefogOpacityToggleListener() {

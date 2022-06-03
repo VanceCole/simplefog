@@ -1,6 +1,8 @@
 import { webToHex, hexToWeb } from '../js/helpers.js';
 
 export default class SimplefogConfig extends FormApplication {
+
+
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ['form'],
@@ -13,6 +15,7 @@ export default class SimplefogConfig extends FormApplication {
       template: 'modules/simplefog/templates/scene-config.html',
       id: 'simplefog-scene-config',
       title: game.i18n.localize('Simplefog Options'),
+
     });
   }
 
@@ -35,12 +38,20 @@ export default class SimplefogConfig extends FormApplication {
       blurQuality: canvas.simplefog.getSetting('blurQuality'),
       autoVisibility: canvas.simplefog.getSetting('autoVisibility'),
       autoFog: canvas.simplefog.getSetting('autoFog'),
-      enableHotkeys: canvas.simplefog.getSetting('enableHotkeys'),
       autoVisGM: canvas.simplefog.getSetting('autoVisGM'),
       vThreshold: Math.round(canvas.simplefog.getSetting('vThreshold') * 100),
       layerZindex: canvas.simplefog.getSetting('layerZindex'),
       fogTextureFilePath: canvas.simplefog.getSetting('fogTextureFilePath'),
-      confirmDisablingFog: canvas.simplefog.getSetting( 'confirmDisablingFog')
+      confirmDisablingFog: canvas.simplefog.getSetting( 'confirmDisablingFog'),
+      enableHotkeys: canvas.simplefog.getSetting('enableHotkeys'),
+      hotKeyTool: canvas.simplefog.getSetting('hotKeyTool'),
+      hotKeyToolOptions: {
+        brush: "Brush",
+        grid: "Grid",
+        polygon: "Polygon",
+        box: "Box",
+        ellipse: "Ellipse"
+      }
     };
   }
 

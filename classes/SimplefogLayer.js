@@ -33,6 +33,7 @@ export default class SimplefogLayer extends MaskLayer {
       autoVisGM: false,
       vThreshold: 1,
       layerZindex: 220,
+      hotKeyTool: 'Brush'
     });
 
     // React to canvas zoom
