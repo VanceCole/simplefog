@@ -15,10 +15,10 @@ Date TBD
 * Integrate LoFD templates, github actions, etc...
 * Confirmation before toggle off #52
 * Migrate Simple Fog layer into the primary canvas group for v9 compatibility #51
+* Add in option for hotkey activation of Simple Fog #43 - Thanks @kenster421
+* Updates to japanese localizations #39 - Thanks @BrotherSharper
+* Make hotkey tool selectable
 * Update description, cleanup, etc...
-
-Release ToDo:
-* Triple check module.json
 
 ## 0.1.18: Compatibility Updates!
 Jun 03, 2021
