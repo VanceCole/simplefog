@@ -35,6 +35,7 @@ export default class SimplefogConfig extends FormApplication {
       blurQuality: canvas.simplefog.getSetting('blurQuality'),
       autoVisibility: canvas.simplefog.getSetting('autoVisibility'),
       autoFog: canvas.simplefog.getSetting('autoFog'),
+      enableHotkeys: canvas.simplefog.getSetting('enableHotkeys'),
       autoVisGM: canvas.simplefog.getSetting('autoVisGM'),
       vThreshold: Math.round(canvas.simplefog.getSetting('vThreshold') * 100),
       layerZindex: canvas.simplefog.getSetting('layerZindex'),

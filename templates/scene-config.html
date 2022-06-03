@@ -10,6 +10,7 @@
     <p class="notes">
         {{ localize 'SIMPLEFOG.imageNotes' }}
     </p>
+
     <h3 class="form-header"><i class="fas fa-crown"></i> {{localize 'SIMPLEFOG.gmFogSettings'}}</h3>
     <div class="form-group">
         <label for="gmTint">{{localize 'SIMPLEFOG.color'}}</label>
@@ -21,6 +22,7 @@
         <input type="range" name="gmAlpha" value="{{ gmAlpha }}" min="0" max="100" step="1" data-dtype="Number" />
         <span class="range-value">{{ gmAlpha }}</span>
     </div>
+
     <h3 class="form-header"><i class="fas fa-users"></i> {{localize 'SIMPLEFOG.playerFogSettings'}}</h3>
     <div class="form-group">
         <label for="playerTint">Color</label>
@@ -33,6 +35,7 @@
             data-dtype="Number" />
         <span class="range-value">{{ playerAlpha }}</span>
     </div>
+
     <h3 class="form-header"><i class="fas fa-filter"></i> {{localize 'SIMPLEFOG.filterSettings'}}</h3>
     <div class="form-group">
         <label for="blur">{{localize 'SIMPLEFOG.blurRadius'}}</label>
@@ -45,6 +48,7 @@
         <span class="range-value">{{ blurQuality }}</span>
         <p class="notes">{{localize 'SIMPLEFOG.blurQualityDesc'}}</p>
     </div>
+
     <h3 class="form-header"><i class="fas fa-adjust"></i> {{localize 'SIMPLEFOG.transitionSettings'}}</h3>
     <div class="form-group">
         <label for="transition">{{localize 'SIMPLEFOG.enableTransitions'}}</label>
