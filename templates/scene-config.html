@@ -78,17 +78,24 @@
     </div>
 
     <h3 class="form-header"><i class="fas fa-cloud-upload-alt"></i> {{localize 'SIMPLEFOG.autoFogSettings'}}</h3>
-    <p class="notes">{{ localize 'SIMPLEFOG.autoFogNotes' }}</p>
     <div class="form-group">
         <label for="autoFog">{{localize 'SIMPLEFOG.enableAutoFog'}}</label>
         <input type='checkbox' {{#if autoFog}}checked{{/if}} name='autoFog' />
+        <p class="notes">{{ localize 'SIMPLEFOG.autoFogNotes' }}</p>
     </div>
 
-    <h3 class="form-header"><i class="fas fa-exclamation-triangle"></i> {{localize 'SIMPLEFOG.confirmDisablingFogSettings'}}</h3>
+    <h3 class="form-header"><i class="fas fa-external-link-square-alt"></i> {{localize 'SIMPLEFOG.hotkeySettings'}}</h3>
     <div class="form-group">
-        <label for="autoFog">{{localize 'SIMPLEFOG.confirmDisablingFog'}}</label>
-        <input type='checkbox' {{#if confirmDisablingFog}}checked{{/if}} name='confirmDisablingFog' />
-        <p class="notes">{{ localize 'SIMPLEFOG.confirmDisablingFogNotes' }}</p>
+        <label for="enableHotkeys">{{localize 'SIMPLEFOG.enableHotkeys'}}</label>
+        <input type='checkbox' {{#if enableHotkeys}}checked{{/if}} name='enableHotkeys' />
+        <p class="notes">{{ localize 'SIMPLEFOG.hotkeyNotes' }}</p>
+    </div>
+    <div class="form-group">
+        <label for="hotKeyTool">{{localize 'SIMPLEFOG.hotKeyToolDesc'}}</label>
+        <select name="hotKeyTool">
+            {{selectOptions hotKeyToolOptions selected=hotKeyTool}}
+        </select>
+        <p class="notes">{{ localize 'SIMPLEFOG.hotKeyToolNotes' }}</p>
     </div>
 
     <h3 class="form-header"><i class="fas fa-atom"></i> {{localize 'SIMPLEFOG.advancedSettings'}}</h3>

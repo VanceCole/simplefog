@@ -47,6 +47,12 @@
   "SIMPLEFOG.confirmDisableFog": "¿Está seguro? La niebla de guerra se desactivará.",
   "SIMPLEFOG.disableFog": "Desactivar niebla",
 
+  "SIMPLEFOG.hotkeySettings": "Configuración de teclas de acceso rápido",
+  "SIMPLEFOG.enableHotkeys": "Habilitar teclas de acceso rápido",
+  "SIMPLEFOG.hotkeyNotes": "Cuando esté habilitado, podrá cambiar rápidamente al control de niebla simple usando Ctrl + S y alternar la opacidad usando la tecla de acceso directo 'T'",
+  "SIMPLEFOG.hotKeyToolDesc": "Herramienta de teclas de acceso directo",
+  "SIMPLEFOG.hotKeyToolNotes": "Determine qué herramienta se seleccionará cuando se active la tecla de acceso directo.",
+
   "SIMPLEFOG.autoVisNotes": "Cuando se activa, la visibilidad automática mostrará/ocultará los iconos en base al nivel de opacidad de la niebla en su localización y el umbral que se especifique. El color del pincel cambia a verde/rojo para indicar si el token es visible",
   "SIMPLEFOG.fogImageSettings": "Ajuste de la imagen",
   "SIMPLEFOG.fogImage": "Imagen de la capa de niebla",
