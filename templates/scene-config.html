@@ -98,6 +98,13 @@
         <p class="notes">{{ localize 'SIMPLEFOG.hotKeyToolNotes' }}</p>
     </div>
 
+    <h3 class="form-header"><i class="fas fas fa-exclamation-triangle"></i> {{localize 'SIMPLEFOG.confirmDisablingFogSettings'}}</h3>
+     <div class="form-group">
+        <label for="autoFog">{{localize 'SIMPLEFOG.confirmDisablingFog'}}</label>
+        <input type='checkbox' {{#if confirmDisablingFog}}checked{{/if}} name='confirmDisablingFog' />
+        <p class="notes">{{ localize 'SIMPLEFOG.confirmDisablingFogNotes' }}</p>
+    </div>
+
     <h3 class="form-header"><i class="fas fa-atom"></i> {{localize 'SIMPLEFOG.advancedSettings'}}</h3>
     <div class="form-group">
         <label for="configurableZindex">{{localize 'SIMPLEFOG.configurableZindex'}}</label>
