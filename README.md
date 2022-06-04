@@ -7,6 +7,12 @@ A module for [FoundryVTT](https://foundryvtt.com) that lets you draw fog of war 
 
 # ChangeLog
 
+## 0.2.1: Bugfixes
+June 4, 2021
+* Rendering inconsistency on initial draw of history #58
+* Error during reload for partially initialized objects #57
+* Cleanup some debug code
+
 ## 0.2.0: v9 Compatibility
 June 3, 2021
 * Integrate LoFD templates, github actions, etc...
