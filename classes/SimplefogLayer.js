@@ -45,10 +45,8 @@ export default class SimplefogLayer extends MaskLayer {
     // React to changes to current scene
     Hooks.on('updateScene', (scene, data) => this._updateScene(scene, data));
 
-    console.log('Z Index-A: ' + this.getSetting('layerZindex') )
     // Canvas expects the options.name property to be set
     this.options = this.constructor.layerOptions;
-    console.log('Z Index-C: ' + this.getSetting('layerZindex') )
   }
 
   init() {
