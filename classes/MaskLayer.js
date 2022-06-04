@@ -87,8 +87,8 @@ export default class MaskLayer extends CanvasLayer {
     // Allow zIndex prop to function for items on this layer
     this.sortableChildren = true;
 
-    // Render initial history stack
-    this.renderStack();
+    // Render entire history stack
+    this.renderStack(undefined, 0, undefined);
 
     // apply Texture Sprite to fog layer after we renderStack to prevent revealing the map
     this.fogSprite = new PIXI.Sprite();
@@ -157,6 +157,7 @@ export default class MaskLayer extends CanvasLayer {
     start = this.pointer,
     stop = canvas.scene.getFlag(this.layername, "history.pointer")
   ) {
+
     // If history is blank, do nothing
     if (history === undefined) {
       this.visible = this.getSetting("autoFog");
