@@ -5,7 +5,7 @@
   "author": "Vance Cole, Chris Hampton (Updates), and Jeremy (Updates)",
   "version": "0.2.0",
   "minimumCoreVersion": "0.8.5",
-  "compatibleCoreVersion": "9.",
+  "compatibleCoreVersion": "9",
   "esmodules": [
     "js/simplefog.js",
     "js/controls.js"
