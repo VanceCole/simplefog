@@ -44,7 +44,7 @@
   "SIMPLEFOG.confirmDisablingFogSettings": "シンプルフォグの無効化を確認する",
   "SIMPLEFOG.confirmDisablingFog": "確認を有効にして、シンプルフォグを無効にします。",
   "SIMPLEFOG.confirmDisablingFogNotes": "シーンのシンプルフォグを無効にする場合は、無効にする前に無効を確認するダイアログを表示します。",
-  "SIMPLEFOG.confirmDisableFog": "本気ですか？ 戦場の霧は無効になります。",
+  "SIMPLEFOG.confirmDisableFog": "このシーンでSimpleFogをオフにしてよろしいですか？",
   "SIMPLEFOG.disableFog": "シンプルフォグを無効にする",
 
   "SIMPLEFOG.hotkeySettings": "ホットキー設定",
