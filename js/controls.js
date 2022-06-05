@@ -17,30 +17,7 @@ Hooks.on('getSceneControlButtons', (controls) => {
         name: 'simplefogtoggle',
         title: game.i18n.localize('SIMPLEFOG.onoff'),
         icon: 'fas fa-eye',
-        onClick: () => {
-          if (canvas.simplefog.getSetting("confirmDisablingFog") && canvas.simplefog.getSetting("visible")) {
-            const dg = new Dialog({
-              title: game.i18n.localize('SIMPLEFOG.disableFog'),
-              content: game.i18n.localize('SIMPLEFOG.confirmDisableFog'),
-              buttons: {
-                reset: {
-                  icon: '<i class="fas fa-trash"></i>',
-                  label: 'Disable',
-                  callback: () => toggleSimpleFog(),
-                },
-                cancel: {
-                  icon: '<i class="fas fa-times"></i>',
-                  label: 'Cancel',
-                },
-              },
-              default: 'cancel',
-            });
-            dg.render(true);
-          //Original
-          } else {
-            toggleSimpleFog();
-          }
-        },
+        onClick: () => toggleSimpleFog(),
         active: canvas.simplefog?.visible,
         toggle: true,
       },
@@ -158,9 +135,31 @@ function setBrushControlPos() {
  * Toggle Simple Fog
  */
 function toggleSimpleFog() {
+  if (canvas.simplefog.getSetting("confirmDisablingFog") && canvas.simplefog.getSetting("visible")) {
+    let dg = Dialog.confirm({
+      title: game.i18n.localize('SIMPLEFOG.disableFog'),
+      content: game.i18n.localize('SIMPLEFOG.confirmDisableFog'),
+      yes: () => toggleOffSimpleFog(),
+      no: () => cancelToggleSimpleFog(),
+      defaultYes: false,
+      rejectClose: true
+    });
+    dg.then(undefined, cancelToggleSimpleFog)
+  } else {
+    toggleOffSimpleFog();
+  }
+}
+
+function toggleOffSimpleFog() {
   canvas.simplefog.toggle();
   canvas.sight.refresh();
 }
+
+function cancelToggleSimpleFog(result = undefined) {
+  ui.controls.controls.find(({name}) => name === 'simplefog').tools[0].active = true;
+  ui.controls.render();
+}
+
 
 // Reset position when brush controls are rendered or sceneNavigation changes
 Hooks.on('renderBrushControls', setBrushControlPos);

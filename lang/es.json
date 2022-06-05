@@ -44,7 +44,7 @@
   "SIMPLEFOG.confirmDisablingFogSettings": "Confirmar la desactivación de la niebla simple",
   "SIMPLEFOG.confirmDisablingFog": "Habilite la confirmación para deshabilitar la niebla simple.",
   "SIMPLEFOG.confirmDisablingFogNotes": "Al deshabilitar niebla para una escena, presente un cuadro de diálogo para confirmar la desactivación antes de hacerlo.",
-  "SIMPLEFOG.confirmDisableFog": "¿Está seguro? La niebla de guerra se desactivará.",
+  "SIMPLEFOG.confirmDisableFog": "¿Estás seguro de que quieres desactivar Simple Fog para esta escena?",
   "SIMPLEFOG.disableFog": "Desactivar niebla",
 
   "SIMPLEFOG.hotkeySettings": "Configuración de teclas de acceso rápido",

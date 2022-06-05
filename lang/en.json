@@ -41,7 +41,7 @@
   "SIMPLEFOG.confirmDisablingFogSettings": "Toggle Confirmation Settings",
   "SIMPLEFOG.confirmDisablingFog": "Enable confirmation to disable Simple Fog.",
   "SIMPLEFOG.confirmDisablingFogNotes": "When disabling Simple Fog for a scene, present a dialog to confirm disabling before doing so.",
-  "SIMPLEFOG.confirmDisableFog": "Are you sure?  Fog of war will be disabled.",
+  "SIMPLEFOG.confirmDisableFog": "Are you sure you want to toggle off Simple Fog for this scene?",
   "SIMPLEFOG.disableFog": "Disable Simple Fog",
 
   "SIMPLEFOG.hotkeySettings": "Hotkey Settings",
