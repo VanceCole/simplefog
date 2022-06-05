@@ -1,5 +1,26 @@
 # Simplefog Change Log
 
+## 0.2.1: Bugfixes
+June 4, 2022
+* Rendering inconsistency on initial draw of history #58
+* Error during reload for partially initialized objects #57
+* Cleanup some debug code
+
+## 0.2.0: v9 Compatibility
+June 3, 2022
+* Integrate LoFD templates, github actions, etc...
+* Confirmation before toggle off #52
+* Migrate Simple Fog layer into the primary canvas group for v9 compatibility #51
+* Add in option for hotkey activation of Simple Fog #43 - Thanks @kenster421
+* Updates to japanese localizations #39 - Thanks @BrotherSharper
+* Make hotkey tool selectable
+* Update description, cleanup, etc...
+
+## 0.1.18: Compatibility Updates!
+Jun 03, 2021
+* Merge pull request #32 from Azzurite/compatibility-0.8.6
+* Compatibility for core version 0.8.6
+
 ## 0.1.17: Bug Fixes
 Feb 07, 2021
 * Removed a feature that I believe was causing some bugs. This feature hasn't been working correctly anyways since Foundry updated to new layer system.
