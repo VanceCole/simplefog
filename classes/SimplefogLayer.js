@@ -348,6 +348,7 @@ export default class SimplefogLayer extends MaskLayer {
       // Clear history buffer
       this.historyBuffer = [];
     }
+    catch (err) {}
   }
 
   /**
