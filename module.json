@@ -1,38 +1,38 @@
 {
-  "name": "simplefog",
-  "title": "Simplefog - Manual Fog of War",
-  "description": "Simplefog allows you to draw fog of war manually, optionally automatically hiding and revealing tokens underneath based on opacity. It provides a number of tools to quickly draw and erase fog in various shapes - brush, rectangles, ellipses, polygons or to reveal tiles you click/drag on the grid.",
-  "author": "Vance Cole, Chris Hampton (Updates), and Jeremy (Updates)",
-  "version": "0.2.0",
-  "minimumCoreVersion": "0.8.5",
-  "compatibleCoreVersion": "9",
-  "esmodules": [
-    "js/simplefog.js",
-    "js/controls.js"
-  ],
-  "styles": [
-    "css/brush-controls.css"
-  ],
-  "languages": [
-		{
-			"lang": "en",
-			"name": "English",
-			"path": "lang/en.json"
-		},
-		{
-			"lang": "es",
-			"name": "Español",
-			"path": "lang/es.json"
-		},
-		{
-			"lang": "ja",
-			"name": "日本語 (Japanese)",
-			"path": "lang/ja.json"
-		}
-	],
-  "url": "https://github.com/League-of-Foundry-Developers/simplefog",
-  "manifest": "https://raw.githubusercontent.com/League-of-Foundry-Developers/simplefog/master/module.json",
-  "readme": "https://github.com/League-of-Foundry-Developers/simplefog/blob/master/README.md",
-  "changelog": "https://github.com/League-of-Foundry-Developers/simplefog/blob/master/changelog.md",
-  "download": "https://github.com/League-of-Foundry-Developers/simplefog/releases/download/0.2.0/simplefog.zip"
+    "name": "simplefog",
+    "title": "Simplefog - Manual Fog of War",
+    "description": "Simplefog allows you to draw fog of war manually, optionally automatically hiding and revealing tokens underneath based on opacity. It provides a number of tools to quickly draw and erase fog in various shapes - brush, rectangles, ellipses, polygons or to reveal tiles you click/drag on the grid.",
+    "author": "Vance Cole, Chris Hampton (Updates), and Jeremy (Updates)",
+    "version": "0.2.1",
+    "minimumCoreVersion": "0.8.5",
+    "compatibleCoreVersion": "9",
+    "esmodules": [
+        "js/simplefog.js",
+        "js/controls.js"
+    ],
+    "styles": [
+        "css/brush-controls.css"
+    ],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
+        },
+        {
+            "lang": "es",
+            "name": "Español",
+            "path": "lang/es.json"
+        },
+        {
+            "lang": "ja",
+            "name": "日本語 (Japanese)",
+            "path": "lang/ja.json"
+        }
+    ],
+    "url": "https://github.com/League-of-Foundry-Developers/simplefog",
+    "manifest": "https://github.com/League-of-Foundry-Developers/simplefog/releases/latest/download/module.json",
+    "readme": "https://github.com/League-of-Foundry-Developers/simplefog/blob/master/README.md",
+    "changelog": "https://github.com/League-of-Foundry-Developers/simplefog/blob/master/changelog.md",
+    "download": "https://github.com/League-of-Foundry-Developers/simplefog/releases/download/0.2.1/module.zip"
 }
