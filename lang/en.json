@@ -53,5 +53,7 @@
   "SIMPLEFOG.autoVisNotes": "When enabled, Automatic Visibility will show/hide tokens based on fog opacity level at their location based on the threshold setting. Brush color changes to green/red to indicate whether a token would be visible.",
   "SIMPLEFOG.fogImageSettings": "Image Settings",
   "SIMPLEFOG.fogImage": "Fog Overlay Image",
-  "SIMPLEFOG.imageNotes": "Selected image will display on top of the fog tint color. This image should be the same height and width of the scene background image."
+  "SIMPLEFOG.imageNotes": "Selected image will display on top of the fog tint color. This image should be the same height and width of the scene background image.",
+
+  "SIMPLEFOG.versionNotification": "<b>Simple Fog v1.2.1-PreRelease</b><p>This version includes important bug fixes for:</p><ul><li><i>DRAFT</i> - Token names appearing above the fog <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues/65'>#65</a></li></ul><p>To report problems:<ul><li>open a GitHub issue <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues' target='_blank'>here</a></li><li>send a message on Discord to <a href='https://discordapp.com/users/530108795796455437' target='_blank'>Glutious#7241</a></li></ul></p>"
 }

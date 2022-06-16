@@ -1,8 +1,6 @@
 import { webToHex, hexToWeb } from '../js/helpers.js';
 
 export default class SimplefogConfig extends FormApplication {
-
-
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ['form'],
@@ -14,8 +12,7 @@ export default class SimplefogConfig extends FormApplication {
       width: 500,
       template: 'modules/simplefog/templates/scene-config.html',
       id: 'simplefog-scene-config',
-      title: game.i18n.localize('Simplefog Options'),
-
+      title: game.i18n.localize('Simplefog Options')
     });
   }
 
@@ -51,7 +48,8 @@ export default class SimplefogConfig extends FormApplication {
         polygon: "Polygon",
         box: "Box",
         ellipse: "Ellipse"
-      }
+      },
+      versionNotification: canvas.simplefog.getSetting('versionNotification')
     };
   }
 

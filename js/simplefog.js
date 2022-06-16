@@ -3,6 +3,7 @@ import SimplefogMigrations from '../classes/SimplefogMigrations.js';
 import config from './config.js';
 import { simplefogLog } from './helpers.js';
 import SimplefogHUDControlLayer from "../classes/SimplefogHUDControlLayer.js";
+import SimplefogVersionNotification from "../classes/SimplefogVersionNotification.js";
 
 Hooks.once('init', () => {
   // eslint-disable-next-line no-console
@@ -64,9 +65,12 @@ Hooks.once('ready', () => {
   canvas.simplefog.zIndex = canvas.simplefog.getSetting('layerZindex');
   canvas.simplefogHUDControls.zIndex = canvas.simplefog.getSetting('layerZindex') - 1;
 
-  // // Move object hud to tokens layer
+  // Move object hud to tokens layer
   game.canvas.controls.hud.setParent(game.canvas.simplefogHUDControls)
 
-  //ooks.on('sightRefresh', sightLayerUpdate);
+  // Check if new version; if so send DM to GM
+  SimplefogVersionNotification.checkVersion()
+
+  //Hooks.on('sightRefresh', sightLayerUpdate);
   canvas.sight.refresh();
 });
