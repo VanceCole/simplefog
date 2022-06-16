@@ -1,5 +1,12 @@
 # Simplefog Change Log
 
+## 0.2.2-ALPHA.0: Bugfixes
+June 16, 2022
+* Token labels appearing above fog #65
+  * **NOTE**: The current fix for this is to move the token controls down a few levels, so now they will be covered by not only simplefog, but also weather, lighting, and other effects.  A more permanent solution is being investigated.
+* ZIndex not always being saved #66
+* Include notification to GM if version changes #68
+
 ## 0.2.1: Bugfixes
 June 4, 2022
 * Rendering inconsistency on initial draw of history #58
