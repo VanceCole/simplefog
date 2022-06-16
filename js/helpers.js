@@ -200,3 +200,26 @@ function toggleSliderAndSubmitForm() {
   $slider.val(brushOpacity === "100" ? 0 : 100);
   $('form#simplefog-brush-controls-form').submit();
 }
+
+export function dmToGM(message) {
+  let whisper_to_dm = ChatMessage.create({
+    whisper: [game.user.id],
+    blind: true,
+    content: message
+  })
+}
+
+export function dmToAllGM(message) {
+  var dm_ids = [];
+  for (let indexA = 0; indexA < game.users.length; indexA++) {
+    if (game.users[indexA].value.isGM) {
+      dm_ids.push(game.users[indexA].key)
+    }
+  }
+
+  let whisper_to_dm = ChatMessage.create({
+    whisper: dm_ids,
+    blind: true,
+    content: message
+  })
+}
