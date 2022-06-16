@@ -49,6 +49,9 @@ Hooks.once('ready', () => {
   // Fix simplefog zIndex
   canvas.simplefog.zIndex = canvas.simplefog.getSetting('layerZindex');
 
+  // // Move object hud to tokens layer
+  game.canvas.controls.hud.setParent(game.canvas.tokens)
+
   //ooks.on('sightRefresh', sightLayerUpdate);
   canvas.sight.refresh();
 });
