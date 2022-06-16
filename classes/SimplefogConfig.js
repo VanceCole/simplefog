@@ -79,6 +79,7 @@ export default class SimplefogConfig extends FormApplication {
       }
     });
 
+    // If zIndex was changed
     canvas.simplefog.zIndex = canvas.simplefog.getSetting('layerZindex');
 
     // If save button was clicked, close app

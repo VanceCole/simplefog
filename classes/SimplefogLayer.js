@@ -108,9 +108,6 @@ export default class SimplefogLayer extends MaskLayer {
       // Otherwise fall back to module default
       else this.setSetting(key, this.DEFAULTS[key]);
     });
-
-    // Re-render zindex
-    canvas.simplefog.zIndex = canvas.simplefog.getSetting('layerZindex');
   }
 
   /* -------------------------------------------- */

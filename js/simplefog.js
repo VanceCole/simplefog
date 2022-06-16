@@ -46,6 +46,9 @@ Hooks.once('ready', () => {
   // Check if any migrations need to be performed
   SimplefogMigrations.check();
 
+  // Fix simplefog zIndex
+  canvas.simplefog.zIndex = canvas.simplefog.getSetting('layerZindex');
+
   //ooks.on('sightRefresh', sightLayerUpdate);
   canvas.sight.refresh();
 });
