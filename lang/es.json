@@ -56,5 +56,7 @@
   "SIMPLEFOG.autoVisNotes": "Cuando se activa, la visibilidad automática mostrará/ocultará los iconos en base al nivel de opacidad de la niebla en su localización y el umbral que se especifique. El color del pincel cambia a verde/rojo para indicar si el token es visible",
   "SIMPLEFOG.fogImageSettings": "Ajuste de la imagen",
   "SIMPLEFOG.fogImage": "Imagen de la capa de niebla",
-  "SIMPLEFOG.imageNotes": "La imagen seleccionada se sobrepondrá encima del color elegido para la niebla. La imagen debe tener las mismas dimensiones que la imagen de fondo de la escena"
+  "SIMPLEFOG.imageNotes": "La imagen seleccionada se sobrepondrá encima del color elegido para la niebla. La imagen debe tener las mismas dimensiones que la imagen de fondo de la escena",
+
+  "SIMPLEFOG.versionNotification": "<b>Simple Fog v1.2.1-PreRelease</b><p>Esta versión incluye correcciones de errores importantes para:</p><ul><li><i>RECLUTAR</i> - Nombres simbólicos que aparecen sobre la niebla. <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues/65'>#65</a></li></ul><p>Para reportar problemas:<ul><li>abrir un problema de GitHub <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues' target='_blank'>por aquí</a></li><li>envía un mensaje en Discord a <a href='https://discordapp.com/users/530108795796455437' target='_blank'>Glutious#7241</a></li></ul></p>"
 }

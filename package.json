@@ -1,0 +1,8 @@
+{
+  "name": "simplefog",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@league-of-foundry-developers/foundry-vtt-dnd5e-types": "^1.5.2-2",
+    "@league-of-foundry-developers/foundry-vtt-types": "github:kmoschcau/foundry-vtt-types"
+  }
+}

@@ -3,7 +3,7 @@
     "title": "Simplefog - Manual Fog of War",
     "description": "Simplefog allows you to draw fog of war manually, optionally automatically hiding and revealing tokens underneath based on opacity. It provides a number of tools to quickly draw and erase fog in various shapes - brush, rectangles, ellipses, polygons or to reveal tiles you click/drag on the grid.",
     "author": "Vance Cole, Chris Hampton (Updates), and Jeremy (Updates)",
-    "version": "0.2.1",
+    "version": "0.2.2-ALPHA.0",
     "minimumCoreVersion": "0.8.5",
     "compatibleCoreVersion": "9",
     "esmodules": [
