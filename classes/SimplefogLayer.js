@@ -296,12 +296,12 @@ export default class SimplefogLayer extends MaskLayer {
       }
     }
     if (tool === 'grid') {
-      if (canvas.scene.data.gridType === 1) {
-        this.boxPreview.width = canvas.scene.data.grid;
-        this.boxPreview.height = canvas.scene.data.grid;
+      if (canvas.scene.grid.type === 1) {
+        this.boxPreview.width = canvas.scene.grid.size;
+        this.boxPreview.height = canvas.scene.grid.size;
         this.boxPreview.visible = true;
       }
-      else if ([2, 3, 4, 5].includes(canvas.scene.data.gridType)) {
+      else if ([2, 3, 4, 5].includes(canvas.scene.grid.type)) {
         this._initGrid();
         this.polygonPreview.visible = true;
       }
@@ -605,18 +605,19 @@ export default class SimplefogLayer extends MaskLayer {
   }
 
   _pointerMoveGrid(p) {
-    const { grid, gridType } = canvas.scene.data;
+    const gridSize = canvas.scene.grid.size;
+    const gridType = canvas.scene.grid.type;
     // Square grid
     if (gridType === 1) {
-      const gridx = Math.floor(p.x / grid);
-      const gridy = Math.floor(p.y / grid);
-      const x = gridx * grid;
-      const y = gridy * grid;
+      const gridx = Math.floor(p.x / gridSize);
+      const gridy = Math.floor(p.y / gridSize);
+      const x = gridx * gridSize;
+      const y = gridy * gridSize;
       const coord = `${x},${y}`;
       this.boxPreview.x = x;
       this.boxPreview.y = y;
-      this.boxPreview.width = grid;
-      this.boxPreview.height = grid;
+      this.boxPreview.width = gridSize;
+      this.boxPreview.height = gridSize;
       if (this.op) {
         if (!this.dupes.includes(coord)) {
           // Flag cell as drawn in dupes
@@ -625,8 +626,8 @@ export default class SimplefogLayer extends MaskLayer {
             shape: this.BRUSH_TYPES.BOX,
             x,
             y,
-            width: grid,
-            height: grid,
+            width: gridSize,
+            height: gridSize,
             fill: this.getUserSetting('brushOpacity'),
           });
         }
@@ -684,40 +685,40 @@ export default class SimplefogLayer extends MaskLayer {
    * Checks grid type, creates a dupe detection matrix & if hex grid init a layout
    */
   _initGrid() {
-    const { grid } = canvas.scene.data;
+    const gridSize = canvas.scene.grid.size;
     this.dupes = [];
-    switch (canvas.scene.data.gridType) {
+    switch (canvas.scene.grid.type) {
     // Square grid
       // Pointy Hex Odd
       case 2:
         this.gridLayout = new Layout(
           Layout.pointy,
-          { x: grid / 2, y: grid / 2 },
-          { x: 0, y: grid / 2 },
+          { x: gridSize / 2, y: gridSize / 2 },
+          { x: 0, y: gridSize / 2 },
         );
         break;
       // Pointy Hex Even
       case 3:
         this.gridLayout = new Layout(
           Layout.pointy,
-          { x: grid / 2, y: grid / 2 },
-          { x: Math.sqrt(3) * grid / 4, y: grid / 2 },
+          { x: gridSize / 2, y: gridSize / 2 },
+          { x: Math.sqrt(3) * gridSize / 4, y: gridSize / 2 },
         );
         break;
       // Flat Hex Odd
       case 4:
         this.gridLayout = new Layout(
           Layout.flat,
-          { x: grid / 2, y: grid / 2 },
-          { x: grid / 2, y: 0 },
+          { x: gridSize / 2, y: gridSize / 2 },
+          { x: gridSize / 2, y: 0 },
         );
         break;
       // Flat Hex Even
       case 5:
         this.gridLayout = new Layout(
           Layout.flat,
-          { x: grid / 2, y: grid / 2 },
-          { x: grid / 2, y: Math.sqrt(3) * grid / 4 },
+          { x: gridSize / 2, y: gridSize / 2 },
+          { x: gridSize / 2, y: Math.sqrt(3) * gridSize / 4 },
         );
         break;
       default:
