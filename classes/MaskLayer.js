@@ -5,9 +5,9 @@
  * and replaying the mask / undo etc.
  */
 
-import { simplefogLog } from "../js/helpers.js";
+import {simplefogLog, simplefogLogDebug, simplefogLogVerboseDebug} from "../js/helpers.js";
 
-export default class MaskLayer extends CanvasLayer {
+export default class MaskLayer extends InteractionLayer {
   constructor(layername) {
     super();
     this.lock = false;
@@ -55,14 +55,15 @@ export default class MaskLayer extends CanvasLayer {
    * fogSprite   - PIXI Sprite that holds the image applied over the fog color
    */
   maskInit() {
-    const d = canvas.dimensions;
+    simplefogLogDebug('MaskLayer.maskInit')
     // Check if masklayer is flagged visible
     let v = this.getSetting("visible");
     if (v === undefined) v = false;
     this.visible = v;
+    simplefogLogVerboseDebug('MaskLayer.maskInit - visible', this.visible)
 
     // The layer is the primary sprite to be displayed
-    this.layer = MaskLayer.getCanvasSprite();
+    this.baseLayer = MaskLayer.getCanvasSprite();
     this.setTint(this.getTint());
     this.setAlpha(this.getAlpha(), true);
 
@@ -79,10 +80,10 @@ export default class MaskLayer extends CanvasLayer {
     this.maskTexture = MaskLayer.getMaskTexture();
     this.maskSprite = new PIXI.Sprite(this.maskTexture);
 
-    this.layer.mask = this.maskSprite;
+    this.baseLayer.mask = this.maskSprite;
     this.setFill();
 
-    this.layer.filters = [this.blur];
+    this.baseLayer.filters = [this.blur];
 
     // Allow zIndex prop to function for items on this layer
     this.sortableChildren = true;
@@ -92,11 +93,12 @@ export default class MaskLayer extends CanvasLayer {
 
     // apply Texture Sprite to fog layer after we renderStack to prevent revealing the map
     this.fogSprite = new PIXI.Sprite();
-    this.fogSprite.position.set(d.sceneRect.x, d.sceneRect.y);
-    this.fogSprite.width = d.sceneRect.width;
-    this.fogSprite.height = d.sceneRect.height;
+    this.fogSprite.position.set(canvas.dimensions.sceneRect.x, canvas.dimensions.sceneRect.y);
+    this.fogSprite.width = canvas.dimensions.sceneRect.width;
+    this.fogSprite.height = canvas.dimensions.sceneRect.height;
     this.fogSprite.mask = this.maskSprite;
     this.setFogTexture();
+    simplefogLog('maskInit', this)
   }
 
   /* -------------------------------------------- */
@@ -185,7 +187,8 @@ export default class MaskLayer extends CanvasLayer {
     // Prevent calling update when no lights loaded
     if (!canvas.sight?.light?.los?.geometry) return;
     // Update sight layer
-    canvas.sight.refresh();
+    //ToDo: Determine replacement for canvas.sight.refresh()
+    canvas.perception.refresh()
   }
 
   /**
@@ -359,7 +362,7 @@ export default class MaskLayer extends CanvasLayer {
     sprite.height = d.height;
     sprite.x = 0;
     sprite.y = 0;
-    sprite.zIndex = 0;
+    sprite.zIndex = 5000;
     return sprite;
   }
 
@@ -409,10 +412,15 @@ export default class MaskLayer extends CanvasLayer {
   }
 
   async draw() {
+    simplefogLog('MaskLayer.draw')
     super.draw();
     this.maskInit();
-    this.addChild(this.layer);
-    this.addChild(this.layer.mask);
+
+    this.addChild(this.baseLayer);
+
+    // ToDo: determine if this should be added back or not.
+    this.addChild(this.baseLayer.mask);
+
     this.addChild(this.fogSprite);
   }
 }

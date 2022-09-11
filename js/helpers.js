@@ -69,12 +69,28 @@ export function pixiDump(tgt = null) {
  * @param force {Boolean}        Log output even if CONFIG.debug.simplefog = false
  */
 export function simplefogLog(data, force = false) {
-  if (CONFIG.debug.simplefog || force) {
-    // eslint-disable-next-line no-console
-    if (typeof data === 'string') console.log(`Simplefog | ${data}`);
-    // eslint-disable-next-line no-console
-    else console.log('Simplefog |', data);
-  }
+  try {
+    const isDebugging = game.modules.get('_dev-mode')?.api?.getPackageDebugValue('foundry-die-hard');
+    if (force || isDebugging) {
+      // eslint-disable-next-line no-console
+      if (typeof data === 'string') console.log(`Simplefog | ${data}`);
+      // eslint-disable-next-line no-console
+      else console.log('Simplefog |', data);
+    }
+  } catch (e) {  }
+}
+
+export function simplefogLogDebug(...args) {
+  console.debug('Simplefog-DEBUG |', ...args);
+}
+
+export function simplefogLogVerboseDebug(...args) {
+  try {
+    const isDebugging = game.modules.get('_dev-mode')?.api?.getPackageDebugValue('foundry-die-hard');
+    if (isDebugging) {
+      console.debug('Simplefog-VerboseDEBUG |', ...args);
+    }
+  } catch (e) {  }
 }
 
 /**

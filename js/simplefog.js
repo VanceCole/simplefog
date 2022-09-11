@@ -1,11 +1,12 @@
 import SimplefogLayer from '../classes/SimplefogLayer.js';
 import SimplefogMigrations from '../classes/SimplefogMigrations.js';
 import config from './config.js';
-import { simplefogLog } from './helpers.js';
+import {simplefogLog, simplefogLogDebug, simplefogLogVerboseDebug} from './helpers.js';
 import SimplefogHUDControlLayer from "../classes/SimplefogHUDControlLayer.js";
 import SimplefogVersionNotification from "../classes/SimplefogVersionNotification.js";
 
 Hooks.once('init', () => {
+    simplefogLog('simplefog.init')
   // eslint-disable-next-line no-console
   simplefogLog('Initializing simplefog', true);
 
@@ -13,10 +14,32 @@ Hooks.once('init', () => {
   config.forEach((cfg) => {
     game.settings.register('simplefog', cfg.name, cfg.data);
   });
+
+  if (isNewerVersion(game.version, "10")) {
+    CONFIG.Canvas.layers.simplefog = {group: "interface", layerClass: SimplefogLayer};
+    CONFIG.Canvas.layers.simplefogHUDControls = {group: "interface", layerClass: SimplefogHUDControlLayer};
+
+    Object.defineProperty(canvas, 'simplefog', {
+      value: new SimplefogLayer(),
+      configurable: true,
+      writable: true,
+      enumerable: false,
+    });
+    Object.defineProperty(canvas, 'simplefogHUDControls', {
+      value: new SimplefogHUDControlLayer(),
+      configurable: true,
+      writable: true,
+      enumerable: false,
+    });
+  }
 });
 
 Hooks.once('canvasInit', () => {
-  if (isNewerVersion(game.version, "9")) {
+  simplefogLogDebug('simplefog.canvasInit')
+  if (isNewerVersion(game.version, "10")) {
+    simplefogLogVerboseDebug('simplefog.canvasInit - v10', canvas, CONFIG)
+    canvas.simplefog.canvasInit()
+  } else if (isNewerVersion(game.version, "9")) {
     CONFIG.Canvas.layers["simplefog"] = {
       layerClass: SimplefogLayer,
       group: "primary"
@@ -72,5 +95,12 @@ Hooks.once('ready', () => {
   SimplefogVersionNotification.checkVersion()
 
   //Hooks.on('sightRefresh', sightLayerUpdate);
-  canvas.sight.refresh();
+
+  //ToDo: Determine replacement for canvas.sight.refresh()
+  canvas.perception.refresh()
+
+});
+
+Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
+  registerPackageDebugFlag('simplefog');
 });

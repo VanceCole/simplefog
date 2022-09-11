@@ -5,11 +5,14 @@
 
 import MaskLayer from './MaskLayer.js';
 import { Layout } from '../libs/hexagons.js';
-import { hexObjsToArr, hexToPercent, simplefogLog } from '../js/helpers.js';
+import {hexObjsToArr, hexToPercent, simplefogLog, simplefogLogDebug} from '../js/helpers.js';
 
 export default class SimplefogLayer extends MaskLayer {
   constructor() {
+    simplefogLog('SimplefogLayer.constructor')
     super('simplefog');
+
+    this.init()
 
     // Register event listerenrs
     this._registerMouseListeners();
@@ -50,6 +53,7 @@ export default class SimplefogLayer extends MaskLayer {
   }
 
   init() {
+    simplefogLogDebug(true,'SimplefogLayer.init')
     // Preview brush objects
     this.boxPreview = this.brush({
       shape: this.BRUSH_TYPES.BOX,
@@ -94,8 +98,10 @@ export default class SimplefogLayer extends MaskLayer {
       visible: false,
       zIndex: 15,
     });
+  }
 
-
+  canvasInit() {
+    simplefogLogDebug('SimplefogLayer.canvasInit')
     // Set default flags if they dont exist already
     Object.keys(this.DEFAULTS).forEach((key) => {
       if (!game.user.isGM) return;
@@ -109,7 +115,6 @@ export default class SimplefogLayer extends MaskLayer {
       else this.setSetting(key, this.DEFAULTS[key]);
     });
   }
-
   /* -------------------------------------------- */
   /*  Getters and setters for layer props         */
   /* -------------------------------------------- */
@@ -128,7 +133,7 @@ export default class SimplefogLayer extends MaskLayer {
   }
 
   setTint(tint) {
-    this.layer.tint = tint;
+    this.baseLayer.tint = tint;
   }
 
   getAlpha() {
@@ -206,14 +211,17 @@ export default class SimplefogLayer extends MaskLayer {
     // React to composite history change
     if (hasProperty(data, `flags.${this.layername}.history`)) {
       canvas[this.layername].renderStack(data.flags[this.layername].history);
-      canvas.sight.refresh();
+
+      //ToDo: Determine replacement for canvas.sight.refresh()
+      canvas.perception.refresh()
     }
     // React to autoVisibility setting changes
     if (
       hasProperty(data, `flags.${this.layername}.autoVisibility`)
       || hasProperty(data, `flags.${this.layername}.vThreshold`)
     ) {
-      canvas.sight.refresh();
+      //ToDo: Determine replacement for canvas.sight.refresh()
+      canvas.perception.refresh()
     }
     // React to alpha/tint changes
     if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerAlpha`)) {
@@ -712,8 +720,8 @@ export default class SimplefogLayer extends MaskLayer {
   }
 
   async draw() {
+    simplefogLogDebug('SimplefogLayer.draw')
     super.draw();
-    this.init();
     this.addChild(this.boxPreview);
     this.addChild(this.ellipsePreview);
     this.addChild(this.polygonPreview);

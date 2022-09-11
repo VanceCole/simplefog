@@ -5,7 +5,7 @@
 
 import { simplefogLog } from "../js/helpers.js";
 
-export default class SimplefogHUDControlLayer extends CanvasLayer {
+export default class SimplefogHUDControlLayer extends InteractionLayer {
   constructor(layername) {
     super();
   }
