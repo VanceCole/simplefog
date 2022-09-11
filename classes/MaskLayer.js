@@ -26,6 +26,7 @@ export default class MaskLayer extends InteractionLayer {
     };
     this.DEFAULTS = {
       visible: false,
+      blurEnable: true,
       blurQuality: 2,
       blurRadius: 5,
     };
@@ -34,8 +35,9 @@ export default class MaskLayer extends InteractionLayer {
   static get layerOptions() {
     //@ts-ignore
     return mergeObject(super.layerOptions, {
+      // ToDo: is ugly hack still needed?
       // Ugly hack - render at very high zindex and then re-render at layer init with layerZindex value
-      zIndex: 2147483647,
+      zIndex: game.settings.get('simplefog', 'zIndex')
     });
   }
 
@@ -67,12 +69,18 @@ export default class MaskLayer extends InteractionLayer {
     this.setTint(this.getTint());
     this.setAlpha(this.getAlpha(), true);
 
-    // Filters
     this.blur = new PIXI.filters.BlurFilter();
     this.blur.padding = 0;
     this.blur.repeatEdgePixels = true;
     this.blur.blur = this.getSetting("blurRadius");
     this.blur.quality = this.getSetting("blurQuality");
+
+    // Filters
+    if (this.getSetting("blurEnable")) {
+      this.baseLayer.filters = [this.blur];
+    } else {
+      this.baseLayer.filters = [];
+    }
 
     //So you can hit escape on the keyboard and it will bring up the menu
     this._controlled = {};
@@ -83,7 +91,6 @@ export default class MaskLayer extends InteractionLayer {
     this.baseLayer.mask = this.maskSprite;
     this.setFill();
 
-    this.baseLayer.filters = [this.blur];
 
     // Allow zIndex prop to function for items on this layer
     this.sortableChildren = true;
@@ -162,7 +169,7 @@ export default class MaskLayer extends InteractionLayer {
     simplefogLogDebug('MaskLayer.renderStack')
     // If history is blank, do nothing
     if (history === undefined) {
-      this.visible = this.getSetting("autoFog");
+      this.visible = game.settings.get('simplefog', 'autoEnableSceneFog');
       return;
     }
     // If history is zero, reset scene fog
@@ -434,5 +441,9 @@ export default class MaskLayer extends InteractionLayer {
     this.addChild(this.baseLayer.mask);
 
     this.addChild(this.fogSprite);
+  }
+
+  refreshZIndex() {
+    canvas.simplefog.zIndex = game.settings.get('simplefog', 'zIndex');
   }
 }

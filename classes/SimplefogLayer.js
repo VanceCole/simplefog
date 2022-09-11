@@ -201,6 +201,16 @@ export default class SimplefogLayer extends MaskLayer {
       canvas[this.layername].visible = data.flags[this.layername].visible;
     }
     // React to composite history change
+    if (hasProperty(data, `flags.${this.layername}.blurEnable`)) {
+
+      if (this.baseLayer !== undefined) {
+        if (this.getSetting("blurEnable")) {
+          this.baseLayer.filters = [this.blur];
+        } else {
+          this.baseLayer.filters = [];
+        }
+      }
+    }
     if (hasProperty(data, `flags.${this.layername}.blurRadius`)) {
       canvas[this.layername].blur.blur = this.getSetting('blurRadius');
     }
@@ -730,6 +740,7 @@ export default class SimplefogLayer extends MaskLayer {
   async draw() {
     simplefogLogDebug('SimplefogLayer.draw')
     super.draw();
+    simplefogLogDebug('SimplefogLayer.draw - this', this)
     this.addChild(this.boxPreview);
     this.addChild(this.ellipsePreview);
     this.addChild(this.polygonPreview);

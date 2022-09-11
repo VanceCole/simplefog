@@ -148,7 +148,7 @@ function setBrushControlPos() {
  */
 function toggleSimpleFog() {
   simplefogLogDebug('controls.toggleSimpleFog')
-  if (canvas.simplefog.getSetting("confirmDisablingFog") && canvas.simplefog.getSetting("visible")) {
+  if (game.settings.get('simplefog', 'confirmFogDisable') && canvas.simplefog.getSetting("visible")) {
     let dg = Dialog.confirm({
       title: game.i18n.localize('SIMPLEFOG.disableFog'),
       content: game.i18n.localize('SIMPLEFOG.confirmDisableFog'),
@@ -174,7 +174,6 @@ function cancelToggleSimpleFog(result = undefined) {
   ui.controls.controls.find(({name}) => name === 'simplefog').tools[0].active = true;
   ui.controls.render();
 }
-
 
 // Reset position when brush controls are rendered or sceneNavigation changes
 Hooks.on('renderBrushControls', setBrushControlPos);

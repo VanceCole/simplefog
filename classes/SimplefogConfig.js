@@ -31,24 +31,13 @@ export default class SimplefogConfig extends FormApplication {
       playerTint: hexToWeb(canvas.simplefog.getSetting('playerTint')),
       transition: canvas.simplefog.getSetting('transition'),
       transitionSpeed: canvas.simplefog.getSetting('transitionSpeed'),
+      blurEnable: canvas.simplefog.getSetting('blurEnable'),
       blurRadius: canvas.simplefog.getSetting('blurRadius'),
       blurQuality: canvas.simplefog.getSetting('blurQuality'),
       autoVisibility: canvas.simplefog.getSetting('autoVisibility'),
-      autoFog: canvas.simplefog.getSetting('autoFog'),
       autoVisGM: canvas.simplefog.getSetting('autoVisGM'),
       vThreshold: Math.round(canvas.simplefog.getSetting('vThreshold') * 100),
-      layerZindex: canvas.simplefog.getSetting('layerZindex'),
       fogTextureFilePath: canvas.simplefog.getSetting('fogTextureFilePath'),
-      confirmDisablingFog: canvas.simplefog.getSetting( 'confirmDisablingFog'),
-      enableHotkeys: canvas.simplefog.getSetting('enableHotkeys'),
-      hotKeyTool: canvas.simplefog.getSetting('hotKeyTool'),
-      hotKeyToolOptions: {
-        brush: "Brush",
-        grid: "Grid",
-        polygon: "Polygon",
-        box: "Box",
-        ellipse: "Ellipse"
-      },
       versionNotification: canvas.simplefog.getSetting('versionNotification')
     };
   }
@@ -76,9 +65,6 @@ export default class SimplefogConfig extends FormApplication {
         canvas.simplefog.setUserSetting(key, val);
       }
     });
-
-    // If zIndex was changed
-    canvas.simplefog.zIndex = canvas.simplefog.getSetting('layerZindex');
 
     // If save button was clicked, close app
     if (event.submitter?.name === 'submit') {

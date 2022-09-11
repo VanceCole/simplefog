@@ -8,6 +8,7 @@
   "SIMPLEFOG.opacity": "Opacity",
   "SIMPLEFOG.playerFogSettings": "Player Fog Settings",
   "SIMPLEFOG.filterSettings": "Filter Settings",
+  "SIMPLEFOG.blurEnable": "Enable Reveal Blur",
   "SIMPLEFOG.blurRadius": "Blur Radius",
   "SIMPLEFOG.blurQuality": "Blur Quality",
   "SIMPLEFOG.blurQualityDesc": "Higher blur quality improves the appearance of the blur effect, but may cause slower performance.",

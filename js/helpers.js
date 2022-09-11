@@ -132,7 +132,7 @@ export function addSimplefogControlToggleListener() {
     }
     
     let controlName = getNewControlName();
-    let toolName = canvas.simplefog.getSetting('hotKeyTool');
+    let toolName = game.settings.get('simplefog', 'toolHotKeys');
 
     $('li.scene-control[data-control=' + controlName + ']')?.click();
     setTimeout(function(){$('ol.sub-controls.active li.control-tool[data-tool=' + toolName + ']')?.click();}, 500);
@@ -143,7 +143,7 @@ export function addSimplefogControlToggleListener() {
  * @returns bool
  */
 function areHotkeysEnabled() {
-  return canvas.simplefog.getSetting('enableHotkeys');
+  return game.settings.get('simplefog', 'enableHotKeys');
 }
 
 /**

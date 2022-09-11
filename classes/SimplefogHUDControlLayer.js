@@ -12,9 +12,6 @@ export default class SimplefogHUDControlLayer extends InteractionLayer {
 
   static get layerOptions() {
     //@ts-ignore
-    return mergeObject(super.layerOptions, {
-      // Ugly hack - render at very high zindex (but one below simplefog) and then re-render at zindex below simplefog
-      zIndex: 2147483646,
-    });
+    return super.layerOptions
   }
 }
