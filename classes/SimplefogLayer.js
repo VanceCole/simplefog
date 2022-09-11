@@ -284,8 +284,8 @@ export default class SimplefogLayer extends MaskLayer {
     this.clearActiveTool();
     this.activeTool = tool;
     this.setPreviewTint();
-    simplefogLogVerboseDebug('SimplefogLayer.setActiveTool - HTML element', $('#simplefog-brush-controls #brush-size-container'))
     const currentTool = $('#simplefog-brush-controls #brush-size-container')
+    simplefogLogVerboseDebug('SimplefogLayer.setActiveTool - HTML element', currentTool)
     if (currentTool.length) {
       if (tool === 'brush') {
         this.ellipsePreview.visible = true;
@@ -332,6 +332,7 @@ export default class SimplefogLayer extends MaskLayer {
    * Aborts any active drawing tools
    */
   clearActiveTool() {
+    simplefogLogDebug('SimplefogLayer.clearActiveTool')
     try {
       // Box preview
       this.boxPreview.visible = false;

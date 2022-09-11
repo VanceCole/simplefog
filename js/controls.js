@@ -108,6 +108,7 @@ Hooks.on('getSceneControlButtons', (controls) => {
 Hooks.on('renderSceneControls', (controls) => {
   simplefogLogDebug('controls.renderSceneControls')
   simplefogLogVerboseDebug('controls.renderSceneControls - controls', controls)
+  simplefogLogVerboseDebug('controls.renderSceneControls - activeTool', controls.activeTool)
   // Switching to layer
   if (canvas.simplefog != null) {
     simplefogLogVerboseDebug('controls.renderSceneControls - Switching', controls.activeControl, controls.activeTool)
@@ -132,11 +133,13 @@ Hooks.on('renderSceneControls', (controls) => {
  * Sets Y position of the brush controls to account for scene navigation buttons
  */
 function setBrushControlPos() {
+  simplefogLogDebug('controls.setBrushControlPos')
   const brushControl = $('#simplefog-brush-controls');
   const navigation = $('#navigation');
   if (brushControl.length && navigation.length) {
     const h = navigation.height();
     brushControl.css({ top: `${h + 30}px` });
+    canvas.simplefog.setActiveTool(canvas.simplefog.activeTool)
   }
 }
 
