@@ -56,13 +56,13 @@ export default class MaskLayer extends InteractionLayer {
    * maskTexture - renderable texture that holds the actual mask data
    * fogSprite   - PIXI Sprite that holds the image applied over the fog color
    */
-  maskInit() {
-    simplefogLogDebug('MaskLayer.maskInit')
+  initMask() {
+    simplefogLogDebug('MaskLayer.initMask')
     // Check if masklayer is flagged visible
     let v = this.getSetting("visible");
     if (v === undefined) v = false;
     this.visible = v;
-    simplefogLogVerboseDebug('MaskLayer.maskInit - visible', this.visible)
+    simplefogLogVerboseDebug('MaskLayer.initMask - visible', this.visible)
 
     // The layer is the primary sprite to be displayed
     this.baseLayer = MaskLayer.getCanvasSprite();
@@ -106,6 +106,21 @@ export default class MaskLayer extends InteractionLayer {
     this.fogSprite.mask = this.maskSprite;
     this.setFogTexture();
     simplefogLog('maskInit', this)
+  }
+
+  getTint() {
+    let tint;
+    if (game.user.isGM) tint = this.getSetting('gmTint');
+    else tint = this.getSetting('playerTint');
+    if (!tint) {
+      if (game.user.isGM) tint = this.gmTintDefault;
+      else tint = this.playerTintDefault;
+    }
+    return tint;
+  }
+
+  setTint(tint) {
+    this.baseLayer.tint = tint;
   }
 
   /* -------------------------------------------- */
@@ -433,14 +448,11 @@ export default class MaskLayer extends InteractionLayer {
   async draw() {
     simplefogLogDebug('MaskLayer.draw')
     super.draw();
-    this.maskInit();
-
+    this.initMask();
     this.addChild(this.baseLayer);
-
     // ToDo: determine if this should be added back or not.
     this.addChild(this.baseLayer.mask);
-
-    this.addChild(this.fogSprite);
+    this.addChild(canvas.simplefog.fogSprite);  // This is for image overlay
   }
 
   refreshZIndex() {

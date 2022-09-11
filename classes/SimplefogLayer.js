@@ -12,8 +12,6 @@ export default class SimplefogLayer extends MaskLayer {
     simplefogLog('SimplefogLayer.constructor')
     super('simplefog');
 
-    this.init()
-
     // Register event listerenrs
     this._registerMouseListeners();
     this._registerKeyboardListeners();
@@ -52,7 +50,7 @@ export default class SimplefogLayer extends MaskLayer {
     this.options = this.constructor.layerOptions;
   }
 
-  init() {
+  initSimplefog() {
     simplefogLogDebug(true,'SimplefogLayer.init')
     // Preview brush objects
     this.boxPreview = this.brush({
@@ -114,6 +112,7 @@ export default class SimplefogLayer extends MaskLayer {
       // Otherwise fall back to module default
       else this.setSetting(key, this.DEFAULTS[key]);
     });
+    this.setAlpha(this.getAlpha(), true);
   }
   /* -------------------------------------------- */
   /*  Getters and setters for layer props         */
@@ -121,20 +120,6 @@ export default class SimplefogLayer extends MaskLayer {
 
   // Tint & Alpha have special cases because they can differ between GM & Players
   // And alpha can be animated for transition effects
-  getTint() {
-    let tint;
-    if (game.user.isGM) tint = this.getSetting('gmTint');
-    else tint = this.getSetting('playerTint');
-    if (!tint) {
-      if (game.user.isGM) tint = this.gmTintDefault;
-      else tint = this.playerTintDefault;
-    }
-    return tint;
-  }
-
-  setTint(tint) {
-    this.baseLayer.tint = tint;
-  }
 
   getAlpha() {
     let alpha;
@@ -740,7 +725,8 @@ export default class SimplefogLayer extends MaskLayer {
   async draw() {
     simplefogLogDebug('SimplefogLayer.draw')
     super.draw();
-    simplefogLogDebug('SimplefogLayer.draw - this', this)
+    this.initSimplefog()
+
     this.addChild(this.boxPreview);
     this.addChild(this.ellipsePreview);
     this.addChild(this.polygonPreview);
