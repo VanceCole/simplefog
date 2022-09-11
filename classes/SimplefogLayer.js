@@ -5,7 +5,7 @@
 
 import MaskLayer from './MaskLayer.js';
 import { Layout } from '../libs/hexagons.js';
-import {hexObjsToArr, hexToPercent, simplefogLog, simplefogLogDebug} from '../js/helpers.js';
+import {hexObjsToArr, hexToPercent, simplefogLog, simplefogLogDebug, simplefogLogVerboseDebug} from '../js/helpers.js';
 
 export default class SimplefogLayer extends MaskLayer {
   constructor() {
@@ -279,15 +279,21 @@ export default class SimplefogLayer extends MaskLayer {
    * Sets the active tool & shows preview for brush & grid tools
    */
   setActiveTool(tool) {
+    simplefogLogDebug('SimplefogLayer.setActiveTool')
+    simplefogLogVerboseDebug('SimplefogLayer.setActiveTool - tool', tool)
     this.clearActiveTool();
     this.activeTool = tool;
     this.setPreviewTint();
-    if (tool === 'brush') {
-      this.ellipsePreview.visible = true;
-      $('#simplefog-brush-controls #brush-size-container').show();
-    }
-    else {
-      $('#simplefog-brush-controls #brush-size-container').hide();
+    simplefogLogVerboseDebug('SimplefogLayer.setActiveTool - HTML element', $('#simplefog-brush-controls #brush-size-container'))
+    const currentTool = $('#simplefog-brush-controls #brush-size-container')
+    if (currentTool.length) {
+      if (tool === 'brush') {
+        this.ellipsePreview.visible = true;
+        $('#simplefog-brush-controls #brush-size-container').show();
+      }
+      else {
+        $('#simplefog-brush-controls #brush-size-container').hide();
+      }
     }
     if (tool === 'grid') {
       if (canvas.scene.data.gridType === 1) {

@@ -104,8 +104,8 @@ export default class MaskLayer extends InteractionLayer {
   /* -------------------------------------------- */
   /*  History & Buffer                            */
   /* -------------------------------------------- */
-
   static getMaskTexture() {
+    simplefogLogDebug('MaskLayer.renderStack')
     const d = canvas.dimensions;
     let res = 1.0;
     if (d.width * d.height > 16000 ** 2) res = 0.25;
@@ -159,7 +159,7 @@ export default class MaskLayer extends InteractionLayer {
     start = this.pointer,
     stop = canvas.scene.getFlag(this.layername, "history.pointer")
   ) {
-
+    simplefogLogDebug('MaskLayer.renderStack')
     // If history is blank, do nothing
     if (history === undefined) {
       this.visible = this.getSetting("autoFog");
@@ -195,6 +195,7 @@ export default class MaskLayer extends InteractionLayer {
    * Add buffered history stack to scene flag and clear buffer
    */
   async commitHistory() {
+    simplefogLogDebug('MaskLayer.commitHistory')
     // Do nothing if no history to be committed, otherwise get history
     if (this.historyBuffer.length === 0) return;
     if (this.lock) return;
@@ -225,6 +226,7 @@ export default class MaskLayer extends InteractionLayer {
    * @param save {Boolean} If true, also resets the layer history
    */
   async resetMask(save = true) {
+    simplefogLogDebug('MaskLayer.resetMask')
     // Fill fog layer with solid
     this.setFill();
     // If save, also unset history and reset pointer
@@ -243,6 +245,7 @@ export default class MaskLayer extends InteractionLayer {
    * @param save {Boolean} If true, also resets the layer history
    */
   async blankMask() {
+    simplefogLogDebug('MaskLayer.blankMask')
     await this.resetMask();
     this.renderBrush({
       shape: this.BRUSH_TYPES.BOX,
@@ -260,6 +263,7 @@ export default class MaskLayer extends InteractionLayer {
    * @param steps {Integer} Number of steps to undo, default 1
    */
   async undo(steps = 1) {
+    simplefogLogDebug('MaskLayer.undo')
     simplefogLog(`Undoing ${steps} steps.`);
     // Grab existing history
     // Todo: this could probably just grab and set the pointer for a slight performance improvement
@@ -300,6 +304,7 @@ export default class MaskLayer extends InteractionLayer {
    * });
    */
   brush(data) {
+    //simplefogLogDebug('MaskLayer.brush')
     // Get new graphic & begin filling
     const alpha = typeof data.alpha === "undefined" ? 1 : data.alpha;
     const visible = typeof data.visible === "undefined" ? true : data.visible;
@@ -338,6 +343,7 @@ export default class MaskLayer extends InteractionLayer {
    * @param save {Boolean}      If true, will add the operation to the history buffer
    */
   renderBrush(data, save = true) {
+    //simplefogLogDebug('MaskLayer.renderBrush')
     const brush = this.brush(data);
     this.composite(brush);
     brush.destroy();
@@ -349,6 +355,7 @@ export default class MaskLayer extends InteractionLayer {
    * @param data {Object}       PIXI Object to be used as brush
    */
   composite(brush) {
+    //simplefogLogDebug('MaskLayer.composite')
     canvas.app.renderer.render(brush, this.maskTexture, false, null, false);
   }
 
@@ -356,6 +363,7 @@ export default class MaskLayer extends InteractionLayer {
    * Returns a blank PIXI Sprite of canvas dimensions
    */
   static getCanvasSprite() {
+    simplefogLogDebug('MaskLayer.getCanvasSprite')
     const sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
     const d = canvas.dimensions;
     sprite.width = d.width;
@@ -370,6 +378,7 @@ export default class MaskLayer extends InteractionLayer {
    * Fills the mask layer with solid white
    */
   setFill() {
+    simplefogLogDebug('MaskLayer.setFill')
     const fill = new PIXI.Graphics();
     fill.beginFill(0xffffff);
     fill.drawRect(0, 0, canvas.dimensions.width, canvas.dimensions.height);
@@ -382,6 +391,7 @@ export default class MaskLayer extends InteractionLayer {
    * Toggles visibility of primary layer
    */
   toggle() {
+    simplefogLogDebug('MaskLayer.toggle')
     const v = this.getSetting("visible");
     this.visible = !v;
     this.setSetting("visible", !v);
@@ -399,6 +409,7 @@ export default class MaskLayer extends InteractionLayer {
    * Actions upon layer becoming active
    */
   activate() {
+    simplefogLogDebug('MaskLayer.activate')
     super.activate();
     this.interactive = true;
   }
@@ -407,12 +418,13 @@ export default class MaskLayer extends InteractionLayer {
    * Actions upon layer becoming inactive
    */
   deactivate() {
+    simplefogLogDebug('MaskLayer.deactivate')
     super.deactivate();
     this.interactive = false;
   }
 
   async draw() {
-    simplefogLog('MaskLayer.draw')
+    simplefogLogDebug('MaskLayer.draw')
     super.draw();
     this.maskInit();
 
