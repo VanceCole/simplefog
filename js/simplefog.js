@@ -1,12 +1,13 @@
 import SimplefogLayer from '../classes/SimplefogLayer.js';
 import SimplefogMigrations from '../classes/SimplefogMigrations.js';
 import config from './config.js';
-import {simplefogLog, simplefogLogDebug, simplefogLogVerboseDebug} from './helpers.js';
+import {simplefogLog, simplefogLogDebug, simplefogLogVerboseDebug, addSimplefogControlToggleListener, addSimplefogOpacityToggleListener,} from './helpers.js';
 import SimplefogHUDControlLayer from "../classes/SimplefogHUDControlLayer.js";
 import SimplefogVersionNotification from "../classes/SimplefogVersionNotification.js";
 
 Hooks.once('init', () => {
-    simplefogLog('simplefog.init')
+  simplefogLog('simplefog.init')
+  CONFIG.debug.hooks = true
   // eslint-disable-next-line no-console
   simplefogLog('Initializing simplefog', true);
 
@@ -151,6 +152,8 @@ Hooks.once('ready', () => {
   //ToDo: Determine replacement for canvas.sight.refresh()
   canvas.perception.refresh()
 
+  addSimplefogControlToggleListener();
+  addSimplefogOpacityToggleListener();
 });
 
 Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {

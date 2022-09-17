@@ -107,8 +107,6 @@ Hooks.on('getSceneControlButtons', (controls) => {
  */
 Hooks.on('renderSceneControls', (controls) => {
   simplefogLogDebug('controls.renderSceneControls')
-  simplefogLogVerboseDebug('controls.renderSceneControls - controls', controls)
-  simplefogLogVerboseDebug('controls.renderSceneControls - activeTool', controls.activeTool)
   // Switching to layer
   if (canvas.simplefog != null) {
     simplefogLogVerboseDebug('controls.renderSceneControls - Switching', controls.activeControl, controls.activeTool)
@@ -179,5 +177,6 @@ function cancelToggleSimpleFog(result = undefined) {
 Hooks.on('renderBrushControls', setBrushControlPos);
 Hooks.on('renderSceneNavigation', setBrushControlPos);
 
-addSimplefogControlToggleListener();
-addSimplefogOpacityToggleListener();
+// Moved to simplefog.ready
+// addSimplefogControlToggleListener();
+// addSimplefogOpacityToggleListener();

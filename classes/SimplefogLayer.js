@@ -13,8 +13,10 @@ export default class SimplefogLayer extends MaskLayer {
     super('simplefog');
 
     // Register event listerenrs
-    this._registerMouseListeners();
-    this._registerKeyboardListeners();
+    Hooks.on('ready', () => {
+      this._registerMouseListeners();
+      this._registerKeyboardListeners();
+    });
 
     this.DEFAULTS = Object.assign(this.DEFAULTS, {
       gmAlpha: 0.6,
@@ -37,11 +39,11 @@ export default class SimplefogLayer extends MaskLayer {
       hotKeyTool: 'Brush'
     });
 
-    // React to canvas zoom
+/*    // React to canvas zoom
     Hooks.on('canvasPan', (canvas, dimensions) => {
     // Scale blur filter radius to account for zooming
       //this.blur.blur = this.getSetting('blurRadius') * dimensions.scale;
-    });
+    });*/
 
     // React to changes to current scene
     Hooks.on('updateScene', (scene, data) => this._updateScene(scene, data));
@@ -133,11 +135,13 @@ export default class SimplefogLayer extends MaskLayer {
   }
 
   async setFogTexture(fogTextureFilePath = this.getSetting('fogTextureFilePath')) {
-    if (!fogTextureFilePath) return;
-
-    const texture = await loadTexture(fogTextureFilePath);
-
-    this.fogSprite.texture = texture;
+    simplefogLogDebug('SimplefogLayer.setFogTexture', fogTextureFilePath)
+    if (fogTextureFilePath) {
+      const texture = await loadTexture(fogTextureFilePath);
+      this.fogSprite.texture = texture;
+    } else {
+      this.fogSprite.texture = undefined;
+    }
   }
 
   /**
@@ -231,6 +235,9 @@ export default class SimplefogLayer extends MaskLayer {
     if (hasProperty(data, `flags.${this.layername}.fogTextureFilePath`)) {
       simplefogLog('has fogTextureFilePath')
       canvas[this.layername].setFogTexture(data.flags[this.layername].fogTextureFilePath);
+    } else {
+      simplefogLog('has NO fogTextureFilePath')
+      canvas[this.layername].setFogTexture(undefined)
     }
   }
 
