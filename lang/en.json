@@ -56,5 +56,5 @@
   "SIMPLEFOG.fogImage": "Fog Overlay Image",
   "SIMPLEFOG.imageNotes": "Selected image will display on top of the fog tint color. This image should be the same height and width of the scene background image.",
 
-  "SIMPLEFOG.versionNotification": "<b>Simple Fog v1.2.1-PreRelease</b><p>This version includes important bug fixes for:</p><ul><li><i>DRAFT</i> - Token names appearing above the fog <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues/65'>#65</a></li></ul><p>To report problems:<ul><li>open a GitHub issue <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues' target='_blank'>here</a></li><li>send a message on Discord to <a href='https://discordapp.com/users/530108795796455437' target='_blank'>Glutious#7241</a></li></ul></p>"
+  "SIMPLEFOG.versionNotification": "<b>Simple Fog v0.3.0-ALPHA.3 PreRelease</b><p>This version includes important bug fixes for:</p><ul><li>Initial v10 support <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues/78'>#78</a></li></ul><p>To report problems:<ul><li>open a GitHub issue <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues' target='_blank'>here</a></li><li>send a message on Discord to <a href='https://discordapp.com/users/530108795796455437' target='_blank'>Glutious#7241</a></li></ul></p>"
 }

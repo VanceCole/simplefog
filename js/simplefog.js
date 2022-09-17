@@ -7,7 +7,7 @@ import SimplefogVersionNotification from "../classes/SimplefogVersionNotificatio
 
 Hooks.once('init', () => {
   simplefogLog('simplefog.init')
-  CONFIG.debug.hooks = true
+  //CONFIG.debug.hooks = true
   // eslint-disable-next-line no-console
   simplefogLog('Initializing simplefog', true);
 

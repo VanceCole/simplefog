@@ -1,8 +1,9 @@
 # Simplefog Change Log
 
-## 0.3.0-ALPHA.1: v10 Support
+## 0.3.0-ALPHA.3: v10 Support
 Sept 17, 2022
-* Initial dev support for v10
+* Initial dev support for v10 #78
+* Migrate global settings form the scene specific config to game settings #59
 
 ## 0.2.2-ALPHA.0: Bugfixes
 June 16, 2022
