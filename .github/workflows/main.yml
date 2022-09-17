@@ -16,14 +16,14 @@ jobs:
       uses: battila7/get-version-action@v2
 
     - name: Sets env vars for pre-release
-        run: |
-          echo "MANIFEST_URL=${{github.event.release.tag_name}}" >> $GITHUB_ENV
-        if: github.event.release.prereleased
+      run: |
+        echo "MANIFEST_URL=${{github.event.release.tag_name}}" >> $GITHUB_ENV
+      if: github.event.release.prereleased
 
     - name: Sets env vars for release
-        run: |
-          echo "MANIFEST_URL=latest" >> $GITHUB_ENV
-        if: github.event.release.released
+      run: |
+        echo "MANIFEST_URL=latest" >> $GITHUB_ENV
+      if: github.event.release.released
 
     # Substitute the Manifest and Download URLs in the module.json
     - name: Substitute Manifest and Download Links For Versioned Ones
