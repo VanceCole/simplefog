@@ -18,12 +18,12 @@ jobs:
     - name: Sets env vars for pre-release
       run: |
         echo "MANIFEST_URL=${{github.event.release.tag_name}}" >> $GITHUB_ENV
-      if: ${{ github.event.release.prerelease }}
+      if: ${{ github.event.release.prerelease == true }}
 
     - name: Sets env vars for release
       run: |
         echo "MANIFEST_URL=latest" >> $GITHUB_ENV
-      if: ${{ ! github.event.release.prerelease }}
+      if: ${{ github.event.release.prerelease == false }}
 
     # Substitute the Manifest and Download URLs in the module.json
     - name: Substitute Manifest and Download Links For Versioned Ones
