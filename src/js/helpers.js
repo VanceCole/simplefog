@@ -1,3 +1,45 @@
+import CONSTANTS from "./constants";
+
+// ======================================
+// LOGGER UTILITY
+// =======================================
+
+/**
+ * Prints formatted console msg if string, otherwise dumps object
+ * @param data {String | Object} Output to be dumped
+ * @param force {Boolean}        Log output even if CONFIG.debug.simplefog = false
+ */
+ export function simplefogLog(data, force = false) {
+    try {
+      const isDebugging = game.modules.get('_dev-mode')?.api?.getPackageDebugValue(CONSTANTS.MODULE_NAME);
+      if (force || isDebugging) {
+        // eslint-disable-next-line no-console
+        if (typeof data === 'string') console.log(`Simplefog | ${data}`);
+        // eslint-disable-next-line no-console
+        else console.log('Simplefog |', data);
+      }
+    } catch (e) {  }
+  }
+
+  export function simplefogLogDebug(...args) {
+      if (game.settings.get(CONSTANTS.MODULE_NAME, "debug")) {
+          console.debug('Simplefog-DEBUG |', ...args);
+      }
+  }
+
+  export function simplefogLogVerboseDebug(...args) {
+    try {
+      const isDebugging = game.modules.get('_dev-mode')?.api?.getPackageDebugValue(CONSTANTS.MODULE_NAME);
+      if (isDebugging) {
+        console.debug('Simplefog-VerboseDEBUG |', ...args);
+      }
+    } catch (e) {  }
+  }
+
+// ======================================
+// PIXI UTILITY
+// =======================================
+
 /**
  * Converts web colors to base 16
  * @param n {Hex}               Web format color, f.x. #FF0000
@@ -64,36 +106,6 @@ export function pixiDump(tgt = null) {
 }
 
 /**
- * Prints formatted console msg if string, otherwise dumps object
- * @param data {String | Object} Output to be dumped
- * @param force {Boolean}        Log output even if CONFIG.debug.simplefog = false
- */
-export function simplefogLog(data, force = false) {
-  try {
-    const isDebugging = game.modules.get('_dev-mode')?.api?.getPackageDebugValue('foundry-die-hard');
-    if (force || isDebugging) {
-      // eslint-disable-next-line no-console
-      if (typeof data === 'string') console.log(`Simplefog | ${data}`);
-      // eslint-disable-next-line no-console
-      else console.log('Simplefog |', data);
-    }
-  } catch (e) {  }
-}
-
-export function simplefogLogDebug(...args) {
-  console.debug('Simplefog-DEBUG |', ...args);
-}
-
-export function simplefogLogVerboseDebug(...args) {
-  try {
-    const isDebugging = game.modules.get('_dev-mode')?.api?.getPackageDebugValue('foundry-die-hard');
-    if (isDebugging) {
-      console.debug('Simplefog-VerboseDEBUG |', ...args);
-    }
-  } catch (e) {  }
-}
-
-/**
  * Gets a single pixel of texture data from GPU
  * @param target {Object} PIXI Object to read from
  * @param x {Integer}     X Position to read
@@ -130,7 +142,7 @@ export function addSimplefogControlToggleListener() {
     if(!areHotkeysEnabled() || !toggleControls(event) || !isOnCanvas(event)) {
       return;
     }
-    
+
     let controlName = getNewControlName();
     let toolName = game.settings.get('simplefog', 'toolHotKeys');
 
@@ -147,7 +159,7 @@ function areHotkeysEnabled() {
 }
 
 /**
- * @param {Event} event 
+ * @param {Event} event
  * @returns bool
  */
 function toggleControls(event) {
@@ -155,7 +167,7 @@ function toggleControls(event) {
 }
 
 /**
- * @param {Event} event 
+ * @param {Event} event
  * @returns bool
  */
 function isOnCanvas(event) {
@@ -197,13 +209,13 @@ export function addSimplefogOpacityToggleListener() {
     if(!areHotkeysEnabled() || !toggleOpacity(event) || !isOnCanvas(event) || !isActiveControl()) {
       return;
     }
-  
+
     toggleSliderAndSubmitForm();
   });
 }
 
 /**
- * @param {Event} event 
+ * @param {Event} event
  * @returns bool
  */
 function toggleOpacity(event) {

@@ -9,12 +9,7 @@
  * Software License: [your license] Put your desired license here, which
  * 					 determines how others may use and modify your module
  */
-// Import JavaScript modules
-// Import TypeScript modules
-import { registerSettings } from './module/settings.js';
-import { initHooks, readyHooks, setupHooks } from "./module/module.js";
-import './module/lib/lib.js';
-import CONSTANTS from './module/constants.js';
+
 /* ------------------------------------ */
 /* Initialize module					*/
 /* ------------------------------------ */
@@ -44,6 +39,16 @@ Hooks.once('ready', async () => {
     // }
     readyHooks();
 });
+
+/* ------------------------------------ */
+/* Other Hooks							*/
+/* ------------------------------------ */
+
+Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
+    registerPackageDebugFlag('simplefog');
+});
+
+
 /**
  * Initialization helper, to set API.
  * @param api to set to game module.
