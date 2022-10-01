@@ -98,7 +98,7 @@
 	"systems": [],
 	"scripts": [],
 	"esmodules": [
-        "js/main.js",
+        "main.js",
         "js/controls.js"
 	],
 	"styles": [
