@@ -1,6 +1,7 @@
 import API from "./api.js";
 import CONSTANTS from "./constants.js";
-import "./lib/lib.js";
+import config from "./config.js";
+import SimplefogLayer from '../classes/SimplefogLayer.js';
 export const registerSettings = function () {
     game.settings.registerMenu(CONSTANTS.MODULE_NAME, 'resetAllSettings', {
       name: `${CONSTANTS.MODULE_NAME}.setting.reset.name`,

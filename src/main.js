@@ -10,6 +10,10 @@
  * 					 determines how others may use and modify your module
  */
 
+import CONSTANTS from "./js/constants.js";
+import {registerSettings} from "./js/settings.js";
+import {initHooks, setupHooks, readyHooks} from "./js/simplefog.js";
+
 /* ------------------------------------ */
 /* Initialize module					*/
 /* ------------------------------------ */

@@ -5,6 +5,7 @@ import {simplefogLog, simplefogLogDebug, simplefogLogVerboseDebug, addSimplefogC
 import SimplefogHUDControlLayer from "../classes/SimplefogHUDControlLayer.js";
 import SimplefogVersionNotification from "../classes/SimplefogVersionNotification.js";
 import API from './api.js';
+import {setApi} from "../main.js";
 
 export const initHooks = () => {
   simplefogLog('simplefog.init')
