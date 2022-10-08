@@ -111,13 +111,6 @@ export default class SimplefogMigrations {
         await s.unsetFlag('simplefog', 'fogTextureFilePath');
       }
 
-      if (s.data.flags?.simplefog?.layerZindex) {
-        s.setFlag('simplefog', 'fogImageOverlayZIndex', s.data.flags.simplefog.layerZindex);
-        await s.unsetFlag('simplefog', 'layerZindex');
-      } else if (s.getFlag('simplefog', 'fogImageOverlayZIndex') === undefined) {
-        s.setFlag('simplefog', 'fogImageOverlayZIndex', canvas.simplefog.DEFAULTS.fogImageOverlayZIndex);
-      }
-
       //game.settings.set('simplefog', 'migrationVersion', 2);
       dmToGM(game.i18n.localize('SIMPLEFOG.migration2Notification'), undefined)
 
