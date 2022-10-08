@@ -21,7 +21,7 @@ jobs:
       id: sub_manifest_link_version_prerelease
       uses: microsoft/variable-substitution@v1
       with:
-        files: 'module.json'
+        files: './src/module.json'
       env:
         version: ${{steps.get_version.outputs.version-without-v}}
         url: https://github.com/${{github.repository}}
@@ -34,7 +34,7 @@ jobs:
       id: sub_manifest_link_version
       uses: microsoft/variable-substitution@v1
       with:
-        files: 'module.json'
+        files: './src/module.json'
       env:
         version: ${{steps.get_version.outputs.version-without-v}}
         url: https://github.com/${{github.repository}}
