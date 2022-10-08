@@ -1,39 +1,60 @@
 <form>
-    <h3 class="form-header"><i class="fas fa-image"></i> {{localize 'SIMPLEFOG.fogImageSettings'}}</h3>
-    <div class="form-group">
-        <label for="fogTextureFilePath">{{localize 'SIMPLEFOG.fogImage'}}</label>
-        <button type="button" class="file-picker" data-type="imagevideo" data-target="fogTextureFilePath" title="Browse Files" tabindex="-1">
-            <i class="fas fa-file-import fa-fw"></i>
-        </button>
-        <input class="image" type="text" name="fogTextureFilePath" value="{{ fogTextureFilePath }}" placeholder="{{localize 'SIMPLEFOG.fogImage'}}" data-dtype="String" />
-    </div>
-    <p class="notes">
-        {{ localize 'SIMPLEFOG.imageNotes' }}
-    </p>
-
     <h3 class="form-header"><i class="fas fa-crown"></i> {{localize 'SIMPLEFOG.gmFogSettings'}}</h3>
     <div class="form-group">
-        <label for="gmTint">{{localize 'SIMPLEFOG.color'}}</label>
-        <input class="color" type="text" name="gmTint" value="{{ gmTint }}" data-dtype="String" />
-        <input type="color" value="{{ gmTint }}" data-edit="gmTint" />
+        <label for="gmColorTint">{{localize 'SIMPLEFOG.gmColorTint'}}</label>
+        <input class="color" type="text" name="gmColorTint" value="{{ gmColorTint }}" data-dtype="String" />
+        <input type="color" value="{{ gmColorTint }}" data-edit="gmColorTint" />
     </div>
     <div class="form-group">
-        <label for="gmAlpha">{{localize 'SIMPLEFOG.opacity'}}</label>
-        <input type="range" name="gmAlpha" value="{{ gmAlpha }}" min="0" max="100" step="1" data-dtype="Number" />
-        <span class="range-value">{{ gmAlpha }}</span>
+        <label for="gmColorAlpha">{{localize 'SIMPLEFOG.gmColorAlpha'}}</label>
+        <input type="range" name="gmColorAlpha" value="{{ gmColorAlpha }}" min="0" max="100" step="1" data-dtype="Number" />
+        <span class="range-value">{{ gmColorAlpha }}</span>
     </div>
+    <p class="notes">
+        {{ localize 'SIMPLEFOG.gmColorAlphaNotes' }}
+    </p>
 
     <h3 class="form-header"><i class="fas fa-users"></i> {{localize 'SIMPLEFOG.playerFogSettings'}}</h3>
     <div class="form-group">
-        <label for="playerTint">Color</label>
-        <input class="color" type="text" name="playerTint" value="{{ playerTint }}" data-dtype="String" />
-        <input type="color" value="{{ playerTint }}" data-edit="playerTint" />
+        <label for="playerColorTint">{{localize 'SIMPLEFOG.playerColorTint'}}</label>
+        <input class="color" type="text" name="playerColorTint" value="{{ playerColorTint }}" data-dtype="String" />
+        <input type="color" value="{{ playerColorTint }}" data-edit="playerColorTint" />
     </div>
     <div class="form-group">
-        <label for="playerAlpha">Opacity</label>
-        <input type="range" name="playerAlpha" value="{{ playerAlpha }}" min="0" max="100" step="1"
+        <label for="playerColorAlpha">{{localize 'SIMPLEFOG.playerColorAlpha'}}</label>
+        <input type="range" name="playerColorAlpha" value="{{ playerColorAlpha }}" min="0" max="100" step="1"
             data-dtype="Number" />
-        <span class="range-value">{{ playerAlpha }}</span>
+        <span class="range-value">{{ playerColorAlpha }}</span>
+    </div>
+
+    <h3 class="form-header"><i class="fas fa-image"></i> {{localize 'SIMPLEFOG.fogImageOverlaySettings'}}</h3>
+    <div class="form-group">
+        <label for="fogImageOverlayFilePath">{{localize 'SIMPLEFOG.fogImageOverlay'}}</label>
+        <button type="button" class="file-picker" data-type="imagevideo" data-target="fogImageOverlayFilePath" title="Browse Files" tabindex="-1">
+            <i class="fas fa-file-import fa-fw"></i>
+        </button>
+        <input class="image" type="text" name="fogImageOverlayFilePath" value="{{ fogImageOverlayFilePath }}" placeholder="{{localize 'SIMPLEFOG.fogImageOverlay'}}" data-dtype="String" />
+    </div>
+    <p class="notes">
+        {{ localize 'SIMPLEFOG.fogImageOverlayNotes' }}
+    </p>
+    <div class="form-group">
+        <label for="fogImageOverlaygmColorAlpha">{{localize 'SIMPLEFOG.fogImageOverlaygmColorAlpha'}}</label>
+        <input type="range" name="fogImageOverlaygmColorAlpha" value="{{ fogImageOverlaygmColorAlpha }}" min="0" max="100" step="1"
+            data-dtype="Number" />
+        <span class="range-value">{{ fogImageOverlaygmColorAlpha }}</span>
+    </div>
+    <div class="form-group">
+        <label for="fogImageOverlayPlayerAlpha">{{localize 'SIMPLEFOG.fogImageOverlayPlayerAlpha'}}</label>
+        <input type="range" name="fogImageOverlayPlayerAlpha" value="{{ fogImageOverlayPlayerAlpha }}" min="0" max="100" step="1"
+            data-dtype="Number" />
+        <span class="range-value">{{ fogImageOverlayPlayerAlpha }}</span>
+    </div>
+    <div class="form-group">
+        <label for="fogImageOverlayZIndex">{{localize 'SIMPLEFOG.fogImageOverlayZIndex'}}</label>
+        <select name="fogImageOverlayZIndex">
+            {{selectOptions fogImageOverlayZIndexOptions selected=fogImageOverlayZIndex}}
+        </select>
     </div>
 
     <h3 class="form-header"><i class="fas fa-filter"></i> {{localize 'SIMPLEFOG.filterSettings'}}</h3>

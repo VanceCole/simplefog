@@ -19,11 +19,7 @@ export default class SimplefogLayer extends MaskLayer {
     });
 
     this.DEFAULTS = Object.assign(this.DEFAULTS, {
-      gmAlpha: 0.6,
-      gmTint: '0x000000',
-      fogTextureFilePath: '',
-      playerAlpha: 1,
-      playerTint: '0x000000',
+
       transition: true,
       transitionSpeed: 800,
       previewColor: '0x00FFFF',
@@ -35,7 +31,6 @@ export default class SimplefogLayer extends MaskLayer {
       autoVisibility: false,
       autoVisGM: false,
       vThreshold: 1,
-      layerZindex: 220,
       hotKeyTool: 'Brush'
     });
 
@@ -114,65 +109,7 @@ export default class SimplefogLayer extends MaskLayer {
       // Otherwise fall back to module default
       else this.setSetting(key, this.DEFAULTS[key]);
     });
-    this.setAlpha(this.getAlpha(), true);
-  }
-  /* -------------------------------------------- */
-  /*  Getters and setters for layer props         */
-  /* -------------------------------------------- */
-
-  // Tint & Alpha have special cases because they can differ between GM & Players
-  // And alpha can be animated for transition effects
-
-  getAlpha() {
-    let alpha;
-    if (game.user.isGM) alpha = this.getSetting('gmAlpha');
-    else alpha = this.getSetting('playerAlpha');
-    if (!alpha) {
-      if (game.user.isGM) alpha = this.DEFAULTS.gmAlpha;
-      else alpha = this.DEFAULTS.playerAlpha;
-    }
-    return alpha;
-  }
-
-  async setFogTexture(fogTextureFilePath = this.getSetting('fogTextureFilePath')) {
-    simplefogLogDebug('SimplefogLayer.setFogTexture', fogTextureFilePath)
-    if (fogTextureFilePath) {
-      const texture = await loadTexture(fogTextureFilePath);
-      this.fogSprite.texture = texture;
-    } else {
-      this.fogSprite.texture = undefined;
-    }
-  }
-
-  /**
-   * Sets the scene's alpha for the primary layer.
-   * @param alpha {Number} 0-1 opacity representation
-   * @param skip {Boolean} Optional override to skip using animated transition
-   */
-  async setAlpha(alpha, skip = false) {
-  // If skip is false, do not transition and just set alpha immediately
-    if (skip || !this.getSetting('transition')) {
-      this.alpha = alpha;
-    }
-    // Loop until transition is complete
-    else {
-      const start = this.alpha;
-      const dist = start - alpha;
-      const fps = 60;
-      const speed = this.getSetting('transitionSpeed');
-      const frame = 1000 / fps;
-      const rate = dist / (fps * speed / 1000);
-      let f = fps * speed / 1000;
-      while (f > 0) {
-        // Delay 1 frame before updating again
-        // eslint-disable-next-line no-await-in-loop
-        await new Promise((resolve) => setTimeout(resolve, frame));
-        this.alpha -= rate;
-        f -= 1;
-      }
-      // Reset target alpha in case loop overshot a bit
-      this.alpha = alpha;
-    }
+    //this.setColorAlpha(this.getColorAlpha(), true);
   }
 
   /* -------------------------------------------- */
@@ -183,6 +120,7 @@ export default class SimplefogLayer extends MaskLayer {
    * React to updates of canvas.scene flags
    */
   _updateScene(scene, data) {
+    simplefogLogDebug('SimplefogLayer._updateScene - data', data)
     // Check if update applies to current viewed scene
     if (!scene._view) return;
     // React to visibility change
@@ -192,11 +130,11 @@ export default class SimplefogLayer extends MaskLayer {
     // React to composite history change
     if (hasProperty(data, `flags.${this.layername}.blurEnable`)) {
 
-      if (this.baseLayer !== undefined) {
+      if (this.fogColorLayer !== undefined) {
         if (this.getSetting("blurEnable")) {
-          this.baseLayer.filters = [this.blur];
+          this.fogColorLayer.filters = [this.blur];
         } else {
-          this.baseLayer.filters = [];
+          this.fogColorLayer.filters = [];
         }
       }
     }
@@ -223,22 +161,39 @@ export default class SimplefogLayer extends MaskLayer {
       canvas.perception.refresh()
     }
     // React to alpha/tint changes
-    if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerAlpha`)) {
-      canvas[this.layername].setAlpha(data.flags[this.layername].playerAlpha);
+    if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerColorAlpha`)) {
+      canvas[this.layername].setColorAlpha(data.flags[this.layername].playerColorAlpha);
     }
-    if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmAlpha`)) {
-      canvas[this.layername].setAlpha(data.flags[this.layername].gmAlpha);
+    if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmColorAlpha`)) {
+      canvas[this.layername].setColorAlpha(data.flags[this.layername].gmColorAlpha);
     }
-    if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerTint`)) canvas[this.layername].setTint(data.flags[this.layername].playerTint);
-    if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmTint`)) canvas[this.layername].setTint(data.flags[this.layername].gmTint);
-    // React to texture changes
-    if (hasProperty(data, `flags.${this.layername}.fogTextureFilePath`)) {
-      simplefogLog('has fogTextureFilePath')
-      canvas[this.layername].setFogTexture(data.flags[this.layername].fogTextureFilePath);
+    if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerColorTint`)) {
+      canvas[this.layername].setColorTint(data.flags[this.layername].playerColorTint);
+    }
+    if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmColorTint`)) {
+      canvas[this.layername].setColorTint(data.flags[this.layername].gmColorTint);
+    }
+
+    // React to Image Overylay file changes
+    if (hasProperty(data, `flags.${this.layername}.fogImageOverlayFilePath`)) {
+      simplefogLog('has fogImageOverlayFilePath')
+      canvas[this.layername].setFogImageOverlayTexture(data.flags[this.layername].fogImageOverlayFilePath);
     } else {
-      simplefogLog('has NO fogTextureFilePath')
-      canvas[this.layername].setFogTexture(undefined)
+      simplefogLog('has NO fogImageOverlayFilePath');
+      canvas[this.layername].setFogImageOverlayTexture(undefined);
     }
+
+    if (game.user.isGM && hasProperty(data, `flags.${this.layername}.fogImageOverlaygmColorAlpha`)) {
+      simplefogLog('Change GM Alpha');
+      canvas[this.layername].setFogImageOverlayAlpha(data.flags[this.layername].fogImageOverlaygmColorAlpha)
+    }
+    if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.fogImageOverlayPlayerAlpha`)) {
+      simplefogLog('Change Player Alpha');
+      canvas[this.layername].setFogImageOverlayAlpha(data.flags[this.layername].fogImageOverlayPlayerAlpha)
+    }
+    if (hasProperty(data, `flags.${this.layername}.fogImageOverlayZIndex`)) canvas[this.layername].setFogImageOverlayZIndex(data.flags[this.layername].fogImageOverlayZIndex)
+
+    canvas.perception.refresh()
   }
 
   /**

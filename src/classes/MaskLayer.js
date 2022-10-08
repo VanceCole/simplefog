@@ -29,6 +29,16 @@ export default class MaskLayer extends InteractionLayer {
       blurEnable: true,
       blurQuality: 2,
       blurRadius: 5,
+      gmColorAlpha: 0.6,
+      gmColorTint: '0x000000',
+      playerColorAlpha: 1,
+      playerColorTint: '0x000000',
+      fogImageOverlayFilePath: '',
+      fogImageOverlaygmColorAlpha: 0.6,
+      fogImageOverlayPlayerAlpha: 1,
+      fogImageOverlayZIndex: 6000,
+      layerZindex: 220,
+
     };
   }
 
@@ -52,9 +62,9 @@ export default class MaskLayer extends InteractionLayer {
    *
    * layer       - PIXI Sprite which holds all the mask elements
    * filters     - Holds filters such as blur applied to the layer
-   * layer.mask  - PIXI Sprite wrapping the renderable mask
+   * fogColorLayer  - PIXI Sprite wrapping the renderable mask
    * maskTexture - renderable texture that holds the actual mask data
-   * fogSprite   - PIXI Sprite that holds the image applied over the fog color
+   * fogImageOverlayLayer   - PIXI Sprite that holds the image applied over the fog color
    */
   initMask() {
     simplefogLogDebug('MaskLayer.initMask')
@@ -62,12 +72,12 @@ export default class MaskLayer extends InteractionLayer {
     let v = this.getSetting("visible");
     if (v === undefined) v = false;
     this.visible = v;
-    simplefogLogVerboseDebug('MaskLayer.initMask - visible', this.visible)
+    simplefogLogDebug('MaskLayer.initMask - visible', this.visible)
 
     // The layer is the primary sprite to be displayed
-    this.baseLayer = MaskLayer.getCanvasSprite();
-    this.setTint(this.getTint());
-    this.setAlpha(this.getAlpha(), true);
+    this.fogColorLayer = MaskLayer.getCanvasSprite();
+    this.setColorTint(this.getTint());
+    this.setColorAlpha(this.getColorAlpha(), true);
 
     this.blur = new PIXI.filters.BlurFilter();
     this.blur.padding = 0;
@@ -77,9 +87,9 @@ export default class MaskLayer extends InteractionLayer {
 
     // Filters
     if (this.getSetting("blurEnable")) {
-      this.baseLayer.filters = [this.blur];
+      this.fogColorLayer.filters = [this.blur];
     } else {
-      this.baseLayer.filters = [];
+      this.fogColorLayer.filters = [];
     }
 
     //So you can hit escape on the keyboard and it will bring up the menu
@@ -88,7 +98,7 @@ export default class MaskLayer extends InteractionLayer {
     this.maskTexture = MaskLayer.getMaskTexture();
     this.maskSprite = new PIXI.Sprite(this.maskTexture);
 
-    this.baseLayer.mask = this.maskSprite;
+    this.fogColorLayer.mask = this.maskSprite;
     this.setFill();
 
 
@@ -98,36 +108,85 @@ export default class MaskLayer extends InteractionLayer {
     // Render entire history stack
     this.renderStack(undefined, 0, undefined);
 
-    // apply Texture Sprite to fog layer after we renderStack to prevent revealing the map
-    this.fogSprite = new PIXI.Sprite();
-    this.fogSprite.position.set(canvas.dimensions.sceneRect.x, canvas.dimensions.sceneRect.y);
-    this.fogSprite.width = canvas.dimensions.sceneRect.width;
-    this.fogSprite.height = canvas.dimensions.sceneRect.height;
-    this.fogSprite.mask = this.maskSprite;
-    this.setFogTexture();
-    simplefogLog('maskInit', this)
+    // apply image overlay to fog layer after we renderStack to prevent revealing the map
+    this.fogImageOverlayLayer = new PIXI.Sprite();
+    this.fogImageOverlayLayer.position.set(canvas.dimensions.sceneRect.x, canvas.dimensions.sceneRect.y);
+    this.fogImageOverlayLayer.width = canvas.dimensions.sceneRect.width;
+    this.fogImageOverlayLayer.height = canvas.dimensions.sceneRect.height;
+    this.fogImageOverlayLayer.mask = this.maskSprite;
+    this.setFogImageOverlayZIndex(this.getSetting("fogImageOverlayZIndex"));
+    this.setFogImageOverlayTexture();
+    this.setFogImageOverlayAlpha(this.getFogImageOverlayAlpha(), true);
+    simplefogLog('initMask', this)
+  }
+
+  /* -------------------------------------------- */
+  /*  Getters and setters for layer props         */
+  /* -------------------------------------------- */
+
+  // Tint & Alpha have special cases because they can differ between GM & Players
+  // And alpha can be animated for transition effects
+
+  getColorAlpha() {
+    let alpha;
+    if (game.user.isGM) alpha = this.getSetting('gmColorAlpha');
+    else alpha = this.getSetting('playerColorAlpha');
+    if (!alpha) {
+      if (game.user.isGM) alpha = this.DEFAULTS.gmColorAlpha;
+      else alpha = this.DEFAULTS.playerColorAlpha;
+    }
+    return alpha;
+  }
+
+  /**
+   * Sets the scene's alpha for the primary layer.
+   * @param alpha {Number} 0-1 opacity representation
+   * @param skip {Boolean} Optional override to skip using animated transition
+   */
+  async setColorAlpha(alpha, skip = false) {
+    simplefogLogDebug('MaskLayer.setColorAlpha')
+    // If skip is false, do not transition and just set alpha immediately
+    if (skip || !this.getSetting('transition')) {
+      this.fogColorLayer.alpha = alpha;
+    }
+    // Loop until transition is complete
+    else {
+      const start = this.fogColorLayer.alpha;
+      const dist = start - alpha;
+      const fps = 60;
+      const speed = this.getSetting('transitionSpeed');
+      const frame = 1000 / fps;
+      const rate = dist / (fps * speed / 1000);
+      let f = fps * speed / 1000;
+      while (f > 0) {
+        // Delay 1 frame before updating again
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => setTimeout(resolve, frame));
+        this.fogColorLayer.alpha -= rate;
+        f -= 1;
+      }
+      // Reset target alpha in case loop overshot a bit
+      this.fogColorLayer.alpha = alpha;
+    }
   }
 
   getTint() {
     let tint;
-    if (game.user.isGM) tint = this.getSetting('gmTint');
-    else tint = this.getSetting('playerTint');
+    if (game.user.isGM) tint = this.getSetting('gmColorTint');
+    else tint = this.getSetting('playerColorTint');
     if (!tint) {
-      if (game.user.isGM) tint = this.gmTintDefault;
-      else tint = this.playerTintDefault;
+      if (game.user.isGM) tint = this.gmColorTintDefault;
+      else tint = this.playerColorTintDefault;
     }
     return tint;
   }
 
-  setTint(tint) {
-    this.baseLayer.tint = tint;
+  setColorTint(tint) {
+    this.fogColorLayer.tint = tint;
   }
 
-  /* -------------------------------------------- */
-  /*  History & Buffer                            */
-  /* -------------------------------------------- */
   static getMaskTexture() {
-    simplefogLogDebug('MaskLayer.renderStack')
+    simplefogLogDebug('MaskLayer.getMaskTexture')
     const d = canvas.dimensions;
     let res = 1.0;
     if (d.width * d.height > 16000 ** 2) res = 0.25;
@@ -142,12 +201,70 @@ export default class MaskLayer extends InteractionLayer {
     return tex;
   }
 
+  /* -------------------------------------------- */
+  /*  Player Fog Image Overlay                    */
+  /* -------------------------------------------- */
+  async setFogImageOverlayTexture(fogImageOverlayFilePath = this.getSetting('fogImageOverlayFilePath')) {
+    if (fogImageOverlayFilePath) {
+      const texture = await loadTexture(fogImageOverlayFilePath);
+      this.fogImageOverlayLayer.texture = texture;
+      // If player, don't set tint
+      //if (!game.user.isGM) canvas[this.layername].setColorTint(null);
+    } else {
+      this.fogImageOverlayLayer.texture = undefined;
+    }
+  }
+
+  getFogImageOverlayAlpha() {
+    let alpha;
+    if (game.user.isGM) alpha = this.getSetting('fogImageOverlaygmColorAlpha');
+    else alpha = this.getSetting("fogImageOverlayPlayerAlpha")
+    if (!alpha) {
+      if (game.user.isGM) alpha = this.DEFAULTS.fogImageOverlaygmColorAlpha;
+      else alpha = this.DEFAULTS.fogImageOverlayAlpha;
+    }
+    simplefogLogDebug('MaskLayer.getFogImageOverlayAlpha - alpha', alpha)
+    return alpha;
+  }
+
+  async setFogImageOverlayAlpha(alpha, skip = false) {
+    // If skip is false, do not transition and just set alpha immediately
+    if (skip || !this.getSetting('transition')) {
+      this.fogImageOverlayLayer.alpha = alpha;
+    }
+    // Loop until transition is complete
+    else {
+      const start = this.fogImageOverlayLayer.alpha;
+      const dist = start - alpha;
+      const fps = 60;
+      const speed = this.getSetting('transitionSpeed');
+      const frame = 1000 / fps;
+      const rate = dist / (fps * speed / 1000);
+      let f = fps * speed / 1000;
+      while (f > 0) {
+        // Delay 1 frame before updating again
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => setTimeout(resolve, frame));
+        this.fogImageOverlayLayer.alpha -= rate;
+        f -= 1;
+      }
+      // Reset target alpha in case loop overshot a bit
+      this.fogImageOverlayLayer.alpha = alpha;
+    }
+  }
+
+  async setFogImageOverlayZIndex(zIndex) {
+    this.fogImageOverlayLayer.zIndex = zIndex;
+  }
+
+
   /**
    * Gets and sets various layer wide properties
    * Some properties have different values depending on if user is a GM or player
    */
 
   getSetting(name) {
+    // simplefogLogDebug('MaskLayer.getSetting', name)
     let setting = canvas.scene.getFlag(this.layername, name);
     if (setting === undefined) setting = this.getUserSetting(name);
     if (setting === undefined) setting = this.DEFAULTS[name];
@@ -449,10 +566,12 @@ export default class MaskLayer extends InteractionLayer {
     simplefogLogDebug('MaskLayer.draw')
     super.draw();
     this.initMask();
-    this.addChild(this.baseLayer);
-    // ToDo: determine if this should be added back or not.
-    this.addChild(this.baseLayer.mask);
-    this.addChild(canvas.simplefog.fogSprite);  // This is for image overlay
+    this.addChild(canvas.simplefog.fogImageOverlayLayer);
+    simplefogLogDebug('MaskLayer.draw - canvas.simplefog.fogImageOverlayLayer.zIndex', canvas.simplefog.fogImageOverlayLayer.zIndex)
+    this.addChild(this.fogColorLayer);
+    simplefogLogDebug('MaskLayer.draw - this.fogColorLayer.zIndex', this.fogColorLayer.zIndex)
+    this.addChild(this.fogColorLayer.mask);
+    simplefogLogDebug('MaskLayer.draw - this.fogColorLayer.mask.zIndex', this.fogColorLayer.mask.zIndex)
   }
 
   refreshZIndex() {
