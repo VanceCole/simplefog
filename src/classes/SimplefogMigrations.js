@@ -110,10 +110,8 @@ export default class SimplefogMigrations {
         s.setFlag('simplefog', 'fogImageOverlayFilePath', s.data.flags.simplefog.fogTextureFilePath);
         await s.unsetFlag('simplefog', 'fogTextureFilePath');
       }
-
-      //game.settings.set('simplefog', 'migrationVersion', 2);
-      dmToGM(game.i18n.localize('SIMPLEFOG.migration2Notification'), undefined)
-
     });
+    dmToGM(game.i18n.localize('SIMPLEFOG.migration2Notification'), undefined)
+    game.settings.set('simplefog', 'migrationVersion', 2);
   }
 }
