@@ -1,4 +1,7 @@
 {
+
+
+
   "SIMPLEFOG.brushOpacity": "Brush Opacity",
   "SIMPLEFOG.brushSize": "Brush Size",
   "SIMPLEFOG.hide": "Hide",
@@ -37,6 +40,7 @@
   "SIMPLEFOG.ok": "OK",
   "SIMPLEFOG.sf": "Simple Fog",
   "SIMPLEFOG.onoff": "Enable/Disable Simple Fog",
+
   "SIMPLEFOG.brushTool": "Brush Tool",
   "SIMPLEFOG.gridTool": "Grid Tool",
   "SIMPLEFOG.polygonTool": "Polygon Tool",
@@ -65,7 +69,6 @@
   "SIMPLEFOG.hotKeyToolNotes": "Determine which tool will be selected when hotkey is activated.",
 
   "SIMPLEFOG.autoVisNotes": "When enabled, Automatic Visibility will show/hide tokens based on fog opacity level at their location based on the threshold setting. Brush color changes to green/red to indicate whether a token would be visible.",
-  "SIMPLEFOG.fogImageSettings": "Image Settings",
 
   "SIMPLEFOG.versionNotification": "<b>Simple Fog v0.3.0-ALPHA.3 PreRelease</b><p>This version includes important bug fixes for:</p><ul><li>Initial v10 support <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues/78'>#78</a></li></ul><p>To report problems:<ul><li>open a GitHub issue <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues' target='_blank'>here</a></li><li>send a message on Discord to <a href='https://discordapp.com/users/530108795796455437' target='_blank'>Glutious#7241</a></li></ul></p>"
 }

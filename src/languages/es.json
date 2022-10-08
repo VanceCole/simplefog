@@ -1,16 +1,30 @@
 {
   "I18N.LANGUAGE": "Español",
   "I18N.MAINTAINERS": "@Viriato139ac#0342",
-  
+
   "SIMPLEFOG.brushOpacity": "Opacidad del pincel",
   "SIMPLEFOG.brushSize": "Tamaño del pincel",
   "SIMPLEFOG.hide": "Ocultar",
   "SIMPLEFOG.reveal": "Mostrar",
+
   "SIMPLEFOG.gmFogSettings": "Ajustes de niebla del GM",
-  "SIMPLEFOG.color": "Color",
-  "SIMPLEFOG.opacity": "Opacidad",
+  "SIMPLEFOG.gmColorTint": "Color",
+  "SIMPLEFOG.gmColorAlpha": "Opacidad",
+  "SIMPLEFOG.gmColorAlphaNotes": "TBD",
+
   "SIMPLEFOG.playerFogSettings": "Ajustes de niebla del jugador",
+  "SIMPLEFOG.playerColorTint": "TBD",
+  "SIMPLEFOG.playerColorAlpha": "TBD",
+
+  "SIMPLEFOG.fogImageOverlaySettings": "TBD",
+  "SIMPLEFOG.fogImageOverlay": "TBD",
+  "SIMPLEFOG.fogImageOverlayNotes": "TBD",
+  "SIMPLEFOG.fogImageOverlaygmColorAlpha": "TBD",
+  "SIMPLEFOG.fogImageOverlayPlayerAlpha": "TBD",
+  "SIMPLEFOG.fogImageOverlayZIndex": "TBD",
+
   "SIMPLEFOG.filterSettings": "Ajustes del filtro",
+  "SIMPLEFOG.blurEnable": "TBD",
   "SIMPLEFOG.blurRadius": "Radio del difuminado",
   "SIMPLEFOG.blurQuality": "Calidad del difuminado",
   "SIMPLEFOG.blurQualityDesc": "Cuanto mayor sea la calidad mejor será la apariencia del efecto de difuminado, sin embargo, puede causar en que baje el rendimiento",
@@ -26,6 +40,7 @@
   "SIMPLEFOG.ok": "OK",
   "SIMPLEFOG.sf": "Simple Fog",
   "SIMPLEFOG.onoff": "Habilitar/deshabilitar Simple Fog",
+
   "SIMPLEFOG.brushTool": "Herramienta pincel",
   "SIMPLEFOG.gridTool": "Herramienta rejilla",
   "SIMPLEFOG.polygonTool": "Herramienta polígono",
@@ -54,9 +69,6 @@
   "SIMPLEFOG.hotKeyToolNotes": "Determine qué herramienta se seleccionará cuando se active la tecla de acceso directo.",
 
   "SIMPLEFOG.autoVisNotes": "Cuando se activa, la visibilidad automática mostrará/ocultará los iconos en base al nivel de opacidad de la niebla en su localización y el umbral que se especifique. El color del pincel cambia a verde/rojo para indicar si el token es visible",
-  "SIMPLEFOG.fogImageSettings": "Ajuste de la imagen",
-  "SIMPLEFOG.fogImage": "Imagen de la capa de niebla",
-  "SIMPLEFOG.imageNotes": "La imagen seleccionada se sobrepondrá encima del color elegido para la niebla. La imagen debe tener las mismas dimensiones que la imagen de fondo de la escena",
 
   "SIMPLEFOG.versionNotification": "<b>Simple Fog v1.2.1-PreRelease</b><p>Esta versión incluye correcciones de errores importantes para:</p><ul><li><i>RECLUTAR</i> - Nombres simbólicos que aparecen sobre la niebla. <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues/65'>#65</a></li></ul><p>Para reportar problemas:<ul><li>abrir un problema de GitHub <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues' target='_blank'>por aquí</a></li><li>envía un mensaje en Discord a <a href='https://discordapp.com/users/530108795796455437' target='_blank'>Glutious#7241</a></li></ul></p>"
 }
