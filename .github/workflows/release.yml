@@ -21,7 +21,7 @@ jobs:
       id: sub_manifest_link_version_prerelease
       uses: microsoft/variable-substitution@v1
       with:
-        files: './src/module.json'
+        files: 'src/module.json'
       env:
         version: ${{steps.get_version.outputs.version-without-v}}
         url: https://github.com/${{github.repository}}
@@ -34,7 +34,7 @@ jobs:
       id: sub_manifest_link_version
       uses: microsoft/variable-substitution@v1
       with:
-        files: './src/module.json'
+        files: 'src/module.json'
       env:
         version: ${{steps.get_version.outputs.version-without-v}}
         url: https://github.com/${{github.repository}}
@@ -54,6 +54,6 @@ jobs:
         draft: ${{ github.event.release.unpublished }}
         prerelease: ${{ github.event.release.prerelease }}
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: './module.json, ./module.zip'
+        artifacts: './src/module.json, ./src/module.zip'
         tag: ${{ github.event.release.tag_name }}
         body: ${{ github.event.release.body }}
