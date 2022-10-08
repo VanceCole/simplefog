@@ -34,7 +34,7 @@ export default class MaskLayer extends InteractionLayer {
       playerColorAlpha: 1,
       playerColorTint: '0x000000',
       fogImageOverlayFilePath: '',
-      fogImageOverlaygmColorAlpha: 0.6,
+      fogImageOverlayGMAlpha: 0.6,
       fogImageOverlayPlayerAlpha: 1,
       fogImageOverlayZIndex: 6000,
       layerZindex: 220,
@@ -216,10 +216,10 @@ export default class MaskLayer extends InteractionLayer {
 
   getFogImageOverlayAlpha() {
     let alpha;
-    if (game.user.isGM) alpha = this.getSetting('fogImageOverlaygmColorAlpha');
+    if (game.user.isGM) alpha = this.getSetting('fogImageOverlayGMAlpha');
     else alpha = this.getSetting("fogImageOverlayPlayerAlpha")
     if (!alpha) {
-      if (game.user.isGM) alpha = this.DEFAULTS.fogImageOverlaygmColorAlpha;
+      if (game.user.isGM) alpha = this.DEFAULTS.fogImageOverlayGMAlpha;
       else alpha = this.DEFAULTS.fogImageOverlayAlpha;
     }
     return alpha;

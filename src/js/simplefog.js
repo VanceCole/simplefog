@@ -3,7 +3,7 @@ import SimplefogMigrations from '../classes/SimplefogMigrations.js';
 import config from './config.js';
 import {simplefogLog, simplefogLogDebug, addSimplefogControlToggleListener, addSimplefogOpacityToggleListener,} from './helpers.js';
 import SimplefogHUDControlLayer from "../classes/SimplefogHUDControlLayer.js";
-import SimplefogVersionNotification from "../classes/SimplefogVersionNotification.js";
+import SimplefogNotification from "../classes/SimplefogNotification.js";
 import API from './api.js';
 import {setApi} from "../main.js";
 
@@ -53,7 +53,7 @@ export const readyHooks = async () => {
     game.canvas.controls.hud.setParent(game.canvas.simplefogHUDControls)
 
     // Check if new version; if so send DM to GM
-    SimplefogVersionNotification.checkVersion()
+    SimplefogNotification.checkVersion()
 
     //Hooks.on('sightRefresh', sightLayerUpdate);
 

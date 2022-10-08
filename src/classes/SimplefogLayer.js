@@ -180,8 +180,8 @@ export default class SimplefogLayer extends MaskLayer {
       canvas[this.layername].setFogImageOverlayTexture(undefined);
     }
 
-    if (game.user.isGM && hasProperty(data, `flags.${this.layername}.fogImageOverlaygmColorAlpha`)) {
-      canvas[this.layername].setFogImageOverlayAlpha(data.flags[this.layername].fogImageOverlaygmColorAlpha)
+    if (game.user.isGM && hasProperty(data, `flags.${this.layername}.fogImageOverlayGMAlpha`)) {
+      canvas[this.layername].setFogImageOverlayAlpha(data.flags[this.layername].fogImageOverlayGMAlpha)
     }
     if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.fogImageOverlayPlayerAlpha`)) {
       canvas[this.layername].setFogImageOverlayAlpha(data.flags[this.layername].fogImageOverlayPlayerAlpha)

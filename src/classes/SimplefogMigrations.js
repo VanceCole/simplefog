@@ -2,14 +2,16 @@
  * Provides for the ability to check and run migration code for changes to data
  */
 /* eslint-disable max-len */
-import { simplefogLog } from '../js/helpers.js';
+import {dmToGM, simplefogLog, simplefogLogDebug} from '../js/helpers.js';
 
 export default class SimplefogMigrations {
   static check() {
+    simplefogLogDebug('SimplefogMigrations.check')
     if (!game.user.isGM) return;
     simplefogLog('Checking migrations');
     const ver = game.settings.get('simplefog', 'migrationVersion');
     if (ver < 1) SimplefogMigrations.migration1();
+    if (ver < 2) SimplefogMigrations.migration2();
   }
 
   /*
@@ -58,6 +60,67 @@ export default class SimplefogMigrations {
         s.setFlag('simplefog', 'history', history);
         game.settings.set('simplefog', 'migrationVersion', 1);
       }
+    });
+  }
+
+
+  /*
+   * Major data changes from v9 to v10
+   */
+  static migration2() {
+    simplefogLog('Performing migration #2', true);
+    game.scenes.forEach(async (s) => {
+      // Migrate all variables to new names, otherwise set to defaults
+      if (s.data.flags?.simplefog?.gmAlpha) {
+        s.setFlag('simplefog', 'gmColorAlpha', s.data.flags.simplefog.gmAlpha);
+        await s.unsetFlag('simplefog', 'gmAlpha');
+      } else if (s.getFlag('simplefog', 'gmColorAlpha') === undefined) {
+        s.setFlag('simplefog', 'gmColorAlpha', canvas.simplefog.DEFAULTS.gmColorAlpha);
+      }
+
+      if (s.data.flags?.simplefog?.gmTint) {
+        s.setFlag('simplefog', 'gmColorTint', s.data.flags.simplefog.gmTint);
+        await s.unsetFlag('simplefog', 'gmTint');
+      } else if (s.getFlag('simplefog', 'gmColorTint') === undefined) {
+        s.setFlag('simplefog', 'gmColorTint', canvas.simplefog.DEFAULTS.gmColorTint);
+      }
+
+      if (s.data.flags?.simplefog?.playerAlpha) {
+        s.setFlag('simplefog', 'playerColorAlpha', s.data.flags.simplefog.playerAlpha);
+        await s.unsetFlag('simplefog', 'playerAlpha');
+      } else if (s.getFlag('simplefog', 'playerColorAlpha') === undefined) {
+        s.setFlag('simplefog', 'playerColorAlpha', canvas.simplefog.DEFAULTS.playerColorAlpha);
+      }
+
+      if (s.data.flags?.simplefog?.playerTint) {
+        s.setFlag('simplefog', 'playerColorTint', s.data.flags.simplefog.playerTint);
+        await s.unsetFlag('simplefog', 'playerTint');
+      } else if (s.getFlag('simplefog', 'playerColorTint') === undefined) {
+        s.setFlag('simplefog', 'playerColorTint', canvas.simplefog.DEFAULTS.playerColorTint);
+      }
+
+      if (s.data.flags?.simplefog?.layerZindex) {
+        s.setFlag('simplefog', 'fogImageOverlayZIndex', s.data.flags.simplefog.layerZindex);
+        await s.unsetFlag('simplefog', 'layerZindex');
+      } else if (s.getFlag('simplefog', 'fogImageOverlayZIndex') === undefined) {
+        s.setFlag('simplefog', 'fogImageOverlayZIndex', canvas.simplefog.DEFAULTS.fogImageOverlayZIndex);
+      }
+
+      if (s.data.flags?.simplefog?.fogTextureFilePath) {
+        s.setFlag('simplefog', 'fogImageOverlayFilePath', s.data.flags.simplefog.fogTextureFilePath);
+        await s.unsetFlag('simplefog', 'fogTextureFilePath');
+      }
+
+      if (s.data.flags?.simplefog?.layerZindex) {
+        s.setFlag('simplefog', 'fogImageOverlayZIndex', s.data.flags.simplefog.layerZindex);
+        await s.unsetFlag('simplefog', 'layerZindex');
+      } else if (s.getFlag('simplefog', 'fogImageOverlayZIndex') === undefined) {
+        s.setFlag('simplefog', 'fogImageOverlayZIndex', canvas.simplefog.DEFAULTS.fogImageOverlayZIndex);
+      }
+
+      //game.settings.set('simplefog', 'migrationVersion', 2);
+      dmToGM(game.i18n.localize('SIMPLEFOG.migration2Notification'), undefined)
+
     });
   }
 }

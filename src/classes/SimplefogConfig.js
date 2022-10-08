@@ -38,7 +38,7 @@ export default class SimplefogConfig extends FormApplication {
       autoVisGM: canvas.simplefog.getSetting('autoVisGM'),
       vThreshold: Math.round(canvas.simplefog.getSetting('vThreshold') * 100),
       fogImageOverlayFilePath: canvas.simplefog.getSetting('fogImageOverlayFilePath'),
-      fogImageOverlaygmColorAlpha: Math.round(canvas.simplefog.getSetting('fogImageOverlaygmColorAlpha') * 100),
+      fogImageOverlayGMAlpha: Math.round(canvas.simplefog.getSetting('fogImageOverlayGMAlpha') * 100),
       fogImageOverlayPlayerAlpha: Math.round(canvas.simplefog.getSetting('fogImageOverlayPlayerAlpha') * 100),
       fogImageOverlayZIndex: canvas.simplefog.getSetting('fogImageOverlayZIndex'),
       fogImageOverlayZIndexOptions: {
@@ -62,7 +62,7 @@ export default class SimplefogConfig extends FormApplication {
   async _updateObject(event, formData) {
     Object.entries(formData).forEach(async ([key, val]) => {
       // If setting is an opacity slider, convert from 1-100 to 0-1
-      if (['gmColorAlpha', 'playerColorAlpha', 'vThreshold', 'fogImageOverlaygmColorAlpha', 'fogImageOverlayPlayerAlpha'].includes(key)) val /= 100;
+      if (['gmColorAlpha', 'playerColorAlpha', 'vThreshold', 'fogImageOverlayGMAlpha', 'fogImageOverlayPlayerAlpha'].includes(key)) val /= 100;
       // If setting is a color value, convert webcolor to hex before saving
       if (['gmColorTint', 'playerColorTint'].includes(key)) val = webToHex(val);
       // Save settings to scene

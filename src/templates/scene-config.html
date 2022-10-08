@@ -10,9 +10,6 @@
         <input type="range" name="gmColorAlpha" value="{{ gmColorAlpha }}" min="0" max="100" step="1" data-dtype="Number" />
         <span class="range-value">{{ gmColorAlpha }}</span>
     </div>
-    <p class="notes">
-        {{ localize 'SIMPLEFOG.gmColorAlphaNotes' }}
-    </p>
 
     <h3 class="form-header"><i class="fas fa-users"></i> {{localize 'SIMPLEFOG.playerFogSettings'}}</h3>
     <div class="form-group">
@@ -39,10 +36,10 @@
         {{ localize 'SIMPLEFOG.fogImageOverlayNotes' }}
     </p>
     <div class="form-group">
-        <label for="fogImageOverlaygmColorAlpha">{{localize 'SIMPLEFOG.fogImageOverlaygmColorAlpha'}}</label>
-        <input type="range" name="fogImageOverlaygmColorAlpha" value="{{ fogImageOverlaygmColorAlpha }}" min="0" max="100" step="1"
+        <label for="fogImageOverlayGMAlpha">{{localize 'SIMPLEFOG.fogImageOverlayGMAlpha'}}</label>
+        <input type="range" name="fogImageOverlayGMAlpha" value="{{ fogImageOverlayGMAlpha }}" min="0" max="100" step="1"
             data-dtype="Number" />
-        <span class="range-value">{{ fogImageOverlaygmColorAlpha }}</span>
+        <span class="range-value">{{ fogImageOverlayGMAlpha }}</span>
     </div>
     <div class="form-group">
         <label for="fogImageOverlayPlayerAlpha">{{localize 'SIMPLEFOG.fogImageOverlayPlayerAlpha'}}</label>
