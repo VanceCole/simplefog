@@ -69,7 +69,7 @@
 
   "SIMPLEFOG.autoVisNotes": "自動可視化を有効にすると、その場所のトークンの表示/非表示が、閾値として設定した霧の濃度に基づいて決定されるようになります。非表示となる濃度では、ブラシの色が緑から赤に変化してそれを知らせます。",
 
-  "SIMPLEFOG.versionNotification": "<b>Simple Fog 0.3.0-BETA.6 プレリリース</b><p>このバージョンには、次の重要なバグ修正が含まれています:</p><ul><li>初期 v10 サポート <a href='https:// github.com/League-of-Foundry-Developers/simplefog/issues/78'>#78</a></li></ul><p>問題を報告するには:<ul><li>GitHub の問題を開く <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues' target='_blank'>こちら</a></li><li>Discord で < a href='https://discordapp.com/users/530108795796455437' target='_blank'>Glutious#7241</a></li></ul></p>",
+  "SIMPLEFOG.versionNotification": "<b>Simple Fog 0.3.0-BETA.7 プレリリース</b><p>このバージョンには、次の重要なバグ修正が含まれています:</p><ul><li>初期 v10 サポート <a href='https:// github.com/League-of-Foundry-Developers/simplefog/issues/78'>#78</a></li></ul><p>問題を報告するには:<ul><li>GitHub の問題を開く <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues' target='_blank'>こちら</a></li><li>Discord で < a href='https://discordapp.com/users/530108795796455437' target='_blank'>Glutious#7241</a></li></ul></p>",
 
   "SIMPLEFOG.migration2Notification": "<b>Simple Fog データの移行</b><p>Simple Fog データは、v3 をサポートする形式に移行されました。 プレーヤーにシーンを表示する前に、GM ビューとプレーヤー ビューの両方から、すべてのシーンと霧の可視性を確認することを<b>強く</b>お勧めします。"
 }
