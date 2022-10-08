@@ -3,8 +3,6 @@
  * Used as layer directly below simplefog for object HUD controls
  */
 
-import { simplefogLog } from "../js/helpers.js";
-
 export default class SimplefogHUDControlLayer extends InteractionLayer {
   constructor(layername) {
     super();

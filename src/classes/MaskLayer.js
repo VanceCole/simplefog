@@ -5,7 +5,7 @@
  * and replaying the mask / undo etc.
  */
 
-import {simplefogLog, simplefogLogDebug, simplefogLogVerboseDebug} from "../js/helpers.js";
+import {simplefogLog, simplefogLogDebug} from "../js/helpers.js";
 
 export default class MaskLayer extends InteractionLayer {
   constructor(layername) {
@@ -117,7 +117,6 @@ export default class MaskLayer extends InteractionLayer {
     this.setFogImageOverlayZIndex(this.getSetting("fogImageOverlayZIndex"));
     this.setFogImageOverlayTexture();
     this.setFogImageOverlayAlpha(this.getFogImageOverlayAlpha(), true);
-    simplefogLog('initMask', this)
   }
 
   /* -------------------------------------------- */
@@ -223,7 +222,6 @@ export default class MaskLayer extends InteractionLayer {
       if (game.user.isGM) alpha = this.DEFAULTS.fogImageOverlaygmColorAlpha;
       else alpha = this.DEFAULTS.fogImageOverlayAlpha;
     }
-    simplefogLogDebug('MaskLayer.getFogImageOverlayAlpha - alpha', alpha)
     return alpha;
   }
 
@@ -264,7 +262,6 @@ export default class MaskLayer extends InteractionLayer {
    */
 
   getSetting(name) {
-    // simplefogLogDebug('MaskLayer.getSetting', name)
     let setting = canvas.scene.getFlag(this.layername, name);
     if (setting === undefined) setting = this.getUserSetting(name);
     if (setting === undefined) setting = this.DEFAULTS[name];
@@ -443,7 +440,6 @@ export default class MaskLayer extends InteractionLayer {
    * });
    */
   brush(data) {
-    //simplefogLogDebug('MaskLayer.brush')
     // Get new graphic & begin filling
     const alpha = typeof data.alpha === "undefined" ? 1 : data.alpha;
     const visible = typeof data.visible === "undefined" ? true : data.visible;
@@ -482,7 +478,6 @@ export default class MaskLayer extends InteractionLayer {
    * @param save {Boolean}      If true, will add the operation to the history buffer
    */
   renderBrush(data, save = true) {
-    //simplefogLogDebug('MaskLayer.renderBrush')
     const brush = this.brush(data);
     this.composite(brush);
     brush.destroy();
@@ -494,7 +489,6 @@ export default class MaskLayer extends InteractionLayer {
    * @param data {Object}       PIXI Object to be used as brush
    */
   composite(brush) {
-    //simplefogLogDebug('MaskLayer.composite')
     canvas.app.renderer.render(brush, this.maskTexture, false, null, false);
   }
 
@@ -567,11 +561,8 @@ export default class MaskLayer extends InteractionLayer {
     super.draw();
     this.initMask();
     this.addChild(canvas.simplefog.fogImageOverlayLayer);
-    simplefogLogDebug('MaskLayer.draw - canvas.simplefog.fogImageOverlayLayer.zIndex', canvas.simplefog.fogImageOverlayLayer.zIndex)
     this.addChild(this.fogColorLayer);
-    simplefogLogDebug('MaskLayer.draw - this.fogColorLayer.zIndex', this.fogColorLayer.zIndex)
     this.addChild(this.fogColorLayer.mask);
-    simplefogLogDebug('MaskLayer.draw - this.fogColorLayer.mask.zIndex', this.fogColorLayer.mask.zIndex)
   }
 
   refreshZIndex() {

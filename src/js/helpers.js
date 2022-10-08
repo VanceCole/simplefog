@@ -27,14 +27,6 @@ import CONSTANTS from "./constants.js";
       }
   }
 
-  export function simplefogLogVerboseDebug(...args) {
-    try {
-      const isDebugging = game.modules.get('_dev-mode')?.api?.getPackageDebugValue(CONSTANTS.MODULE_NAME);
-      if (isDebugging) {
-        console.debug('Simplefog-VerboseDEBUG |', ...args);
-      }
-    } catch (e) {  }
-  }
 
 // ======================================
 // PIXI UTILITY

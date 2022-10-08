@@ -1,15 +1,13 @@
 import SimplefogLayer from '../classes/SimplefogLayer.js';
 import SimplefogMigrations from '../classes/SimplefogMigrations.js';
 import config from './config.js';
-import {simplefogLog, simplefogLogDebug, simplefogLogVerboseDebug, addSimplefogControlToggleListener, addSimplefogOpacityToggleListener,} from './helpers.js';
+import {simplefogLog, simplefogLogDebug, addSimplefogControlToggleListener, addSimplefogOpacityToggleListener,} from './helpers.js';
 import SimplefogHUDControlLayer from "../classes/SimplefogHUDControlLayer.js";
 import SimplefogVersionNotification from "../classes/SimplefogVersionNotification.js";
 import API from './api.js';
 import {setApi} from "../main.js";
 
 export const initHooks = () => {
-  simplefogLog('simplefog.init')
-  //CONFIG.debug.hooks = true
   // eslint-disable-next-line no-console
   simplefogLog('Initializing simplefog', true);
 
@@ -69,7 +67,6 @@ export const readyHooks = async () => {
 Hooks.once('canvasInit', () => {
   simplefogLogDebug('simplefog.canvasInit')
   if (isNewerVersion(game.version, "10")) {
-    simplefogLogVerboseDebug('simplefog.canvasInit - v10', canvas, CONFIG)
     canvas.simplefog.canvasInit()
   } else if (isNewerVersion(game.version, "9")) {
     CONFIG.Canvas.layers["simplefog"] = {

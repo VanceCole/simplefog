@@ -5,11 +5,11 @@
 
 import MaskLayer from './MaskLayer.js';
 import { Layout } from '../libs/hexagons.js';
-import {hexObjsToArr, hexToPercent, simplefogLog, simplefogLogDebug, simplefogLogVerboseDebug} from '../js/helpers.js';
+import {hexObjsToArr, hexToPercent, simplefogLog, simplefogLogDebug} from '../js/helpers.js';
 
 export default class SimplefogLayer extends MaskLayer {
   constructor() {
-    simplefogLog('SimplefogLayer.constructor')
+    simplefogLogDebug('SimplefogLayer.constructor')
     super('simplefog');
 
     // Register event listerenrs
@@ -48,7 +48,7 @@ export default class SimplefogLayer extends MaskLayer {
   }
 
   initSimplefog() {
-    simplefogLogDebug(true,'SimplefogLayer.init')
+    simplefogLogDebug('SimplefogLayer.init')
     // Preview brush objects
     this.boxPreview = this.brush({
       shape: this.BRUSH_TYPES.BOX,
@@ -120,7 +120,6 @@ export default class SimplefogLayer extends MaskLayer {
    * React to updates of canvas.scene flags
    */
   _updateScene(scene, data) {
-    simplefogLogDebug('SimplefogLayer._updateScene - data', data)
     // Check if update applies to current viewed scene
     if (!scene._view) return;
     // React to visibility change
@@ -176,24 +175,19 @@ export default class SimplefogLayer extends MaskLayer {
 
     // React to Image Overylay file changes
     if (hasProperty(data, `flags.${this.layername}.fogImageOverlayFilePath`)) {
-      simplefogLog('has fogImageOverlayFilePath')
       canvas[this.layername].setFogImageOverlayTexture(data.flags[this.layername].fogImageOverlayFilePath);
     } else {
-      simplefogLog('has NO fogImageOverlayFilePath');
       canvas[this.layername].setFogImageOverlayTexture(undefined);
     }
 
     if (game.user.isGM && hasProperty(data, `flags.${this.layername}.fogImageOverlaygmColorAlpha`)) {
-      simplefogLog('Change GM Alpha');
       canvas[this.layername].setFogImageOverlayAlpha(data.flags[this.layername].fogImageOverlaygmColorAlpha)
     }
     if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.fogImageOverlayPlayerAlpha`)) {
-      simplefogLog('Change Player Alpha');
       canvas[this.layername].setFogImageOverlayAlpha(data.flags[this.layername].fogImageOverlayPlayerAlpha)
     }
     if (hasProperty(data, `flags.${this.layername}.fogImageOverlayZIndex`)) canvas[this.layername].setFogImageOverlayZIndex(data.flags[this.layername].fogImageOverlayZIndex)
 
-    canvas.perception.refresh()
   }
 
   /**
@@ -237,12 +231,10 @@ export default class SimplefogLayer extends MaskLayer {
    */
   setActiveTool(tool) {
     simplefogLogDebug('SimplefogLayer.setActiveTool')
-    simplefogLogVerboseDebug('SimplefogLayer.setActiveTool - tool', tool)
     this.clearActiveTool();
     this.activeTool = tool;
     this.setPreviewTint();
     const currentTool = $('#simplefog-brush-controls #brush-size-container')
-    simplefogLogVerboseDebug('SimplefogLayer.setActiveTool - HTML element', currentTool)
     if (currentTool.length) {
       if (tool === 'brush') {
         this.ellipsePreview.visible = true;
@@ -289,7 +281,6 @@ export default class SimplefogLayer extends MaskLayer {
    * Aborts any active drawing tools
    */
   clearActiveTool() {
-    simplefogLogDebug('SimplefogLayer.clearActiveTool')
     try {
       // Box preview
       this.boxPreview.visible = false;

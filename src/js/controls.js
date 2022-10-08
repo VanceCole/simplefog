@@ -1,11 +1,6 @@
 import SimplefogConfig from '../classes/SimplefogConfig.js';
 import BrushControls from '../classes/BrushControls.js';
-import {
-  addSimplefogControlToggleListener,
-  addSimplefogOpacityToggleListener,
-  simplefogLogDebug,
-  simplefogLogVerboseDebug
-} from './helpers.js';
+import {simplefogLogDebug} from './helpers.js';
 
 /**
  * Add control buttons
@@ -109,7 +104,6 @@ Hooks.on('renderSceneControls', (controls) => {
   simplefogLogDebug('controls.renderSceneControls')
   // Switching to layer
   if (canvas.simplefog != null) {
-    simplefogLogVerboseDebug('controls.renderSceneControls - Switching', controls.activeControl, controls.activeTool)
     if (controls.activeControl == 'simplefog' && controls.activeTool != undefined) {
       // Open brush tools if not already open
       if (!$('#simplefog-brush-controls').length) new BrushControls().render(true);
@@ -131,7 +125,6 @@ Hooks.on('renderSceneControls', (controls) => {
  * Sets Y position of the brush controls to account for scene navigation buttons
  */
 function setBrushControlPos() {
-  simplefogLogDebug('controls.setBrushControlPos')
   const brushControl = $('#simplefog-brush-controls');
   const navigation = $('#navigation');
   if (brushControl.length && navigation.length) {
