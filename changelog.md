@@ -1,5 +1,15 @@
 # Simplefog Change Log
 
+### 0.3.0: v10 Support
+Oct 8, 2022
+* Release from beta
+
+### 0.3.0-BETA.7: v10 Support
+Oct 8, 2022
+* Various bug fixes for v10 #78
+* Image Overlay/fog not working #88
+* v10 Module Manifest #87
+
 ### 0.3.0-ALPHA.3: v10 Support
 Sept 17, 2022
 * Initial dev support for v10 #78

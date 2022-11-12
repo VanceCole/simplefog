@@ -69,7 +69,7 @@
 
   "SIMPLEFOG.autoVisNotes": "When enabled, Automatic Visibility will show/hide tokens based on fog opacity level at their location based on the threshold setting. Brush color changes to green/red to indicate whether a token would be visible.",
 
-  "SIMPLEFOG.versionNotification": "<b>Simple Fog 0.3.0-BETA.7 PreRelease</b><p>This version includes important bug fixes for:</p><ul><li>Initial v10 support <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues/78'>#78</a></li></ul><p>To report problems:<ul><li>open a GitHub issue <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues' target='_blank'>here</a></li><li>send a message on Discord to <a href='https://discordapp.com/users/530108795796455437' target='_blank'>Glutious#7241</a></li></ul></p>",
+  "SIMPLEFOG.versionNotification": "<b>Simple Fog 0.3.0</b><p>This release includes:</p><ul><li>Initial v10 support <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues/78'>#78</a></li></ul><p>To report problems:<ul><li>open a GitHub issue <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues' target='_blank'>here</a></li><li>send a message on Discord to <a href='https://discordapp.com/users/530108795796455437' target='_blank'>Glutious#7241</a></li></ul></p>",
 
   "SIMPLEFOG.migration2Notification": "<b>Simple Fog Data Migration</b><p>The Simple Fog data has been migrated to a format supporting v3. It is <b>HIGHLY</b> recommended to review all scenes and fog visibility, both from a GM and a Player view before showing the scene to players."
 }
