@@ -1,13 +1,29 @@
 {
+
+
+
   "SIMPLEFOG.brushOpacity": "Brush Opacity",
   "SIMPLEFOG.brushSize": "Brush Size",
   "SIMPLEFOG.hide": "Hide",
   "SIMPLEFOG.reveal": "Reveal",
+
   "SIMPLEFOG.gmFogSettings": "GM Fog Settings",
-  "SIMPLEFOG.color": "Color",
-  "SIMPLEFOG.opacity": "Opacity",
+  "SIMPLEFOG.gmColorTint": "Color",
+  "SIMPLEFOG.gmColorAlpha": "Color Opacity",
+
   "SIMPLEFOG.playerFogSettings": "Player Fog Settings",
+  "SIMPLEFOG.playerColorTint": "Color",
+  "SIMPLEFOG.playerColorAlpha": "Color Opacity",
+
+  "SIMPLEFOG.fogImageOverlaySettings": "Fog Overlay Image",
+  "SIMPLEFOG.fogImageOverlay": "Image",
+  "SIMPLEFOG.fogImageOverlayNotes": "Selected image will display above/below the tint color. This image should be the same height and width of the scene background image.",
+  "SIMPLEFOG.fogImageOverlayGMAlpha": "GM Image Opacity",
+  "SIMPLEFOG.fogImageOverlayPlayerAlpha": "Player Image Opacity",
+  "SIMPLEFOG.fogImageOverlayZIndex": "Mask Sorting Order",
+
   "SIMPLEFOG.filterSettings": "Filter Settings",
+  "SIMPLEFOG.blurEnable": "Enable Reveal Blur",
   "SIMPLEFOG.blurRadius": "Blur Radius",
   "SIMPLEFOG.blurQuality": "Blur Quality",
   "SIMPLEFOG.blurQualityDesc": "Higher blur quality improves the appearance of the blur effect, but may cause slower performance.",
@@ -23,6 +39,7 @@
   "SIMPLEFOG.ok": "OK",
   "SIMPLEFOG.sf": "Simple Fog",
   "SIMPLEFOG.onoff": "Enable/Disable Simple Fog",
+
   "SIMPLEFOG.brushTool": "Brush Tool",
   "SIMPLEFOG.gridTool": "Grid Tool",
   "SIMPLEFOG.polygonTool": "Polygon Tool",
@@ -51,9 +68,8 @@
   "SIMPLEFOG.hotKeyToolNotes": "Determine which tool will be selected when hotkey is activated.",
 
   "SIMPLEFOG.autoVisNotes": "When enabled, Automatic Visibility will show/hide tokens based on fog opacity level at their location based on the threshold setting. Brush color changes to green/red to indicate whether a token would be visible.",
-  "SIMPLEFOG.fogImageSettings": "Image Settings",
-  "SIMPLEFOG.fogImage": "Fog Overlay Image",
-  "SIMPLEFOG.imageNotes": "Selected image will display on top of the fog tint color. This image should be the same height and width of the scene background image.",
 
-  "SIMPLEFOG.versionNotification": "<b>Simple Fog v1.2.1-PreRelease</b><p>This version includes important bug fixes for:</p><ul><li><i>DRAFT</i> - Token names appearing above the fog <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues/65'>#65</a></li></ul><p>To report problems:<ul><li>open a GitHub issue <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues' target='_blank'>here</a></li><li>send a message on Discord to <a href='https://discordapp.com/users/530108795796455437' target='_blank'>Glutious#7241</a></li></ul></p>"
+  "SIMPLEFOG.versionNotification": "<b>Simple Fog 0.3.0</b><p>This release includes:</p><ul><li>Initial v10 support <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues/78'>#78</a></li></ul><p>To report problems:<ul><li>open a GitHub issue <a href='https://github.com/League-of-Foundry-Developers/simplefog/issues' target='_blank'>here</a></li><li>send a message on Discord to <a href='https://discordapp.com/users/530108795796455437' target='_blank'>Glutious#7241</a></li></ul></p>",
+
+  "SIMPLEFOG.migration2Notification": "<b>Simple Fog Data Migration</b><p>The Simple Fog data has been migrated to a format supporting v3. It is <b>HIGHLY</b> recommended to review all scenes and fog visibility, both from a GM and a Player view before showing the scene to players."
 }

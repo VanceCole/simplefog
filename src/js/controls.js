@@ -1,11 +1,12 @@
 import SimplefogConfig from '../classes/SimplefogConfig.js';
 import BrushControls from '../classes/BrushControls.js';
-import {addSimplefogControlToggleListener, addSimplefogOpacityToggleListener} from './helpers.js';
+import {simplefogLogDebug} from './helpers.js';
 
 /**
  * Add control buttons
  */
 Hooks.on('getSceneControlButtons', (controls) => {
+  simplefogLogDebug('controls.getSceneControlButtons')
   if (!game.user.isGM) return;
   controls.push({
     name: 'simplefog',
@@ -100,21 +101,21 @@ Hooks.on('getSceneControlButtons', (controls) => {
  * and switching active brush flag
  */
 Hooks.on('renderSceneControls', (controls) => {
+  simplefogLogDebug('controls.renderSceneControls')
   // Switching to layer
   if (canvas.simplefog != null) {
     if (controls.activeControl == 'simplefog' && controls.activeTool != undefined) {
       // Open brush tools if not already open
       if (!$('#simplefog-brush-controls').length) new BrushControls().render(true);
       // Set active tool
-      const tool = controls.controls.find((control) => control.name === 'simplefog').activeTool;
-      canvas.simplefog.setActiveTool(tool);
+      canvas.simplefog.setActiveTool(controls.activeTool);
     }
     // Switching away from layer
     else {
       // Clear active tool
       canvas.simplefog.clearActiveTool();
       // Remove brush tools if open
-      const bc = $('#simplefog-brush-controls');
+      const bc = $('#simplefog-brush-controls')[0];
       if (bc) bc.remove();
     }
   }
@@ -124,10 +125,12 @@ Hooks.on('renderSceneControls', (controls) => {
  * Sets Y position of the brush controls to account for scene navigation buttons
  */
 function setBrushControlPos() {
-  const bc = $('#simplefog-brush-controls');
-  if (bc) {
-    const h = $('#navigation').height();
-    bc.css({ top: `${h + 30}px` });
+  const brushControl = $('#simplefog-brush-controls');
+  const navigation = $('#navigation');
+  if (brushControl.length && navigation.length) {
+    const h = navigation.height();
+    brushControl.css({ top: `${h + 30}px` });
+    canvas.simplefog.setActiveTool(canvas.simplefog.activeTool)
   }
 }
 
@@ -135,7 +138,8 @@ function setBrushControlPos() {
  * Toggle Simple Fog
  */
 function toggleSimpleFog() {
-  if (canvas.simplefog.getSetting("confirmDisablingFog") && canvas.simplefog.getSetting("visible")) {
+  simplefogLogDebug('controls.toggleSimpleFog')
+  if (game.settings.get('simplefog', 'confirmFogDisable') && canvas.simplefog.getSetting("visible")) {
     let dg = Dialog.confirm({
       title: game.i18n.localize('SIMPLEFOG.disableFog'),
       content: game.i18n.localize('SIMPLEFOG.confirmDisableFog'),
@@ -152,7 +156,9 @@ function toggleSimpleFog() {
 
 function toggleOffSimpleFog() {
   canvas.simplefog.toggle();
-  canvas.sight.refresh();
+
+  //ToDo: Determine replacement for canvas.sight.refresh()
+  canvas.perception.refresh()
 }
 
 function cancelToggleSimpleFog(result = undefined) {
@@ -160,10 +166,10 @@ function cancelToggleSimpleFog(result = undefined) {
   ui.controls.render();
 }
 
-
 // Reset position when brush controls are rendered or sceneNavigation changes
 Hooks.on('renderBrushControls', setBrushControlPos);
 Hooks.on('renderSceneNavigation', setBrushControlPos);
 
-addSimplefogControlToggleListener();
-addSimplefogOpacityToggleListener();
+// Moved to simplefog.ready
+// addSimplefogControlToggleListener();
+// addSimplefogOpacityToggleListener();

@@ -3,7 +3,7 @@
  */
 import { dmToGM } from '../js/helpers.js';
 
-export default class SimplefogVersionNotification {
+export default class SimplefogNotification {
   constructor() {
   }
   static checkVersion() {

@@ -5,22 +5,21 @@
 
 import MaskLayer from './MaskLayer.js';
 import { Layout } from '../libs/hexagons.js';
-import { hexObjsToArr, hexToPercent, simplefogLog } from '../js/helpers.js';
+import {hexObjsToArr, hexToPercent, simplefogLog, simplefogLogDebug} from '../js/helpers.js';
 
 export default class SimplefogLayer extends MaskLayer {
   constructor() {
+    simplefogLogDebug('SimplefogLayer.constructor')
     super('simplefog');
 
     // Register event listerenrs
-    this._registerMouseListeners();
-    this._registerKeyboardListeners();
+    Hooks.on('ready', () => {
+      this._registerMouseListeners();
+      this._registerKeyboardListeners();
+    });
 
     this.DEFAULTS = Object.assign(this.DEFAULTS, {
-      gmAlpha: 0.6,
-      gmTint: '0x000000',
-      fogTextureFilePath: '',
-      playerAlpha: 1,
-      playerTint: '0x000000',
+
       transition: true,
       transitionSpeed: 800,
       previewColor: '0x00FFFF',
@@ -32,15 +31,14 @@ export default class SimplefogLayer extends MaskLayer {
       autoVisibility: false,
       autoVisGM: false,
       vThreshold: 1,
-      layerZindex: 220,
       hotKeyTool: 'Brush'
     });
 
-    // React to canvas zoom
+/*    // React to canvas zoom
     Hooks.on('canvasPan', (canvas, dimensions) => {
     // Scale blur filter radius to account for zooming
       //this.blur.blur = this.getSetting('blurRadius') * dimensions.scale;
-    });
+    });*/
 
     // React to changes to current scene
     Hooks.on('updateScene', (scene, data) => this._updateScene(scene, data));
@@ -49,7 +47,8 @@ export default class SimplefogLayer extends MaskLayer {
     this.options = this.constructor.layerOptions;
   }
 
-  init() {
+  initSimplefog() {
+    simplefogLogDebug('SimplefogLayer.init')
     // Preview brush objects
     this.boxPreview = this.brush({
       shape: this.BRUSH_TYPES.BOX,
@@ -94,8 +93,10 @@ export default class SimplefogLayer extends MaskLayer {
       visible: false,
       zIndex: 15,
     });
+  }
 
-
+  canvasInit() {
+    simplefogLogDebug('SimplefogLayer.canvasInit')
     // Set default flags if they dont exist already
     Object.keys(this.DEFAULTS).forEach((key) => {
       if (!game.user.isGM) return;
@@ -108,77 +109,7 @@ export default class SimplefogLayer extends MaskLayer {
       // Otherwise fall back to module default
       else this.setSetting(key, this.DEFAULTS[key]);
     });
-  }
-
-  /* -------------------------------------------- */
-  /*  Getters and setters for layer props         */
-  /* -------------------------------------------- */
-
-  // Tint & Alpha have special cases because they can differ between GM & Players
-  // And alpha can be animated for transition effects
-  getTint() {
-    let tint;
-    if (game.user.isGM) tint = this.getSetting('gmTint');
-    else tint = this.getSetting('playerTint');
-    if (!tint) {
-      if (game.user.isGM) tint = this.gmTintDefault;
-      else tint = this.playerTintDefault;
-    }
-    return tint;
-  }
-
-  setTint(tint) {
-    this.layer.tint = tint;
-  }
-
-  getAlpha() {
-    let alpha;
-    if (game.user.isGM) alpha = this.getSetting('gmAlpha');
-    else alpha = this.getSetting('playerAlpha');
-    if (!alpha) {
-      if (game.user.isGM) alpha = this.DEFAULTS.gmAlpha;
-      else alpha = this.DEFAULTS.playerAlpha;
-    }
-    return alpha;
-  }
-
-  async setFogTexture(fogTextureFilePath = this.getSetting('fogTextureFilePath')) {
-    if (!fogTextureFilePath) return;
-
-    const texture = await loadTexture(fogTextureFilePath);
-
-    this.fogSprite.texture = texture;
-  }
-
-  /**
-   * Sets the scene's alpha for the primary layer.
-   * @param alpha {Number} 0-1 opacity representation
-   * @param skip {Boolean} Optional override to skip using animated transition
-   */
-  async setAlpha(alpha, skip = false) {
-  // If skip is false, do not transition and just set alpha immediately
-    if (skip || !this.getSetting('transition')) {
-      this.alpha = alpha;
-    }
-    // Loop until transition is complete
-    else {
-      const start = this.alpha;
-      const dist = start - alpha;
-      const fps = 60;
-      const speed = this.getSetting('transitionSpeed');
-      const frame = 1000 / fps;
-      const rate = dist / (fps * speed / 1000);
-      let f = fps * speed / 1000;
-      while (f > 0) {
-        // Delay 1 frame before updating again
-        // eslint-disable-next-line no-await-in-loop
-        await new Promise((resolve) => setTimeout(resolve, frame));
-        this.alpha -= rate;
-        f -= 1;
-      }
-      // Reset target alpha in case loop overshot a bit
-      this.alpha = alpha;
-    }
+    //this.setColorAlpha(this.getColorAlpha(), true);
   }
 
   /* -------------------------------------------- */
@@ -196,6 +127,16 @@ export default class SimplefogLayer extends MaskLayer {
       canvas[this.layername].visible = data.flags[this.layername].visible;
     }
     // React to composite history change
+    if (hasProperty(data, `flags.${this.layername}.blurEnable`)) {
+
+      if (this.fogColorLayer !== undefined) {
+        if (this.getSetting("blurEnable")) {
+          this.fogColorLayer.filters = [this.blur];
+        } else {
+          this.fogColorLayer.filters = [];
+        }
+      }
+    }
     if (hasProperty(data, `flags.${this.layername}.blurRadius`)) {
       canvas[this.layername].blur.blur = this.getSetting('blurRadius');
     }
@@ -206,29 +147,47 @@ export default class SimplefogLayer extends MaskLayer {
     // React to composite history change
     if (hasProperty(data, `flags.${this.layername}.history`)) {
       canvas[this.layername].renderStack(data.flags[this.layername].history);
-      canvas.sight.refresh();
+
+      //ToDo: Determine replacement for canvas.sight.refresh()
+      canvas.perception.refresh()
     }
     // React to autoVisibility setting changes
     if (
       hasProperty(data, `flags.${this.layername}.autoVisibility`)
       || hasProperty(data, `flags.${this.layername}.vThreshold`)
     ) {
-      canvas.sight.refresh();
+      //ToDo: Determine replacement for canvas.sight.refresh()
+      canvas.perception.refresh()
     }
     // React to alpha/tint changes
-    if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerAlpha`)) {
-      canvas[this.layername].setAlpha(data.flags[this.layername].playerAlpha);
+    if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerColorAlpha`)) {
+      canvas[this.layername].setColorAlpha(data.flags[this.layername].playerColorAlpha);
     }
-    if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmAlpha`)) {
-      canvas[this.layername].setAlpha(data.flags[this.layername].gmAlpha);
+    if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmColorAlpha`)) {
+      canvas[this.layername].setColorAlpha(data.flags[this.layername].gmColorAlpha);
     }
-    if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerTint`)) canvas[this.layername].setTint(data.flags[this.layername].playerTint);
-    if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmTint`)) canvas[this.layername].setTint(data.flags[this.layername].gmTint);
-    // React to texture changes
-    if (hasProperty(data, `flags.${this.layername}.fogTextureFilePath`)) {
-      simplefogLog('has fogTextureFilePath')
-      canvas[this.layername].setFogTexture(data.flags[this.layername].fogTextureFilePath);
+    if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.playerColorTint`)) {
+      canvas[this.layername].setColorTint(data.flags[this.layername].playerColorTint);
     }
+    if (game.user.isGM && hasProperty(data, `flags.${this.layername}.gmColorTint`)) {
+      canvas[this.layername].setColorTint(data.flags[this.layername].gmColorTint);
+    }
+
+    // React to Image Overylay file changes
+    if (hasProperty(data, `flags.${this.layername}.fogImageOverlayFilePath`)) {
+      canvas[this.layername].setFogImageOverlayTexture(data.flags[this.layername].fogImageOverlayFilePath);
+    } else {
+      canvas[this.layername].setFogImageOverlayTexture(undefined);
+    }
+
+    if (game.user.isGM && hasProperty(data, `flags.${this.layername}.fogImageOverlayGMAlpha`)) {
+      canvas[this.layername].setFogImageOverlayAlpha(data.flags[this.layername].fogImageOverlayGMAlpha)
+    }
+    if (!game.user.isGM && hasProperty(data, `flags.${this.layername}.fogImageOverlayPlayerAlpha`)) {
+      canvas[this.layername].setFogImageOverlayAlpha(data.flags[this.layername].fogImageOverlayPlayerAlpha)
+    }
+    if (hasProperty(data, `flags.${this.layername}.fogImageOverlayZIndex`)) canvas[this.layername].setFogImageOverlayZIndex(data.flags[this.layername].fogImageOverlayZIndex)
+
   }
 
   /**
@@ -271,23 +230,27 @@ export default class SimplefogLayer extends MaskLayer {
    * Sets the active tool & shows preview for brush & grid tools
    */
   setActiveTool(tool) {
+    simplefogLogDebug('SimplefogLayer.setActiveTool')
     this.clearActiveTool();
     this.activeTool = tool;
     this.setPreviewTint();
-    if (tool === 'brush') {
-      this.ellipsePreview.visible = true;
-      $('#simplefog-brush-controls #brush-size-container').show();
-    }
-    else {
-      $('#simplefog-brush-controls #brush-size-container').hide();
+    const currentTool = $('#simplefog-brush-controls #brush-size-container')
+    if (currentTool.length) {
+      if (tool === 'brush') {
+        this.ellipsePreview.visible = true;
+        $('#simplefog-brush-controls #brush-size-container').show();
+      }
+      else {
+        $('#simplefog-brush-controls #brush-size-container').hide();
+      }
     }
     if (tool === 'grid') {
-      if (canvas.scene.data.gridType === 1) {
-        this.boxPreview.width = canvas.scene.data.grid;
-        this.boxPreview.height = canvas.scene.data.grid;
+      if (canvas.scene.grid.type === 1) {
+        this.boxPreview.width = canvas.scene.grid.size;
+        this.boxPreview.height = canvas.scene.grid.size;
         this.boxPreview.visible = true;
       }
-      else if ([2, 3, 4, 5].includes(canvas.scene.data.gridType)) {
+      else if ([2, 3, 4, 5].includes(canvas.scene.grid.type)) {
         this._initGrid();
         this.polygonPreview.visible = true;
       }
@@ -591,18 +554,19 @@ export default class SimplefogLayer extends MaskLayer {
   }
 
   _pointerMoveGrid(p) {
-    const { grid, gridType } = canvas.scene.data;
+    const gridSize = canvas.scene.grid.size;
+    const gridType = canvas.scene.grid.type;
     // Square grid
     if (gridType === 1) {
-      const gridx = Math.floor(p.x / grid);
-      const gridy = Math.floor(p.y / grid);
-      const x = gridx * grid;
-      const y = gridy * grid;
+      const gridx = Math.floor(p.x / gridSize);
+      const gridy = Math.floor(p.y / gridSize);
+      const x = gridx * gridSize;
+      const y = gridy * gridSize;
       const coord = `${x},${y}`;
       this.boxPreview.x = x;
       this.boxPreview.y = y;
-      this.boxPreview.width = grid;
-      this.boxPreview.height = grid;
+      this.boxPreview.width = gridSize;
+      this.boxPreview.height = gridSize;
       if (this.op) {
         if (!this.dupes.includes(coord)) {
           // Flag cell as drawn in dupes
@@ -611,8 +575,8 @@ export default class SimplefogLayer extends MaskLayer {
             shape: this.BRUSH_TYPES.BOX,
             x,
             y,
-            width: grid,
-            height: grid,
+            width: gridSize,
+            height: gridSize,
             fill: this.getUserSetting('brushOpacity'),
           });
         }
@@ -670,40 +634,40 @@ export default class SimplefogLayer extends MaskLayer {
    * Checks grid type, creates a dupe detection matrix & if hex grid init a layout
    */
   _initGrid() {
-    const { grid } = canvas.scene.data;
+    const gridSize = canvas.scene.grid.size;
     this.dupes = [];
-    switch (canvas.scene.data.gridType) {
+    switch (canvas.scene.grid.type) {
     // Square grid
       // Pointy Hex Odd
       case 2:
         this.gridLayout = new Layout(
           Layout.pointy,
-          { x: grid / 2, y: grid / 2 },
-          { x: 0, y: grid / 2 },
+          { x: gridSize / 2, y: gridSize / 2 },
+          { x: 0, y: gridSize / 2 },
         );
         break;
       // Pointy Hex Even
       case 3:
         this.gridLayout = new Layout(
           Layout.pointy,
-          { x: grid / 2, y: grid / 2 },
-          { x: Math.sqrt(3) * grid / 4, y: grid / 2 },
+          { x: gridSize / 2, y: gridSize / 2 },
+          { x: Math.sqrt(3) * gridSize / 4, y: gridSize / 2 },
         );
         break;
       // Flat Hex Odd
       case 4:
         this.gridLayout = new Layout(
           Layout.flat,
-          { x: grid / 2, y: grid / 2 },
-          { x: grid / 2, y: 0 },
+          { x: gridSize / 2, y: gridSize / 2 },
+          { x: gridSize / 2, y: 0 },
         );
         break;
       // Flat Hex Even
       case 5:
         this.gridLayout = new Layout(
           Layout.flat,
-          { x: grid / 2, y: grid / 2 },
-          { x: grid / 2, y: Math.sqrt(3) * grid / 4 },
+          { x: gridSize / 2, y: gridSize / 2 },
+          { x: gridSize / 2, y: Math.sqrt(3) * gridSize / 4 },
         );
         break;
       default:
@@ -712,8 +676,10 @@ export default class SimplefogLayer extends MaskLayer {
   }
 
   async draw() {
+    simplefogLogDebug('SimplefogLayer.draw')
     super.draw();
-    this.init();
+    this.initSimplefog()
+
     this.addChild(this.boxPreview);
     this.addChild(this.ellipsePreview);
     this.addChild(this.polygonPreview);

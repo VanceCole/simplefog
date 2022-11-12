@@ -5,9 +5,9 @@
  * and replaying the mask / undo etc.
  */
 
-import { simplefogLog } from "../js/helpers.js";
+import {simplefogLog, simplefogLogDebug} from "../js/helpers.js";
 
-export default class MaskLayer extends CanvasLayer {
+export default class MaskLayer extends InteractionLayer {
   constructor(layername) {
     super();
     this.lock = false;
@@ -26,16 +26,28 @@ export default class MaskLayer extends CanvasLayer {
     };
     this.DEFAULTS = {
       visible: false,
+      blurEnable: true,
       blurQuality: 2,
       blurRadius: 5,
+      gmColorAlpha: 0.6,
+      gmColorTint: '0x000000',
+      playerColorAlpha: 1,
+      playerColorTint: '0x000000',
+      fogImageOverlayFilePath: '',
+      fogImageOverlayGMAlpha: 0.6,
+      fogImageOverlayPlayerAlpha: 1,
+      fogImageOverlayZIndex: 6000,
+      layerZindex: 220,
+
     };
   }
 
   static get layerOptions() {
     //@ts-ignore
     return mergeObject(super.layerOptions, {
+      // ToDo: is ugly hack still needed?
       // Ugly hack - render at very high zindex and then re-render at layer init with layerZindex value
-      zIndex: 2147483647,
+      zIndex: game.settings.get('simplefog', 'zIndex')
     });
   }
 
@@ -50,28 +62,35 @@ export default class MaskLayer extends CanvasLayer {
    *
    * layer       - PIXI Sprite which holds all the mask elements
    * filters     - Holds filters such as blur applied to the layer
-   * layer.mask  - PIXI Sprite wrapping the renderable mask
+   * fogColorLayer  - PIXI Sprite wrapping the renderable mask
    * maskTexture - renderable texture that holds the actual mask data
-   * fogSprite   - PIXI Sprite that holds the image applied over the fog color
+   * fogImageOverlayLayer   - PIXI Sprite that holds the image applied over the fog color
    */
-  maskInit() {
-    const d = canvas.dimensions;
+  initMask() {
+    simplefogLogDebug('MaskLayer.initMask')
     // Check if masklayer is flagged visible
     let v = this.getSetting("visible");
     if (v === undefined) v = false;
     this.visible = v;
+    simplefogLogDebug('MaskLayer.initMask - visible', this.visible)
 
     // The layer is the primary sprite to be displayed
-    this.layer = MaskLayer.getCanvasSprite();
-    this.setTint(this.getTint());
-    this.setAlpha(this.getAlpha(), true);
+    this.fogColorLayer = MaskLayer.getCanvasSprite();
+    this.setColorTint(this.getTint());
+    this.setColorAlpha(this.getColorAlpha(), true);
 
-    // Filters
     this.blur = new PIXI.filters.BlurFilter();
     this.blur.padding = 0;
     this.blur.repeatEdgePixels = true;
     this.blur.blur = this.getSetting("blurRadius");
     this.blur.quality = this.getSetting("blurQuality");
+
+    // Filters
+    if (this.getSetting("blurEnable")) {
+      this.fogColorLayer.filters = [this.blur];
+    } else {
+      this.fogColorLayer.filters = [];
+    }
 
     //So you can hit escape on the keyboard and it will bring up the menu
     this._controlled = {};
@@ -79,10 +98,9 @@ export default class MaskLayer extends CanvasLayer {
     this.maskTexture = MaskLayer.getMaskTexture();
     this.maskSprite = new PIXI.Sprite(this.maskTexture);
 
-    this.layer.mask = this.maskSprite;
+    this.fogColorLayer.mask = this.maskSprite;
     this.setFill();
 
-    this.layer.filters = [this.blur];
 
     // Allow zIndex prop to function for items on this layer
     this.sortableChildren = true;
@@ -90,20 +108,84 @@ export default class MaskLayer extends CanvasLayer {
     // Render entire history stack
     this.renderStack(undefined, 0, undefined);
 
-    // apply Texture Sprite to fog layer after we renderStack to prevent revealing the map
-    this.fogSprite = new PIXI.Sprite();
-    this.fogSprite.position.set(d.sceneRect.x, d.sceneRect.y);
-    this.fogSprite.width = d.sceneRect.width;
-    this.fogSprite.height = d.sceneRect.height;
-    this.fogSprite.mask = this.maskSprite;
-    this.setFogTexture();
+    // apply image overlay to fog layer after we renderStack to prevent revealing the map
+    this.fogImageOverlayLayer = new PIXI.Sprite();
+    this.fogImageOverlayLayer.position.set(canvas.dimensions.sceneRect.x, canvas.dimensions.sceneRect.y);
+    this.fogImageOverlayLayer.width = canvas.dimensions.sceneRect.width;
+    this.fogImageOverlayLayer.height = canvas.dimensions.sceneRect.height;
+    this.fogImageOverlayLayer.mask = this.maskSprite;
+    this.setFogImageOverlayZIndex(this.getSetting("fogImageOverlayZIndex"));
+    this.setFogImageOverlayTexture();
+    this.setFogImageOverlayAlpha(this.getFogImageOverlayAlpha(), true);
   }
 
   /* -------------------------------------------- */
-  /*  History & Buffer                            */
+  /*  Getters and setters for layer props         */
   /* -------------------------------------------- */
 
+  // Tint & Alpha have special cases because they can differ between GM & Players
+  // And alpha can be animated for transition effects
+
+  getColorAlpha() {
+    let alpha;
+    if (game.user.isGM) alpha = this.getSetting('gmColorAlpha');
+    else alpha = this.getSetting('playerColorAlpha');
+    if (!alpha) {
+      if (game.user.isGM) alpha = this.DEFAULTS.gmColorAlpha;
+      else alpha = this.DEFAULTS.playerColorAlpha;
+    }
+    return alpha;
+  }
+
+  /**
+   * Sets the scene's alpha for the primary layer.
+   * @param alpha {Number} 0-1 opacity representation
+   * @param skip {Boolean} Optional override to skip using animated transition
+   */
+  async setColorAlpha(alpha, skip = false) {
+    simplefogLogDebug('MaskLayer.setColorAlpha')
+    // If skip is false, do not transition and just set alpha immediately
+    if (skip || !this.getSetting('transition')) {
+      this.fogColorLayer.alpha = alpha;
+    }
+    // Loop until transition is complete
+    else {
+      const start = this.fogColorLayer.alpha;
+      const dist = start - alpha;
+      const fps = 60;
+      const speed = this.getSetting('transitionSpeed');
+      const frame = 1000 / fps;
+      const rate = dist / (fps * speed / 1000);
+      let f = fps * speed / 1000;
+      while (f > 0) {
+        // Delay 1 frame before updating again
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => setTimeout(resolve, frame));
+        this.fogColorLayer.alpha -= rate;
+        f -= 1;
+      }
+      // Reset target alpha in case loop overshot a bit
+      this.fogColorLayer.alpha = alpha;
+    }
+  }
+
+  getTint() {
+    let tint;
+    if (game.user.isGM) tint = this.getSetting('gmColorTint');
+    else tint = this.getSetting('playerColorTint');
+    if (!tint) {
+      if (game.user.isGM) tint = this.gmColorTintDefault;
+      else tint = this.playerColorTintDefault;
+    }
+    return tint;
+  }
+
+  setColorTint(tint) {
+    this.fogColorLayer.tint = tint;
+  }
+
   static getMaskTexture() {
+    simplefogLogDebug('MaskLayer.getMaskTexture')
     const d = canvas.dimensions;
     let res = 1.0;
     if (d.width * d.height > 16000 ** 2) res = 0.25;
@@ -117,6 +199,62 @@ export default class MaskLayer extends CanvasLayer {
     });
     return tex;
   }
+
+  /* -------------------------------------------- */
+  /*  Player Fog Image Overlay                    */
+  /* -------------------------------------------- */
+  async setFogImageOverlayTexture(fogImageOverlayFilePath = this.getSetting('fogImageOverlayFilePath')) {
+    if (fogImageOverlayFilePath) {
+      const texture = await loadTexture(fogImageOverlayFilePath);
+      this.fogImageOverlayLayer.texture = texture;
+      // If player, don't set tint
+      //if (!game.user.isGM) canvas[this.layername].setColorTint(null);
+    } else {
+      this.fogImageOverlayLayer.texture = undefined;
+    }
+  }
+
+  getFogImageOverlayAlpha() {
+    let alpha;
+    if (game.user.isGM) alpha = this.getSetting('fogImageOverlayGMAlpha');
+    else alpha = this.getSetting("fogImageOverlayPlayerAlpha")
+    if (!alpha) {
+      if (game.user.isGM) alpha = this.DEFAULTS.fogImageOverlayGMAlpha;
+      else alpha = this.DEFAULTS.fogImageOverlayAlpha;
+    }
+    return alpha;
+  }
+
+  async setFogImageOverlayAlpha(alpha, skip = false) {
+    // If skip is false, do not transition and just set alpha immediately
+    if (skip || !this.getSetting('transition')) {
+      this.fogImageOverlayLayer.alpha = alpha;
+    }
+    // Loop until transition is complete
+    else {
+      const start = this.fogImageOverlayLayer.alpha;
+      const dist = start - alpha;
+      const fps = 60;
+      const speed = this.getSetting('transitionSpeed');
+      const frame = 1000 / fps;
+      const rate = dist / (fps * speed / 1000);
+      let f = fps * speed / 1000;
+      while (f > 0) {
+        // Delay 1 frame before updating again
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => setTimeout(resolve, frame));
+        this.fogImageOverlayLayer.alpha -= rate;
+        f -= 1;
+      }
+      // Reset target alpha in case loop overshot a bit
+      this.fogImageOverlayLayer.alpha = alpha;
+    }
+  }
+
+  async setFogImageOverlayZIndex(zIndex) {
+    this.fogImageOverlayLayer.zIndex = zIndex;
+  }
+
 
   /**
    * Gets and sets various layer wide properties
@@ -157,10 +295,10 @@ export default class MaskLayer extends CanvasLayer {
     start = this.pointer,
     stop = canvas.scene.getFlag(this.layername, "history.pointer")
   ) {
-
+    simplefogLogDebug('MaskLayer.renderStack')
     // If history is blank, do nothing
     if (history === undefined) {
-      this.visible = this.getSetting("autoFog");
+      this.visible = game.settings.get('simplefog', 'autoEnableSceneFog');
       return;
     }
     // If history is zero, reset scene fog
@@ -185,13 +323,15 @@ export default class MaskLayer extends CanvasLayer {
     // Prevent calling update when no lights loaded
     if (!canvas.sight?.light?.los?.geometry) return;
     // Update sight layer
-    canvas.sight.refresh();
+    //ToDo: Determine replacement for canvas.sight.refresh()
+    canvas.perception.refresh()
   }
 
   /**
    * Add buffered history stack to scene flag and clear buffer
    */
   async commitHistory() {
+    simplefogLogDebug('MaskLayer.commitHistory')
     // Do nothing if no history to be committed, otherwise get history
     if (this.historyBuffer.length === 0) return;
     if (this.lock) return;
@@ -222,6 +362,7 @@ export default class MaskLayer extends CanvasLayer {
    * @param save {Boolean} If true, also resets the layer history
    */
   async resetMask(save = true) {
+    simplefogLogDebug('MaskLayer.resetMask')
     // Fill fog layer with solid
     this.setFill();
     // If save, also unset history and reset pointer
@@ -240,6 +381,7 @@ export default class MaskLayer extends CanvasLayer {
    * @param save {Boolean} If true, also resets the layer history
    */
   async blankMask() {
+    simplefogLogDebug('MaskLayer.blankMask')
     await this.resetMask();
     this.renderBrush({
       shape: this.BRUSH_TYPES.BOX,
@@ -257,6 +399,7 @@ export default class MaskLayer extends CanvasLayer {
    * @param steps {Integer} Number of steps to undo, default 1
    */
   async undo(steps = 1) {
+    simplefogLogDebug('MaskLayer.undo')
     simplefogLog(`Undoing ${steps} steps.`);
     // Grab existing history
     // Todo: this could probably just grab and set the pointer for a slight performance improvement
@@ -353,13 +496,14 @@ export default class MaskLayer extends CanvasLayer {
    * Returns a blank PIXI Sprite of canvas dimensions
    */
   static getCanvasSprite() {
+    simplefogLogDebug('MaskLayer.getCanvasSprite')
     const sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
     const d = canvas.dimensions;
     sprite.width = d.width;
     sprite.height = d.height;
     sprite.x = 0;
     sprite.y = 0;
-    sprite.zIndex = 0;
+    sprite.zIndex = 5000;
     return sprite;
   }
 
@@ -367,6 +511,7 @@ export default class MaskLayer extends CanvasLayer {
    * Fills the mask layer with solid white
    */
   setFill() {
+    simplefogLogDebug('MaskLayer.setFill')
     const fill = new PIXI.Graphics();
     fill.beginFill(0xffffff);
     fill.drawRect(0, 0, canvas.dimensions.width, canvas.dimensions.height);
@@ -379,6 +524,7 @@ export default class MaskLayer extends CanvasLayer {
    * Toggles visibility of primary layer
    */
   toggle() {
+    simplefogLogDebug('MaskLayer.toggle')
     const v = this.getSetting("visible");
     this.visible = !v;
     this.setSetting("visible", !v);
@@ -396,6 +542,7 @@ export default class MaskLayer extends CanvasLayer {
    * Actions upon layer becoming active
    */
   activate() {
+    simplefogLogDebug('MaskLayer.activate')
     super.activate();
     this.interactive = true;
   }
@@ -404,15 +551,21 @@ export default class MaskLayer extends CanvasLayer {
    * Actions upon layer becoming inactive
    */
   deactivate() {
+    simplefogLogDebug('MaskLayer.deactivate')
     super.deactivate();
     this.interactive = false;
   }
 
   async draw() {
+    simplefogLogDebug('MaskLayer.draw')
     super.draw();
-    this.maskInit();
-    this.addChild(this.layer);
-    this.addChild(this.layer.mask);
-    this.addChild(this.fogSprite);
+    this.initMask();
+    this.addChild(canvas.simplefog.fogImageOverlayLayer);
+    this.addChild(this.fogColorLayer);
+    this.addChild(this.fogColorLayer.mask);
+  }
+
+  refreshZIndex() {
+    canvas.simplefog.zIndex = game.settings.get('simplefog', 'zIndex');
   }
 }
