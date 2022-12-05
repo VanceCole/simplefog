@@ -642,32 +642,32 @@ export default class SimplefogLayer extends MaskLayer {
       case 2:
         this.gridLayout = new Layout(
           Layout.pointy,
-          { x: gridSize / 2, y: gridSize / 2 },
-          { x: 0, y: gridSize / 2 },
+          { x: gridSize / Math.sqrt(3), y: gridSize / Math.sqrt(3)},
+          { x: 0, y: gridSize / Math.sqrt(3)},
         );
         break;
       // Pointy Hex Even
       case 3:
         this.gridLayout = new Layout(
           Layout.pointy,
-          { x: gridSize / 2, y: gridSize / 2 },
-          { x: Math.sqrt(3) * gridSize / 4, y: gridSize / 2 },
+          { x: gridSize / Math.sqrt(3), y: gridSize / Math.sqrt(3)},
+          { x: gridSize / 2, y: gridSize / Math.sqrt(3) },
         );
         break;
       // Flat Hex Odd
       case 4:
         this.gridLayout = new Layout(
           Layout.flat,
-          { x: gridSize / 2, y: gridSize / 2 },
-          { x: gridSize / 2, y: 0 },
+          { x: gridSize / Math.sqrt(3), y: gridSize / Math.sqrt(3)},
+          { x: gridSize / Math.sqrt(3), y: 0 },
         );
         break;
       // Flat Hex Even
       case 5:
         this.gridLayout = new Layout(
           Layout.flat,
-          { x: gridSize / 2, y: gridSize / 2 },
-          { x: gridSize / 2, y: Math.sqrt(3) * gridSize / 4 },
+          { x: gridSize / Math.sqrt(3), y: gridSize / Math.sqrt(3)},
+          { x: gridSize / Math.sqrt(3), y: gridSize / 2},
         );
         break;
       default:
