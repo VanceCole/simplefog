@@ -106,7 +106,7 @@ export default class MaskLayer extends InteractionLayer {
     this.sortableChildren = true;
 
     // Render entire history stack
-    this.renderStack(undefined, 0, undefined);
+    this.renderStack(undefined, 0, undefined, true);
 
     // apply image overlay to fog layer after we renderStack to prevent revealing the map
     this.fogImageOverlayLayer = new PIXI.Sprite();
@@ -293,11 +293,13 @@ export default class MaskLayer extends InteractionLayer {
   renderStack(
     history = canvas.scene.getFlag(this.layername, "history"),
     start = this.pointer,
-    stop = canvas.scene.getFlag(this.layername, "history.pointer")
+    stop = canvas.scene.getFlag(this.layername, "history.pointer"),
+    isInit = false
   ) {
     simplefogLogDebug('MaskLayer.renderStack')
     // If history is blank, do nothing
-    if (history === undefined) {
+    if (history === undefined && !isInit) {
+      simplefogLogDebug('MaskLayer.renderStack - set visible to autoEnableSceneFog')
       this.visible = game.settings.get('simplefog', 'autoEnableSceneFog');
       return;
     }
