@@ -1,5 +1,10 @@
 # Simplefog Change Log
 
+### 0.3.1: Bug Fixes
+Dec 17, 2022
+* Fix Grid tool misaligned with the map's grid (Thanks cirrahn!)  #95
+* Fog auto-enabling on all scenes repeatedly #92 #96
+
 ### 0.3.0: v10 Support
 Oct 8, 2022
 * Release from beta
