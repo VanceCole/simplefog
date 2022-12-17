@@ -712,6 +712,7 @@ export default class SimplefogLayer extends MaskLayer {
 				default:
 					break;
 			}
+    }
   }
 
   async draw() {
