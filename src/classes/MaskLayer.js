@@ -294,6 +294,7 @@ export default class MaskLayer extends InteractionLayer {
 		isInit = false
 	) {
 		simplefogLogDebug("MaskLayer.renderStack");
+		history = history || { events: [], pointer: 0 };
 		// If history is blank, do nothing
 		if (history === undefined && !isInit) {
 			simplefogLogDebug("MaskLayer.renderStack - set visible to autoEnableSceneFog");

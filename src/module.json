@@ -47,6 +47,17 @@
 			"ko-fi": "",
 			"reddit": "",
 			"email": ""
+		},
+		{
+			"name": "cirrahn",
+			"url": "https://github.com/cirrahn",
+			"discord": "",
+			"twitter": "",
+			"patreon": "cirrahn",
+			"github": "cirrahn",
+			"ko-fi": "",
+			"reddit": "",
+			"email": ""
 		}
 	],
 	"type": "module",
