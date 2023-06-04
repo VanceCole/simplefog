@@ -9,24 +9,23 @@ import CONSTANTS from "./constants.js";
  * @param data {String | Object} Output to be dumped
  * @param force {Boolean}        Log output even if CONFIG.debug.simplefog = false
  */
- export function simplefogLog(data, force = false) {
-    try {
-      const isDebugging = game.modules.get('_dev-mode')?.api?.getPackageDebugValue(CONSTANTS.MODULE_NAME);
-      if (force || isDebugging) {
-        // eslint-disable-next-line no-console
-        if (typeof data === 'string') console.log(`Simplefog | ${data}`);
-        // eslint-disable-next-line no-console
-        else console.log('Simplefog |', data);
-      }
-    } catch (e) {  }
-  }
+export function simplefogLog(data, force = false) {
+	try {
+		const isDebugging = game.modules.get("_dev-mode")?.api?.getPackageDebugValue(CONSTANTS.MODULE_NAME);
+		if (force || isDebugging) {
+			// eslint-disable-next-line no-console
+			if (typeof data === "string") console.log(`Simplefog | ${data}`);
+			// eslint-disable-next-line no-console
+			else console.log("Simplefog |", data);
+		}
+	} catch (e) {}
+}
 
-  export function simplefogLogDebug(...args) {
-      if (game.settings.get(CONSTANTS.MODULE_NAME, "debug")) {
-          console.debug('Simplefog-DEBUG |', ...args);
-      }
-  }
-
+export function simplefogLogDebug(...args) {
+	if (game.settings.get(CONSTANTS.MODULE_NAME, "debug")) {
+		console.debug("Simplefog-DEBUG |", ...args);
+	}
+}
 
 // ======================================
 // PIXI UTILITY
@@ -38,7 +37,7 @@ import CONSTANTS from "./constants.js";
  * @return {Hex}                Base 16 format color, f.x. 0xFF0000
  */
 export function webToHex(n) {
-  return n.replace('#', '0x');
+	return n.replace("#", "0x");
 }
 
 /**
@@ -47,7 +46,7 @@ export function webToHex(n) {
  * @return {Hex}                Web format color, f.x. #FF0000
  */
 export function hexToWeb(n) {
-  return (`${n}`).replace('0x', '#');
+	return `${n}`.replace("0x", "#");
 }
 
 /**
@@ -56,7 +55,7 @@ export function hexToWeb(n) {
  * @return {Integer}             f.x 0
  */
 export function hexToPercent(n) {
-  return Math.ceil(n / 0xFFFFFF * 100);
+	return Math.ceil((n / 0xffffff) * 100);
 }
 
 /**
@@ -65,10 +64,10 @@ export function hexToPercent(n) {
  * @return {Hex}                Base 16 format color, f.x. 0xFFFFFF
  */
 export function percentToHex(n) {
-  let c = Math.ceil(n * 2.55).toString(16);
-  if (c.length === 1) c = `0${c}`;
-  c = `0x${c}${c}${c}`;
-  return c;
+	let c = Math.ceil(n * 2.55).toString(16);
+	if (c.length === 1) c = `0${c}`;
+	c = `0x${c}${c}${c}`;
+	return c;
 }
 
 /**
@@ -76,25 +75,25 @@ export function percentToHex(n) {
  * @param hex {Object}  An object containing a set of [x,y] pairs
  */
 export function hexObjsToArr(hex) {
-  const a = [];
-  hex.forEach((point) => {
-    a.push(point.x);
-    a.push(point.y);
-  });
-  // Append first point to end of array to complete the shape
-  a.push(hex[0].x);
-  a.push(hex[0].y);
-  return a;
+	const a = [];
+	hex.forEach((point) => {
+		a.push(point.x);
+		a.push(point.y);
+	});
+	// Append first point to end of array to complete the shape
+	a.push(hex[0].x);
+	a.push(hex[0].y);
+	return a;
 }
 
 /**
  * Dumps a render of a given pixi container or texture to a new tab
  */
 export function pixiDump(tgt = null) {
-  canvas.app.render();
-  const data = canvas.app.renderer.extract.base64(tgt);
-  const win = window.open();
-  win.document.write(`<img src='${data}'/>`);
+	canvas.app.render();
+	const data = canvas.app.renderer.extract.base64(tgt);
+	const win = window.open();
+	win.document.write(`<img src='${data}'/>`);
 }
 
 /**
@@ -104,50 +103,51 @@ export function pixiDump(tgt = null) {
  * @param y {Integer}     Y Position to read
  */
 export function readPixel(target, x = 0, y = 0) {
-  const { renderer } = canvas.app;
-  let resolution;
-  let renderTexture;
-  let generated = false;
-  if (target instanceof PIXI.RenderTexture) {
-    renderTexture = target;
-  }
-  else {
-    renderTexture = renderer.generateTexture(target);
-    generated = true;
-  }
-  if (renderTexture) {
-    resolution = renderTexture.baseTexture.resolution;
-    renderer.renderTexture.bind(renderTexture);
-  }
-  const pixel = new Uint8Array(4);
-  // read pixels to the array
-  const { gl } = renderer;
-  gl.readPixels(x * resolution, y * resolution, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
-  if (generated) {
-    renderTexture.destroy(true);
-  }
-  return pixel;
+	const { renderer } = canvas.app;
+	let resolution;
+	let renderTexture;
+	let generated = false;
+	if (target instanceof PIXI.RenderTexture) {
+		renderTexture = target;
+	} else {
+		renderTexture = renderer.generateTexture(target);
+		generated = true;
+	}
+	if (renderTexture) {
+		resolution = renderTexture.baseTexture.resolution;
+		renderer.renderTexture.bind(renderTexture);
+	}
+	const pixel = new Uint8Array(4);
+	// read pixels to the array
+	const { gl } = renderer;
+	gl.readPixels(x * resolution, y * resolution, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+	if (generated) {
+		renderTexture.destroy(true);
+	}
+	return pixel;
 }
 
 export function addSimplefogControlToggleListener() {
-  window.addEventListener('keydown', (event) => {
-    if(!areHotkeysEnabled() || !toggleControls(event) || !isOnCanvas(event)) {
-      return;
-    }
+	window.addEventListener("keydown", (event) => {
+		if (!areHotkeysEnabled() || !toggleControls(event) || !isOnCanvas(event)) {
+			return;
+		}
 
-    let controlName = getNewControlName();
-    let toolName = game.settings.get('simplefog', 'toolHotKeys');
+		let controlName = getNewControlName();
+		let toolName = game.settings.get("simplefog", "toolHotKeys");
 
-    $('li.scene-control[data-control=' + controlName + ']')?.click();
-    setTimeout(function(){$('ol.sub-controls.active li.control-tool[data-tool=' + toolName + ']')?.click();}, 500);
-  });
+		$("li.scene-control[data-control=" + controlName + "]")?.click();
+		setTimeout(function () {
+			$("ol.sub-controls.active li.control-tool[data-tool=" + toolName + "]")?.click();
+		}, 500);
+	});
 }
 
 /**
  * @returns bool
  */
 function areHotkeysEnabled() {
-  return game.settings.get('simplefog', 'enableHotKeys');
+	return game.settings.get("simplefog", "enableHotKeys");
 }
 
 /**
@@ -155,7 +155,7 @@ function areHotkeysEnabled() {
  * @returns bool
  */
 function toggleControls(event) {
-  return event.key === 's' && event.ctrlKey;
+	return event.key === "s" && event.ctrlKey;
 }
 
 /**
@@ -163,47 +163,47 @@ function toggleControls(event) {
  * @returns bool
  */
 function isOnCanvas(event) {
-  let $path = $(event.path[0]);
-  let allowedClasses = ['vtt', 'game'];
+	let $path = $(event.path[0]);
+	let allowedClasses = ["vtt", "game"];
 
-  for(let allowedClass of allowedClasses) {
-    if(!$path.hasClass(allowedClass)) {
-      return false;
-    }
-  }
+	for (let allowedClass of allowedClasses) {
+		if (!$path.hasClass(allowedClass)) {
+			return false;
+		}
+	}
 
-  return true;
+	return true;
 }
 
 /**
  * @returns string
  */
 function getNewControlName() {
-  return isActiveControl() ? 'token' : 'simplefog';
+	return isActiveControl() ? "token" : "simplefog";
 }
 
 /**
  * @returns bool
  */
 function isActiveControl() {
-  return getActiveControlName() === 'simplefog';
+	return getActiveControlName() === "simplefog";
 }
 
 /**
  * @returns string
  */
 function getActiveControlName() {
-  return ui.controls.activeControl;
+	return ui.controls.activeControl;
 }
 
 export function addSimplefogOpacityToggleListener() {
-  window.addEventListener('keydown', (event) => {
-    if(!areHotkeysEnabled() || !toggleOpacity(event) || !isOnCanvas(event) || !isActiveControl()) {
-      return;
-    }
+	window.addEventListener("keydown", (event) => {
+		if (!areHotkeysEnabled() || !toggleOpacity(event) || !isOnCanvas(event) || !isActiveControl()) {
+			return;
+		}
 
-    toggleSliderAndSubmitForm();
-  });
+		toggleSliderAndSubmitForm();
+	});
 }
 
 /**
@@ -211,35 +211,35 @@ export function addSimplefogOpacityToggleListener() {
  * @returns bool
  */
 function toggleOpacity(event) {
-  return event.key === 't';
+	return event.key === "t";
 }
 
 function toggleSliderAndSubmitForm() {
-  let $slider = $('input[name=brushOpacity]');
-  let brushOpacity = $slider.val();
-  $slider.val(brushOpacity === "100" ? 0 : 100);
-  $('form#simplefog-brush-controls-form').submit();
+	let $slider = $("input[name=brushOpacity]");
+	let brushOpacity = $slider.val();
+	$slider.val(brushOpacity === "100" ? 0 : 100);
+	$("form#simplefog-brush-controls-form").submit();
 }
 
 export function dmToGM(message) {
-  let whisper_to_dm = ChatMessage.create({
-    whisper: [game.user.id],
-    blind: true,
-    content: message
-  })
+	let whisper_to_dm = ChatMessage.create({
+		whisper: [game.user.id],
+		blind: true,
+		content: message,
+	});
 }
 
 export function dmToAllGM(message) {
-  var dm_ids = [];
-  for (let indexA = 0; indexA < game.users.length; indexA++) {
-    if (game.users[indexA].value.isGM) {
-      dm_ids.push(game.users[indexA].key)
-    }
-  }
+	var dm_ids = [];
+	for (let indexA = 0; indexA < game.users.length; indexA++) {
+		if (game.users[indexA].value.isGM) {
+			dm_ids.push(game.users[indexA].key);
+		}
+	}
 
-  let whisper_to_dm = ChatMessage.create({
-    whisper: dm_ids,
-    blind: true,
-    content: message
-  })
+	let whisper_to_dm = ChatMessage.create({
+		whisper: dm_ids,
+		blind: true,
+		content: message,
+	});
 }

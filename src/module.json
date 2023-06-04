@@ -1,10 +1,10 @@
 {
-    "id": "simplefog",
-    "title": "Simplefog - Manual Fog of War",
-    "description": "Simplefog allows you to draw fog of war manually, optionally automatically hiding and revealing tokens underneath based on opacity. It provides a number of tools to quickly draw and erase fog in various shapes - brush, rectangles, ellipses, polygons or to reveal tiles you click/drag on the grid.",
+	"id": "simplefog",
+	"title": "Simplefog - Manual Fog of War",
+	"description": "Simplefog allows you to draw fog of war manually, optionally automatically hiding and revealing tokens underneath based on opacity. It provides a number of tools to quickly draw and erase fog in various shapes - brush, rectangles, ellipses, polygons or to reveal tiles you click/drag on the grid.",
 	"version": "0.3.1",
 	"authors": [
-        {
+		{
 			"name": "Vance Cole",
 			"url": "",
 			"discord": "",
@@ -15,7 +15,7 @@
 			"reddit": "",
 			"email": ""
 		},
-        {
+		{
 			"name": "Chris Hampton",
 			"url": "",
 			"discord": "",
@@ -26,7 +26,7 @@
 			"reddit": "",
 			"email": ""
 		},
-        {
+		{
 			"name": "Jeremy",
 			"url": "https://github.com/UranusBytes",
 			"discord": "",
@@ -44,6 +44,17 @@
 			"twitter": "",
 			"patreon": "",
 			"github": "p4535992",
+			"ko-fi": "",
+			"reddit": "",
+			"email": ""
+		},
+		{
+			"name": "cirrahn",
+			"url": "https://github.com/cirrahn",
+			"discord": "",
+			"twitter": "",
+			"patreon": "cirrahn",
+			"github": "cirrahn",
 			"ko-fi": "",
 			"reddit": "",
 			"email": ""
@@ -78,32 +89,27 @@
 		}
 	],
 	"languages": [
-        {
-            "lang": "en",
-            "name": "English",
-            "path": "languages/en.json"
-        },
-        {
-            "lang": "es",
-            "name": "Español",
-            "path": "languages/es.json"
-        },
-        {
-            "lang": "ja",
-            "name": "日本語 (Japanese)",
-            "path": "languages/ja.json"
-        }
+		{
+			"lang": "en",
+			"name": "English",
+			"path": "languages/en.json"
+		},
+		{
+			"lang": "es",
+			"name": "Español",
+			"path": "languages/es.json"
+		},
+		{
+			"lang": "ja",
+			"name": "日本語 (Japanese)",
+			"path": "languages/ja.json"
+		}
 	],
 	"packs": [],
 	"systems": [],
 	"scripts": [],
-	"esmodules": [
-        "main.js",
-        "js/controls.js"
-	],
-	"styles": [
-		"css/brush-controls.css"
-	],
+	"esmodules": ["main.js", "js/controls.js"],
+	"styles": ["css/brush-controls.css"],
 	"compatibility": {
 		"minimum": 10,
 		"verified": 10.291,
