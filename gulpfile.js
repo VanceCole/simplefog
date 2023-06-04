@@ -468,7 +468,8 @@ const clean = async () => {
 };
 
 const linkUserData = async () => {
-	const name = getManifest()?.file.name;
+	const manifest = getManifest()?.file;
+	const moduleId = manifest?.id;
 	const config = loadJson(`foundryconfig.json`);
 
 	let destDir;
@@ -487,7 +488,7 @@ const linkUserData = async () => {
 			if (!fs.existsSync(path.join(config.dataPath, `Data`)))
 				throw Error(`User Data path invalid, no Data directory found`);
 
-			linkDir = path.join(config.dataPath, `Data`, destDir, name);
+			linkDir = path.join(config.dataPath, `Data`, destDir, moduleId);
 		} else {
 			throw Error(`No User Data path defined in foundryconfig.json`);
 		}
@@ -656,7 +657,7 @@ const updateManifest = (cb) => {
 		});
 
 		fs.writeFileSync(`package.json`, JSON.stringify(packageJson, null, `\t`));
-		fs.writeFileSync(path.join(manifest.root, manifest.name), prettyProjectJson, `utf8`);
+		fs.writeFileSync(path.join(manifest.root, manifest.id), prettyProjectJson, `utf8`);
 
 		return cb();
 	} catch (err) {
