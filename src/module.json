@@ -112,8 +112,8 @@
 	"styles": ["css/brush-controls.css"],
 	"compatibility": {
 		"minimum": 10,
-		"verified": 10.291,
-		"maximum": 10
+		"verified": 11.301,
+		"maximum": 11
 	},
 	"manifestPlusVersion": "1.2.1",
 	"url": "https://github.com/League-of-Foundry-Developers/simplefog",
