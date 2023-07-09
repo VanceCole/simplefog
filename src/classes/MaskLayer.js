@@ -555,7 +555,7 @@ export default class MaskLayer extends InteractionLayer {
 	activate() {
 		simplefogLogDebug("MaskLayer.activate");
 		super.activate();
-		this.interactive = true;
+		this.eventMode = "static";
 	}
 
 	/**
@@ -564,7 +564,7 @@ export default class MaskLayer extends InteractionLayer {
 	deactivate() {
 		simplefogLogDebug("MaskLayer.deactivate");
 		super.deactivate();
-		this.interactive = false;
+		this.eventMode = "passive";
 	}
 
 	async draw() {
