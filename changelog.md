@@ -1,5 +1,16 @@
 # Simplefog Change Log
 
+### 0.3.4: Bug Fixes
+Jul 29, 2023
+* Fixes for v11 by @macskay in #110
+* Fixes for v11 by @mattd in #111
+
+### 0.3.3: Bug Fixes
+Jun 4, 2023
+* Prettier format by @cirrahn in #104
+* Avoid crash on initial load of history-less scene by @cirrahn in #105
+* Handle v10 changes in tooling by @cirrahn in #106
+
 ### 0.3.1: Bug Fixes
 Dec 17, 2022
 * Fix Grid tool misaligned with the map's grid (Thanks cirrahn!)  #95
