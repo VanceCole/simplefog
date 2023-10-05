@@ -1,7 +1,3 @@
-foundry.js
-.vscode
-simplefog.zip
-
 # Logs
 logs
 *.log
@@ -86,7 +82,6 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
@@ -118,3 +113,12 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Foundry
+foundry.js
+/.vscode
+/dist
+/package
+
+# Intellij
+/.idea
